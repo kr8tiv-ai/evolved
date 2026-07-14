@@ -23,7 +23,7 @@
   "bin": {
     "evolved": "dist/index.js"
   },
-  "main": "dist/http.js",
+  "main": "server.cjs",
   "scripts": {
     "build": "tsc",
     "start": "node dist/http.js",
