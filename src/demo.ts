@@ -41,6 +41,7 @@ function show(result: unknown, keys?: string[]) {
   console.log(DIM + JSON.stringify(data, null, 2) + RESET);
 }
 
+async function main(): Promise<void> {
 resetDb();
 const server = createServer();
 const client = new Client({ name: "evolved-demo", version: "1.0.0" });
@@ -152,3 +153,9 @@ show(await call("morning_digest"));
 console.log(`\n${LIME}${BOLD}◆ Full loop complete.${RESET} Lead → quote → job → safety → books → digest, one agent, one data spine.\n`);
 await client.close();
 await server.close();
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
