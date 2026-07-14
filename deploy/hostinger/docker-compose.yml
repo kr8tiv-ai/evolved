@@ -1,0 +1,36 @@
+# Evolved — Hostinger VPS deployment (Docker-project API or plain docker compose)
+#
+# Two services, fully isolated from anything else on the VPS:
+#   evolved — the MCP server, built straight from the public GitHub repo
+#   caddy   — reverse proxy with automatic HTTPS on the VPS hostname
+#
+# Public endpoint after deploy:
+#   https://srv1277677.hstgr.cloud/mcp     (MCP Streamable HTTP)
+#   https://srv1277677.hstgr.cloud/health  (service metadata)
+#
+# To use a different host, change EVOLVED_PUBLIC_HOST below (or override the
+# environment when creating the project).
+
+services:
+  evolved:
+    build:
+      context: https://github.com/kr8tiv-ai/evolved.git
+    restart: unless-stopped
+    environment:
+      - PORT=8788
+    # No published ports — only Caddy can reach it.
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${EVOLVED_PUBLIC_HOST:-srv1277677.hstgr.cloud} --to evolved:8788
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
