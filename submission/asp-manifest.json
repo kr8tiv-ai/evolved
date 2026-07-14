@@ -12,8 +12,8 @@
     },
     "endpoint": {
       "protocol": "MCP Streamable HTTP",
-      "url": "https://<ENDPOINT_HOST>/mcp",
-      "health": "https://<ENDPOINT_HOST>/health",
+      "url": "https://powderblue-leopard-801168.hostingersite.com/mcp",
+      "health": "https://powderblue-leopard-801168.hostingersite.com/health",
       "auth": "none (free tier)"
     },
     "services": [

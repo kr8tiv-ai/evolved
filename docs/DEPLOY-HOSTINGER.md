@@ -1,90 +1,64 @@
-# Deploying Evolved on a Hostinger VPS
+# Deploying Evolved on Hostinger
 
-Goal: the stateless MCP endpoint live at a public HTTPS URL, isolated from
-everything else on the VPS, surviving reboots, with no secrets anywhere.
+**The endpoint is LIVE:**
 
-**Resulting public URL (this VPS):**
+- `https://powderblue-leopard-801168.hostingersite.com/mcp` — MCP Streamable HTTP (the free A2MCP endpoint)
+- `https://powderblue-leopard-801168.hostingersite.com/health` — service metadata for reviewers
 
-- `https://srv1277677.hstgr.cloud/mcp` — MCP Streamable HTTP (the A2MCP endpoint)
-- `https://srv1277677.hstgr.cloud/health` — service metadata for reviewers
+Deployed on Hostinger managed hosting as a Node.js application on its own
+free subdomain site — fully isolated from every other site on the account,
+TLS handled by the platform, zero secrets.
 
 ## How it is put together
 
 | Concern | Choice | Why |
 |---|---|---|
-| Runtime | Docker Compose project named `evolved` | Fully isolated — cannot touch other sites or projects on the VPS |
-| Build | Straight from the public GitHub repo (`build.context` = repo URL) | No code copied to the server by hand; redeploy = pull latest `main` |
-| TLS / reverse proxy | Caddy 2, automatic HTTPS on the VPS hostname `srv1277677.hstgr.cloud` | Zero-config certificates via Let's Encrypt; hostname ships with the VPS |
-| Process manager | Docker `restart: unless-stopped` on both containers | Survives crashes and VPS reboots; no pm2/systemd needed inside containers |
-| Secrets | None | The free A2MCP tier needs no keys; nothing to leak |
+| Runtime | Hostinger managed hosting, Node.js app on a dedicated free-subdomain site | Platform TLS and process supervision; isolated from all other sites on the account |
+| Entry | `server.cjs` (CommonJS shim) → dynamic-imports the ESM app (`dist/app.js`) | The platform's runner loads the entry with `require()`; the shim binds the port synchronously and surfaces boot errors over `/health` instead of a blank 503 |
+| Port | Listens on 3000 by default | The platform proxies to 3000 and does not inject `PORT` |
+| Node version | 20 (`engines.node >= 20`) | **Hard-won:** identical code 503s on the platform's Node 18 runtime; Node 20 works |
+| Secrets | None | The free A2MCP tier needs no keys |
 
-The compose file lives at [`deploy/hostinger/docker-compose.yml`](../deploy/hostinger/docker-compose.yml).
+## Redeploying (after code changes)
 
-## Option A — one command from any machine with the Hostinger API (recommended)
+One command from the repo root (zip source only — no `node_modules`, no `dist`):
 
-Requires a Hostinger API token in the `HOSTINGER_API_TOKEN` environment
-variable (create one in hPanel → Account → API). Never hardcode or commit it.
-
-```bash
-curl -X POST "https://developers.hostinger.com/api/vps/v1/virtual-machines/1277677/docker" \
-  -H "Authorization: Bearer $HOSTINGER_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "project_name": "evolved",
-    "content": "https://raw.githubusercontent.com/kr8tiv-ai/evolved/main/deploy/hostinger/docker-compose.yml"
-  }'
+```powershell
+Compress-Archive -Force -Path package.json, package-lock.json, tsconfig.json, server.cjs, src -DestinationPath evolved-src.zip
 ```
 
-Hostinger pulls the compose file, builds the image from GitHub, and starts
-both containers. First build takes 2–4 minutes; TLS certificate issuance
-adds ~30 seconds on first request.
-
-The same call **redeploys** a new version (same `project_name` replaces the
-project; Caddy's certificate volume persists).
-
-## Option B — SSH, if you prefer hands-on
+Then upload via the Hostinger API's JS-deployment endpoint (or hPanel →
+Websites → the subdomain site → Node.js deploy). The platform runs
+`npm ci`, `npm run build`, and restarts the app. Verify with:
 
 ```bash
-ssh root@srv1277677.hstgr.cloud
-mkdir -p /opt/evolved && cd /opt/evolved
-curl -fsSLO https://raw.githubusercontent.com/kr8tiv-ai/evolved/main/deploy/hostinger/docker-compose.yml
-docker compose up -d --build
+curl https://powderblue-leopard-801168.hostingersite.com/health
 ```
 
-## Verify
+And a real MCP handshake:
 
 ```bash
-curl https://srv1277677.hstgr.cloud/health
-# {"ok":true,"service":"evolved","version":"1.0.0","protocol":"MCP Streamable HTTP", ...}
-```
-
-Then a real MCP handshake:
-
-```bash
-curl -s -X POST https://srv1277677.hstgr.cloud/mcp \
+curl -s -X POST https://powderblue-leopard-801168.hostingersite.com/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}'
 ```
 
-## Operations
+## Custom domain later
 
-- **Logs:** hPanel → VPS → Docker Manager → `evolved` → logs, or `docker compose logs -f` over SSH, or the API `GET .../docker/evolved/logs`.
-- **Update to latest main:** re-run the Option A command (or `docker compose up -d --build` over SSH).
-- **Stop without removing:** hPanel Docker Manager, or the API project stop endpoint. The project is self-contained — removing it removes every trace.
-- **Custom domain later:** point an A record (e.g. `evolved.yourdomain.com`) at `72.61.7.126`, then set `EVOLVED_PUBLIC_HOST=evolved.yourdomain.com` in the project environment and redeploy. Caddy fetches the certificate automatically.
+Point a subdomain (e.g. `evolved.evolveecoblasting.com`) at the hosting
+account in hPanel and attach it to the site; platform TLS follows
+automatically. Update the URL in the OKX listing afterward.
 
-## Hardening (optional, recommended once stable)
+## Alternative: VPS with Docker + Caddy
 
-The VPS currently has no Hostinger firewall attached. When convenient,
-create one allowing inbound `22` (SSH), `80`, and `443` only, and attach it
-to the VPS — in hPanel or via the firewall API. Left as a manual step so it
-never conflicts with other services you run on this machine.
+`deploy/hostinger/docker-compose.yml` contains a self-contained VPS
+deployment (app built from this GitHub repo + Caddy with automatic HTTPS on
+the VPS hostname, Docker restart policies as the process manager). Use it on
+a VPS whose ports 80/443 are free.
 
-## Non-goals / guardrails honored
-
-- Nothing outside the `evolved` Docker project is created, modified, or
-  removed; existing sites, files, and projects on the VPS are untouched.
-- No secrets in the repo, the compose file, or the container environment.
-- The endpoint is stateless per request; the demo data spine lives inside
-  the container and reseeds itself — `demo_reset` restores it any time.
+Note for this account: the existing VPS (`srv1277677.hstgr.cloud`) is a
+hardened private machine — sshd occupies port 443, a firewall drops public
+inbound, and private services run on localhost. It is not a suitable public
+web host without deliberate owner decisions, which is why the managed-hosting
+path above is the live one.

@@ -90,6 +90,8 @@ npm run demo    # the whole business loop in your terminal
 }
 ```
 
+**Live endpoint:** `https://powderblue-leopard-801168.hostingersite.com/mcp` (Streamable HTTP; `/health` for metadata).
+
 **HTTP mode (the A2MCP endpoint):**
 
 ```bash
