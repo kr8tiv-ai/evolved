@@ -7,14 +7,16 @@
  * no payment challenge. A paid tier can later wrap this endpoint with an
  * x402 handler (OKX Payment SDK) without touching the tool layer.
  *
- *   npm run start:http     # default port 8788, override with PORT
+ *   npm run start:http     # default port 3000, override with PORT
  */
 
 import { createServer as createHttpServer } from "node:http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createServer, SERVER_INFO } from "./server.js";
 
-const PORT = Number(process.env.PORT ?? 8788);
+// Default 3000: managed hosts (Hostinger et al.) proxy to 3000 without
+// setting PORT. Override with PORT for local dev or the VPS compose file.
+const PORT = Number(process.env.PORT ?? 3000);
 
 const httpServer = createHttpServer(async (req, res) => {
   const url = new URL(req.url ?? "/", `http://localhost:${PORT}`);

@@ -94,7 +94,7 @@ npm run demo    # the whole business loop in your terminal
 
 ```bash
 npm run start:http
-# → MCP Streamable HTTP on http://localhost:8788/mcp
+# → MCP Streamable HTTP on http://localhost:3000/mcp (set PORT to change)
 # → GET /health for service metadata
 ```
 
