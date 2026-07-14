@@ -1,0 +1,43 @@
+<svg width="1280" height="340" viewBox="0 0 1280 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Evolved — business management in a box">
+  <defs>
+    <linearGradient id="aurora" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#39ff14"/>
+      <stop offset="0.55" stop-color="#4ade80"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="glowband" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#39ff14" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#4ade80" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.1" r="0.9">
+      <stop offset="0" stop-color="#4ade80" stop-opacity="0.16"/>
+      <stop offset="0.6" stop-color="#0a0a0a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur18"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+
+  <rect width="1280" height="340" fill="#0a0a0a"/>
+  <rect width="1280" height="340" fill="url(#halo)"/>
+
+  <!-- aurora ribbons -->
+  <path d="M-40,95 C240,25 520,135 780,75 C1000,25 1180,65 1320,35" stroke="url(#aurora)" stroke-width="34" fill="none" opacity="0.20" filter="url(#blur18)"/>
+  <path d="M-40,140 C300,70 620,180 900,110 C1080,70 1220,110 1320,85" stroke="url(#aurora)" stroke-width="16" fill="none" opacity="0.30" filter="url(#blur18)"/>
+  <path d="M-40,60 C200,110 480,20 760,80 C980,125 1160,45 1320,95" stroke="#22d3ee" stroke-width="8" fill="none" opacity="0.18" filter="url(#blur18)"/>
+
+  <!-- faint grid floor -->
+  <g stroke="#1f2937" stroke-width="1" opacity="0.5">
+    <line x1="0" y1="268" x2="1280" y2="268"/>
+    <line x1="0" y1="292" x2="1280" y2="292"/>
+    <line x1="0" y1="316" x2="1280" y2="316"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="640" y="178" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="104" font-weight="800" letter-spacing="26" fill="url(#aurora)">EVOLVED</text>
+  <rect x="428" y="200" width="424" height="5" rx="2.5" fill="#39ff14"/>
+
+  <text x="640" y="242" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="10" fill="#d1d5db">BUSINESS MANAGEMENT IN A BOX</text>
+  <text x="640" y="280" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="14" letter-spacing="6" fill="#4ade80">MCP AGENTIC SERVICE PROVIDER &#183; BORN ON A REAL JOBSITE &#183; OKX.AI GENESIS</text>
+
+  <rect x="0" y="332" width="1280" height="8" fill="url(#glowband)"/>
+</svg>

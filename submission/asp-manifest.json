@@ -1,0 +1,39 @@
+{
+  "$comment": "Evolved — ASP registration answer sheet for OKX.AI (A2MCP). OKX's registration runs conversationally through the Onchain OS skill; these are the answers to paste when prompted. Replace <ENDPOINT_HOST> after deploying.",
+  "asp": {
+    "name": "Evolved",
+    "tagline": "Business management in a box — a real company's operations brain as an agentic service",
+    "description": "Evolved is the complete operating system of a working industrial-services company (Evolve Eco Blasting, Edmonton, Canada), packaged as an MCP service. Agents use it to run a field-services business end to end: a learning quote engine with live profitability checks, branded quote and invoice documents, a tiered-OCR receipt-to-bookkeeping pipeline with duplicate guards and job matching, lead and dispatch tracking with weather-gated scheduling, field-level hazard assessments with per-hazard mitigations and crew sign-off, an auto-raised action-item system that catches dropped balls, and a morning digest that briefs the owner in one call. 27 tools, five domains, two feedback loops - pricing that learns from job outcomes, and books that audit themselves daily.",
+    "serviceType": "A2MCP",
+    "category": "Software Utility (also fits: Finance Copilot — quoting, bookkeeping, P&L)",
+    "pricing": {
+      "model": "free",
+      "note": "Free A2MCP endpoint — results returned directly, no payment challenge. x402 paid tier planned via OKX Payment SDK."
+    },
+    "endpoint": {
+      "protocol": "MCP Streamable HTTP",
+      "url": "https://<ENDPOINT_HOST>/mcp",
+      "health": "https://<ENDPOINT_HOST>/health",
+      "auth": "none (free tier)"
+    },
+    "services": [
+      { "name": "Quoting intelligence", "detail": "Learned $/sqft rates by blast depth and surface, access factors, mobilization, 5% GST, 25% deposit, break-even guard, profitability verdicts, branded quote documents, pricing learning loop taught by real job outcomes." },
+      { "name": "Receipts to books", "detail": "Tiered OCR (fast model, automatic escalation when arithmetic does not reconcile), categorization, duplicate guard, job matching, reclaimable GST tracking, expense reporting." },
+      { "name": "Pipeline & dispatch", "detail": "Lead funnel with enforced next actions, quote lifecycle that auto-opens jobs, dispatch board with blast-day weather verdicts, job close-out with actuals and margin verdicts." },
+      { "name": "Field safety (FLHA)", "detail": "Hazard assessments drafted from job scope with per-hazard mitigations, standard PPE, muster points, end-of-day crew sign-off, permanent safety record." },
+      { "name": "Autonomous operations", "detail": "Morning digest (one-thing-not-to-drop, money pulse, weather, quotes out), five ball-drop auto-raise rules, business snapshot, P&L and scorecard reporting." }
+    ],
+    "toolCount": 27,
+    "demo": {
+      "repository": "https://github.com/kr8tiv-ai/evolved",
+      "scripted": "npm run demo (full loop: lead → quote → job → safety → books → digest)",
+      "dataset": "fully synthetic — no real financials, customers, or credentials"
+    },
+    "provider": {
+      "name": "Matt Haynes",
+      "organization": "KR8TIV AI / Aurora Ventures",
+      "github": "https://github.com/Matt-Aurora-Ventures",
+      "origin": "Built from the live operations system of Evolve Eco Blasting (evolveecoblasting.com)"
+    }
+  }
+}

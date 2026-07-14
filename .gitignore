@@ -1,0 +1,29 @@
+# dependencies / build
+node_modules/
+dist/
+
+# runtime state (regenerated from seed on demand)
+.data/
+out/
+
+# environment & secrets — NEVER commit
+.env
+.env.*
+*.pem
+*.key
+*.p12
+credentials*.json
+token*.json
+service-account*.json
+clasprc*
+.clasp.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editor
+.vscode/
+.idea/
+*.log

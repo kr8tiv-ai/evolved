@@ -1,0 +1,49 @@
+{
+  "name": "evolved-asp",
+  "version": "1.0.0",
+  "description": "Evolved — business-management-in-a-box MCP agent. The complete operations brain of a real industrial services company, packaged as an Agentic Service Provider.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Matt Haynes (Aurora Ventures / KR8TIV AI)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kr8tiv-ai/evolved.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "agent",
+    "asp",
+    "okx-ai",
+    "business-operations",
+    "quoting",
+    "bookkeeping",
+    "field-services"
+  ],
+  "bin": {
+    "evolved": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:http": "node dist/http.js",
+    "dev": "tsx src/index.ts",
+    "dev:http": "tsx src/http.ts",
+    "reset": "node dist/reset.js",
+    "demo": "node dist/demo.js",
+    "test": "node --test dist/test/engines.test.js dist/test/flow.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
