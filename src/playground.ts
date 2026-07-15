@@ -250,7 +250,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <div class="card wide">
   <div class="eyebrow">pricing that learns</div>
   <h2>🧠 The rate engine — base market floor vs learned rate</h2>
-  <p class="hint">Won jobs at healthy margins teach the engine. Watch what outcome history has already done to driveway pricing.</p>
+  <p class="hint">Won jobs at healthy margins teach the engine — and it never stops. Every logged outcome lifts a <b>confidence</b> score, tightens the suggested quote range, and benchmarks the rate against the going <b>market</b> band. Watch what outcome history has already done to driveway pricing.</p>
   <div><button onclick="rates()">Show the learned rates</button></div>
   <div class="bars" id="rate-bars"></div>
 </div>
@@ -274,7 +274,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div>
     <div class="eyebrow">the full 67-tool surface</div>
     <h2>Or run it locally</h2>
-    <p class="hint">Zero credentials; 34 tests including a live testnet probe:</p>
+    <p class="hint">Zero credentials; 36 tests including a live testnet probe:</p>
 <pre class="copy mono">git clone https://github.com/kr8tiv-ai/evolved.git
 cd evolved && npm install && npm run build
 npm test && npm run demo</pre>
@@ -525,12 +525,19 @@ async function rates(){
     r.rates.forEach(function(x){
       var bw = Math.round((x.baseRate / maxRate) * 100), ew = Math.round((x.effectiveRate / maxRate) * 100);
       var learned = x.effectiveRate > x.baseRate;
+      var conf = Math.round((x.confidence || 0) * 100);
+      var mkt = x.market ? x.market.position : "";
+      var typ = x.market ? x.market.typical.toFixed(2) : "—";
+      var rng = x.suggestedRange ? ("$" + x.suggestedRange[0].toFixed(2) + "–$" + x.suggestedRange[1].toFixed(2)) : "—";
+      var mcol = mkt === "above-market" ? "#fbbf24" : mkt === "below-market" ? "#22d3ee" : "#4ade80";
       h += '<div class="bar"><div class="lbl"><span>' + esc(x.label) + '</span><span><b>$' + x.effectiveRate.toFixed(2) + '</b> /sqft' +
            (learned ? ' <span style="color:#39ff14">▲ learned (base $' + x.baseRate.toFixed(2) + ')</span>' : " (base)") + "</span></div>" +
            '<div class="track"><i style="width:' + bw + '%"></i></div>' +
-           '<div class="track" style="margin-top:3px"><i class="learned" data-w="' + ew + '"></i></div></div>';
+           '<div class="track" style="margin-top:3px"><i class="learned" data-w="' + ew + '"></i></div>' +
+           '<div class="stepline" style="margin-top:4px">confidence ' + conf + '% · <span style="color:' + mcol + '">' + esc(mkt || "—") + '</span> vs market typ $' + typ + ' · suggested ' + rng + '</div>' +
+           '</div>';
     });
-    h += '<div class="stepline" style="margin-top:8px">driveway filter · silver = market-floor base · green = learned from won-job outcomes · never learns below base</div>';
+    h += '<div class="stepline" style="margin-top:8px">driveway filter · silver = market floor · green = learned from won jobs (never below base) · confidence climbs with every logged job · each rate benchmarked to its market band · see pricing_learning_status &amp; market_benchmark</div>';
     el.innerHTML = h;
     await sleep(60);
     var greens = el.querySelectorAll("i.learned");
@@ -594,7 +601,7 @@ async function judgeMode(){
     jmProgress(100, "CLOSE · NOTHING DROPPED");
     var dg = await call("morning_digest", {});
     show(out, "🌅 " + dg.oneThingNotToDrop, "tomorrow's digest — the one thing not to drop");
-    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, and an agent service that itself gets paid on-chain. 65 tools. Open source. Try any card above yourself.");
+    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, and an agent service that itself gets paid on-chain. 67 tools. Open source. Try any card above yourself.");
     ticker();
   } catch(e){ show(out, "✖ " + e.message + " — cards above still work individually."); }
   jmRunning = false; $("jm-btn").disabled = false;

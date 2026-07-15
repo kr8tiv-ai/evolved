@@ -1,1 +1,1 @@
-Move github-actions-ci.yml to .github/workflows/ci.yml and push (needs the workflow OAuth scope: run `gh auth refresh -s workflow` once, or push from any git client). It builds and runs all 35 tests on every push - the badge-worthy proof.
+Move github-actions-ci.yml to .github/workflows/ci.yml and push (needs the workflow OAuth scope: run `gh auth refresh -s workflow` once, or push from any git client). It builds and runs all 36 tests on every push - the badge-worthy proof.

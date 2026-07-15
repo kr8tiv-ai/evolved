@@ -44,6 +44,7 @@ function rateLimited(req: IncomingMessage): boolean {
 const DEMO_TOOLS = new Set([
   "business_snapshot", "morning_digest", "weather_check", "xlayer_status",
   "x402_info", "pricing_rates", "quote_price", "quote_from_photo",
+  "market_benchmark", "pricing_learning_status",
   "pipeline_view", "flha_open", "flha_signoff", "safety_log",
   "lifecycle_start", "lifecycle_advance", "lifecycle_status",
   "invoice_payment_request", "invoice_payment_check",

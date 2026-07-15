@@ -20,7 +20,7 @@ One agent runs the whole engagement, humans approve only the money:
 ◆ Voice commands from the crew, a CFO simulator, and a quote engine that learns from won jobs
 ◆ Trade packs ship today: pressure washing, line painting, mobile detailing — yours is one file away
 
-65 tools. 31 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
+67 tools. 36 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 Try it in your browser, zero install:
 powderblue-leopard-801168.hostingersite.com
