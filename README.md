@@ -137,6 +137,27 @@ Everything the live field app does, as first-class tools: **inventory control** 
 
 Parameter-level reference, generated from the live server so it cannot drift: [docs/TOOLS.md](docs/TOOLS.md).
 
+## The scaffolding
+
+Three layers, dependencies pointing one way: tools validate and delegate, engines compute, the store persists. Swap the trade pack and every layer follows.
+
+```text
+src/
+├── index.ts            stdio entry — plug into Claude Desktop / any MCP client
+├── http.ts · app.ts    Streamable HTTP: /mcp (free) · /mcp-paid (x402) · /health · /stats
+├── server.ts           assembles all 67 tools + 3 MCP resources + 3 prompts
+├── playground.ts       the zero-install browser playground (Judge Mode lives here)
+├── tools/              13 domains — thin, zod-validated handlers (quoting, money, pipeline,
+│                       safety, inventory, contacts, sheet, accounting, payments, lifecycle,
+│                       vision, voice, cfo, ops, opsplus)
+├── engine/             pure business logic — pricing + learning loop, OCR, safety/FLHA,
+│                       weather gating, digest, actions (ball-drop rules), CFO, NLU (voice),
+│                       vision, x402/X Layer payments, brand rendering
+├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
+├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
+└── test/               36 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+```
+
 ## Wire it into your agent
 
 ```json
