@@ -126,14 +126,17 @@ export function registerFieldTools(server: McpServer): void {
           if (!entry) return { error: `${crewName} has no open entry on ${jobId} — nothing to close.` };
           entry.outAt = nowIso();
           const hours = Math.max(0.1, round2((new Date(entry.outAt).getTime() - new Date(entry.inAt).getTime()) / 3_600_000));
-          const rate = db.crew.find((m) => m.name === crewName)?.hourlyRate ?? 45;
+          const member = db.crew.find((m) => m.name.toLowerCase() === crewName.toLowerCase());
+          const rate = member?.hourlyRate ?? 45;
           entry.hours = hours;
           entry.wage = round2(hours * rate);
           if (note) entry.note = note;
+          const rateBasis = member ? `${member.name} roster rate $${rate}/h` : `default $45/h — "${crewName}" is not on the crew roster (crew_add to fix)`;
           logActivity(db, "field", `${crewName} clocked out on ${jobId}: ${hours}h / $${entry.wage}.`);
           const jobHours = db.timeEntries.filter((t) => t.jobId === jobId && t.hours);
           return {
             clockedOut: entry,
+            rateBasis,
             jobLaborSoFar: {
               entries: jobHours.length,
               hours: round2(jobHours.reduce((s, t) => s + (t.hours ?? 0), 0)),
@@ -172,9 +175,18 @@ export function registerFieldTools(server: McpServer): void {
           const t = today();
           let flha = db.flhas.find((f) => f.jobId === jobId && f.date === t && !f.signoff);
           if (flha) {
-            // Field capture upgrades the auto-draft: crew hazards merge in and win.
-            const known = new Set(flha.hazards.map((h) => h.hazard.toLowerCase()));
-            for (const h of hazards) if (!known.has(h.hazard.toLowerCase())) flha.hazards.push(h);
+            // Field capture upgrades the auto-draft: on a name collision the
+            // crew's on-site version REPLACES the draft entry — the people in
+            // front of the hazard outrank the desk.
+            const seen = new Set<string>();
+            for (const h of hazards) {
+              const key = h.hazard.toLowerCase();
+              if (seen.has(key)) continue; // dedupe within one submission
+              seen.add(key);
+              const existing = flha.hazards.findIndex((x) => x.hazard.toLowerCase() === key);
+              if (existing >= 0) flha.hazards[existing] = h;
+              else flha.hazards.push(h);
+            }
             flha.crew = crew;
             flha.siteConditions = siteConditions;
             if (musterPoint) flha.musterPoint = musterPoint;

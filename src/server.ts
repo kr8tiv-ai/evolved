@@ -36,7 +36,7 @@ import { registerGrowthTools } from "./tools/growth.js";
 
 export const SERVER_INFO = {
   name: "evolved",
-  version: "2.0.0",
+  version: "3.0.0",
   title: "Evolved — business management in a box",
 };
 

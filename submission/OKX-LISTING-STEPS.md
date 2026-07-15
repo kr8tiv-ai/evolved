@@ -51,12 +51,16 @@ prompted.
 - **Description:** Business management in a box — any service business, spun
   up in one call; proven on a real Alberta company that runs on it and gets
   paid on-chain. 83 MCP tools across 16 domains: quoting with a learning
-  rate engine, receipts→books, FLHA safety, dispatch, invoicing, on-chain
-  settlement in test OKB on X Layer, an autonomous lifecycle with human money
-  gates, photo-to-quote, voice, an agentic CFO, and trade packs.
+  rate engine, receipts→books, FLHA safety with JHAs authored on-site by the
+  crew, dispatch, invoicing, on-chain settlement in test OKB on X Layer, an
+  autonomous lifecycle with human money gates, photo-to-quote, voice, an
+  agentic CFO, a live 20-tab Google Sheets ops workbook (or CSV with zero
+  credentials), field capture (photos, notes, crew time clock), reviews and a
+  reputation ledger, and trade packs.
 - **Repo:** `https://github.com/kr8tiv-ai/evolved`
 - **Tech:** TypeScript, MCP (tools + resources + prompts), Streamable HTTP,
-  x402, X Layer testnet (EIP-681, read-only RPC verification, replay-protected)
+  x402, X Layer testnet (EIP-681, read-only RPC verification, replay-protected),
+  Google Sheets API (service account, no SDK — RS256 JWT via node:crypto)
 
 ## What only you can do
 

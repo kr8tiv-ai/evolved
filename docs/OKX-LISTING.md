@@ -13,7 +13,7 @@ or an x402-based paid endpoint. Evolved ships **both**: the free endpoint at
 |---|---|---|
 | Shape | Standardized MCP/API service | Negotiated per-task work |
 | Payment | Pay-per-call or **free — results returned directly** | Escrow on X Layer, released on user approval |
-| Fit for Evolved | Exact match — 67 deterministic tools, instant results | Wrong shape for a tool service |
+| Fit for Evolved | Exact match — 83 deterministic tools, instant results | Wrong shape for a tool service |
 
 ## Listing flow (owner steps)
 

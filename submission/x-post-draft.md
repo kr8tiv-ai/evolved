@@ -5,7 +5,7 @@
 >
 > **Media plan (X allows one video OR up to four images per post, not both):**
 > - **Main post** → attach the demo video `submission/evolved-demo.mp4`
->   (86s — under the 140s free-tier video cap; funk soundtrack; also streaming
+>   (90s — under the 140s free-tier video cap; funk soundtrack; also streaming
 >   at https://powderblue-leopard-801168.hostingersite.com/demo.mp4).
 > - **Reply 1** → attach the branded card `assets/x-post-card.png`
 >   (1600×900, also staged at `Desktop\HACKQUEST-IMAGES\x-post-card.png`).
@@ -71,5 +71,5 @@ Born on a jobsite, not in a pitch deck. The production system runs the company t
 
 Character audit (X-weighted, URLs = 23 via t.co): main ≈ 1,000 (Premium
 long-form required), fallback ≤ 280, Reply 1 ≤ 280, Reply 2 ≤ 280. Video is
-86s — under the 140s cap on every tier. Upload the video NATIVELY (not as a
+90s — under the 140s cap on every tier. Upload the video NATIVELY (not as a
 link) — the eligibility requirement is "video attached to main post."

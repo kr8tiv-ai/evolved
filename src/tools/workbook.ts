@@ -23,9 +23,10 @@ function ok(data: unknown) {
 
 const NO_CREDS_GUIDE =
   "No Google credentials configured. Set EVOLVED_GOOGLE_SA to a service-account JSON " +
-  "(inline or a file path) with Sheets scope, share nothing — the account creates its own " +
-  "spreadsheet and returns the URL. Falling back to the CSV workbook export, which contains " +
-  "the identical tabs.";
+  "(inline or a file path) with Sheets + Drive scope. workbook_create then builds the " +
+  "spreadsheet and shares it (link-shared by default, or pass shareWith for a specific " +
+  "account); or share your own sheet with the service account's client_email and use " +
+  "workbook_link. Falling back to the CSV workbook export, which contains the identical tabs.";
 
 export function registerWorkbookTools(server: McpServer): void {
   server.registerTool(
@@ -60,11 +61,14 @@ export function registerWorkbookTools(server: McpServer): void {
         withDb((db) => {
           const dir = join(DATA_DIR, "workbook");
           const result = exportCsvWorkbook(db, dir);
-          db.workbook = {
-            provider: "csv", dir: result.dir,
-            tabs: result.files.map((f) => f.replace(/\.csv$/, "")),
-            lastSyncAt: nowIso(),
-          };
+          // A CSV export must never clobber a live Google Sheets link.
+          if (db.workbook?.provider !== "google-sheets") {
+            db.workbook = {
+              provider: "csv", dir: result.dir,
+              tabs: result.files.map((f) => f.replace(/\.csv$/, "")),
+              lastSyncAt: nowIso(),
+            };
+          }
           logActivity(db, "workbook", `CSV workbook exported — ${result.files.length} tabs.`);
           return { ...result, summary: workbookSummary(db) };
         }),
@@ -77,10 +81,13 @@ export function registerWorkbookTools(server: McpServer): void {
     {
       title: "Create a live Google Sheets workbook",
       description:
-        "Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). Without credentials it explains the setup and falls back to the CSV export.",
-      inputSchema: { title: z.string().max(120).optional().describe("Spreadsheet title; defaults to '<Company> — Ops Workbook'") },
+        "Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). The sheet is shared automatically (link-shared writer by default; pass shareWith to grant a specific Google account instead). Without credentials it explains the setup and falls back to the CSV export.",
+      inputSchema: {
+        title: z.string().max(120).optional().describe("Spreadsheet title; defaults to '<Company> — Ops Workbook'"),
+        shareWith: z.string().email().optional().describe("Share with this Google account (writer) instead of anyone-with-the-link"),
+      },
     },
-    async ({ title }) => {
+    async ({ title, shareWith }) => {
       const creds = googleCreds();
       if (!creds) {
         const fallback = withDb((db) => {
@@ -93,14 +100,14 @@ export function registerWorkbookTools(server: McpServer): void {
       }
       const db = loadDb();
       const tabs = workbookTabs(db);
-      const created = await createGoogleWorkbook(creds, title ?? `${db.meta.company} — Ops Workbook`, tabs);
+      const created = await createGoogleWorkbook(creds, title ?? `${db.meta.company} — Ops Workbook`, tabs, shareWith);
       return ok(
         withDb((d) => {
           d.workbook = {
             provider: "google-sheets", spreadsheetId: created.spreadsheetId, url: created.url,
             tabs: tabs.map((t) => t.title), lastSyncAt: nowIso(),
           };
-          logActivity(d, "workbook", `Google Sheets workbook created: ${created.url}`);
+          logActivity(d, "workbook", `Google Sheets workbook created: ${created.url} (${created.sharing})`);
           return { created: true, ...created, tabs: tabs.length };
         }),
       );

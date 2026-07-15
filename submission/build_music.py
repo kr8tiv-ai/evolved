@@ -11,7 +11,7 @@ BPM = 78.0
 BEAT = 60.0 / BPM
 BAR = BEAT * 4.0
 STEP = BEAT / 4.0            # 16th note
-DUR = 86.0                   # match video length exactly
+DUR = 90.0                   # match video length exactly
 N = int(SR * DUR)
 rng = np.random.default_rng(7)
 

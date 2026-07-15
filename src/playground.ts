@@ -17,81 +17,129 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <title>Evolved — live playground</title>
 <meta name="description" content="A real company's operations brain as an autonomous MCP agent — run it live: voice, photo-to-quote, the full lifecycle with human money gates, and x402 on-chain payments on X Layer testnet.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root { --void:#0a0a0a; --deep:#050505; --panel:#101110; --panel2:#0d0f0e; --line:#1f2937;
-          --silver:#f3f4f6; --dim:#9ca3af; --aurora:#4ade80; --lime:#39ff14; --ice:#22d3ee; }
+  :root { --void:#080a08; --deep:#040504; --panel:#0e100e; --panel2:#0b0d0b; --line:#1c2620;
+          --silver:#f3f4f6; --dim:#9aa39a; --dim2:#6b746b; --aurora:#4ade80; --lime:#39ff14; --ice:#22d3ee; }
   * { box-sizing:border-box; margin:0; }
   html { scroll-behavior:smooth; }
-  body { background:var(--void); color:var(--silver);
-         font:15px/1.55 "Segoe UI",system-ui,sans-serif; min-height:100vh; overflow-x:hidden; }
+  body { background:#000; color:var(--silver); font-family:"Archivo",system-ui,sans-serif;
+         font-size:15px; line-height:1.55; min-height:100vh; overflow-x:hidden;
+         -webkit-font-smoothing:antialiased; }
   .mono { font-family:"JetBrains Mono",Consolas,monospace; }
+  a { color:var(--aurora); }
 
-  /* living aurora backdrop */
-  .sky { position:fixed; inset:0; z-index:-2; background:linear-gradient(180deg,#0a0a0a 0%,#050505 100%); }
-  .sky i { position:absolute; border-radius:50%; filter:blur(90px); opacity:.16; }
-  .sky i:nth-child(1){ width:900px;height:340px; background:#4ade80; top:-120px; left:-10%;
-                       animation:drift1 26s ease-in-out infinite alternate; }
-  .sky i:nth-child(2){ width:700px;height:280px; background:#22d3ee; top:-80px; right:-15%;
-                       animation:drift2 32s ease-in-out infinite alternate; }
-  .sky i:nth-child(3){ width:500px;height:220px; background:#39ff14; top:140px; left:35%;
-                       opacity:.07; animation:drift1 40s ease-in-out infinite alternate-reverse; }
-  @keyframes drift1 { from{ transform:translateX(0) } to{ transform:translateX(140px) } }
-  @keyframes drift2 { from{ transform:translateX(0) translateY(0) } to{ transform:translateX(-120px) translateY(40px) } }
-  .grain { position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.05;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E"); }
+  /* cinematic backdrop: animated aurora canvas + grain + vignette */
+  #aurora { position:fixed; inset:0; z-index:-3; width:100%; height:100%; display:block; background:#000; }
+  .grain { position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.045; mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E"); }
+  .vign { position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(0,0,0,.55) 100%); }
 
-  header { max-width:1120px; margin:0 auto; padding:44px 20px 6px; text-align:center; }
-  header img.logo { height:104px; filter:drop-shadow(0 0 26px rgba(74,222,128,.4)); }
-  h1 { font-size:46px; letter-spacing:.16em; margin-top:10px; font-weight:800; position:relative;
-       background:linear-gradient(180deg,#f8fafc 0%,#cbd5e1 38%,#64748b 50%,#e2e8f0 60%,#94a3b8 100%);
-       -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .rule { width:190px; height:4px; background:var(--lime); margin:10px auto; border-radius:2px;
-          box-shadow:0 0 18px rgba(57,255,20,.5); }
-  .sub { color:var(--silver); letter-spacing:.26em; font-size:13px; }
-  .tag { color:var(--aurora); letter-spacing:.13em; font-size:12px; margin-top:8px; }
-  .chips { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0 4px; }
-  .chip { border:1px solid var(--line); border-radius:999px; padding:5px 14px; font-size:12px;
-          color:var(--dim); background:rgba(13,15,14,.75); backdrop-filter:blur(4px); }
-  .chip b { color:var(--aurora); font-weight:600; }
+  /* top nav */
+  nav { position:fixed; top:0; left:0; right:0; z-index:40; display:flex; align-items:center; justify-content:space-between;
+        padding:16px 26px; backdrop-filter:blur(8px); background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,0));
+        transition:background .3s; }
+  nav.solid { background:rgba(5,6,5,.9); border-bottom:1px solid var(--line); }
+  nav .brand { display:flex; align-items:center; gap:11px; }
+  nav .brand img { height:30px; filter:drop-shadow(0 0 12px rgba(74,222,128,.5)); }
+  nav .brand b { font-weight:800; letter-spacing:.22em; font-size:15px; }
+  nav .nlinks { display:flex; gap:26px; align-items:center; }
+  nav .nlinks a { color:var(--dim); text-decoration:none; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; transition:color .2s; }
+  nav .nlinks a:hover { color:var(--silver); }
+  nav .cta { background:var(--lime); color:#000; padding:9px 18px; border-radius:999px; font-weight:800;
+             font-size:12px; letter-spacing:.1em; text-transform:uppercase; box-shadow:0 0 22px rgba(57,255,20,.35); }
+  @media (max-width:820px){ nav .nlinks a:not(.cta){ display:none } nav{padding:14px 18px} }
+
+  /* hero */
+  .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+          max-width:1180px; margin:0 auto; padding:120px 26px 90px; }
+  .hero .eyebrow-h { display:flex; align-items:center; gap:14px; color:var(--aurora);
+                     font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.34em;
+                     text-transform:uppercase; margin-bottom:22px; }
+  .hero .eyebrow-h::before { content:""; width:46px; height:2px; background:var(--aurora); box-shadow:0 0 10px var(--aurora); }
+  .htitle { font-weight:900; font-size:clamp(46px, 8.5vw, 116px); line-height:.94; letter-spacing:-.01em;
+            text-transform:uppercase; color:#fbfdfb; margin:0; }
+  .htitle .glow { color:var(--lime); text-shadow:0 0 34px rgba(57,255,20,.75), 0 0 8px rgba(57,255,20,.6); }
+  .hlead { color:#c7cdc7; font-size:clamp(16px,2vw,21px); line-height:1.5; max-width:660px; margin:28px 0 0; }
+  .hcta { display:flex; gap:14px; flex-wrap:wrap; margin-top:36px; }
+  .btn-pill { display:inline-flex; align-items:center; gap:10px; background:var(--lime); color:#000;
+              font-family:"Archivo"; font-weight:800; font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+              border:0; border-radius:999px; padding:15px 30px; cursor:pointer; text-decoration:none;
+              box-shadow:0 0 30px rgba(57,255,20,.4); transition:transform .12s, box-shadow .2s, filter .2s; }
+  .btn-pill:hover { filter:brightness(1.08); box-shadow:0 0 44px rgba(57,255,20,.6); transform:translateY(-2px); }
+  .btn-pill.outline { background:transparent; color:var(--silver); border:1.5px solid rgba(154,163,154,.5); box-shadow:none; }
+  .btn-pill.outline:hover { border-color:var(--aurora); color:#fff; box-shadow:0 0 24px rgba(74,222,128,.25); }
+  .hstats { display:flex; gap:30px; flex-wrap:wrap; margin-top:52px; }
+  .hstats .s b { display:block; font-weight:900; font-size:30px; color:#fbfdfb; line-height:1; }
+  .hstats .s span { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.16em; color:var(--dim); text-transform:uppercase; }
+  .hstats .s b.lime { color:var(--lime); }
+
+  /* live status chips over hero */
+  .chips { display:flex; gap:9px; flex-wrap:wrap; margin-top:40px; }
+  .chip { border:1px solid var(--line); border-radius:999px; padding:6px 15px; font-size:11.5px;
+          color:var(--dim); background:rgba(8,10,8,.7); backdrop-filter:blur(6px); font-family:"JetBrains Mono",monospace;
+          letter-spacing:.04em; display:inline-flex; gap:6px; align-items:center; }
+  .chip::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--aurora); box-shadow:0 0 8px var(--aurora); }
+  .chip.static::before { display:none; }
+  .chip b { color:var(--aurora); font-weight:700; }
   .chip a { color:var(--aurora); text-decoration:none; }
 
+  /* treeline silhouette at hero base */
+  .treeline { position:absolute; bottom:0; left:0; right:0; width:100%; height:120px; z-index:1; pointer-events:none; opacity:.9; }
+
   /* live business ticker */
-  .tickerwrap { border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-                background:rgba(7,8,8,.85); margin:20px 0 0; overflow:hidden; white-space:nowrap; }
-  .ticker { display:inline-block; padding:9px 0; animation:tick 46s linear infinite;
+  .tickerwrap { position:relative; z-index:2; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+                background:rgba(4,5,4,.9); overflow:hidden; white-space:nowrap; }
+  .ticker { display:inline-block; padding:11px 0; animation:tick 46s linear infinite;
             font-family:"JetBrains Mono",monospace; font-size:12.5px; letter-spacing:.08em; color:var(--dim); }
   .ticker b { color:var(--aurora); font-weight:600; } .ticker i { color:var(--lime); font-style:normal; }
   .ticker span { margin:0 26px; }
   @keyframes tick { from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
 
-  main { max-width:1120px; margin:0 auto; padding:22px 20px 60px; }
+  /* section headers */
+  .section { max-width:1180px; margin:0 auto; padding:64px 26px 0; }
+  .section-head { margin-bottom:26px; }
+  .section-head .kicker { display:flex; align-items:center; gap:12px; color:var(--aurora);
+                          font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; margin-bottom:14px; }
+  .section-head .kicker::before, .section-head .kicker::after { content:""; height:1px; width:34px; background:rgba(74,222,128,.5); }
+  .section-head .kicker::after { flex:0 0 34px; }
+  .section-head h2.sh { font-weight:900; font-size:clamp(28px,4.4vw,50px); line-height:1; text-transform:uppercase; color:#fbfdfb; letter-spacing:-.01em; }
+  .section-head h2.sh .glow { color:var(--lime); text-shadow:0 0 26px rgba(57,255,20,.6); }
+  .section-head p.sp { color:var(--dim); font-size:15px; max-width:680px; margin-top:14px; line-height:1.55; }
+
+  main { max-width:1180px; margin:0 auto; padding:22px 26px 40px; }
   .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
   @media (max-width:1000px){ .grid{grid-template-columns:1fr} }
-  .card { background:linear-gradient(180deg,rgba(16,17,16,.92),rgba(13,15,14,.92));
-          border:1px solid var(--line); border-radius:16px; padding:22px;
+  .card { position:relative; background:linear-gradient(180deg,rgba(14,16,14,.94),rgba(9,11,9,.96));
+          border:1px solid var(--line); border-radius:16px; padding:24px; overflow:hidden;
           transition:border-color .25s, transform .25s, box-shadow .25s; }
-  .card:hover { border-color:rgba(74,222,128,.45); transform:translateY(-2px);
-                box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(74,222,128,.12); }
-  .eyebrow { font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.3em;
-             color:var(--dim); text-transform:uppercase; margin-bottom:6px; }
-  .card h2 { font-size:16px; letter-spacing:.1em; color:var(--aurora); text-transform:uppercase; margin-bottom:6px; }
-  .card p.hint { color:var(--dim); font-size:13px; margin-bottom:12px; }
-  button { font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700; letter-spacing:.05em;
-           background:var(--lime); color:#000; border:0; border-radius:9px; padding:10px 16px;
+  .card::before { content:""; position:absolute; left:0; top:22px; bottom:22px; width:3px; border-radius:3px;
+                  background:linear-gradient(180deg,var(--aurora),var(--lime)); opacity:0; transition:opacity .25s; }
+  .card:hover { border-color:rgba(74,222,128,.45); transform:translateY(-3px);
+                box-shadow:0 16px 48px rgba(0,0,0,.55), 0 0 0 1px rgba(74,222,128,.12); }
+  .card:hover::before { opacity:.9; }
+  .eyebrow { font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.28em;
+             color:var(--aurora); text-transform:uppercase; margin-bottom:8px; }
+  .card h2 { font-size:22px; font-weight:800; letter-spacing:-.01em; color:#fbfdfb; margin-bottom:8px; text-transform:none; }
+  .card h2 .g { color:var(--lime); }
+  .card p.hint { color:var(--dim); font-size:13.5px; margin-bottom:14px; line-height:1.55; }
+  button { font-family:"Archivo"; font-size:13px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+           background:var(--lime); color:#000; border:0; border-radius:999px; padding:11px 22px;
            cursor:pointer; margin:3px 8px 3px 0; transition:filter .15s, transform .06s, box-shadow .2s; }
-  button:hover { filter:brightness(1.12); box-shadow:0 0 22px rgba(57,255,20,.35); }
+  button:hover { filter:brightness(1.1); box-shadow:0 0 24px rgba(57,255,20,.4); }
   button:active { transform:translateY(1px); }
-  button.ghost { background:transparent; color:var(--aurora); border:1px solid rgba(74,222,128,.6); }
+  button.ghost { background:transparent; color:var(--aurora); border:1.5px solid rgba(74,222,128,.55); }
   button.ghost:hover { box-shadow:0 0 16px rgba(74,222,128,.25); background:rgba(74,222,128,.08); }
-  button:disabled { background:#161a18; color:#4b5563; cursor:not-allowed; border:1px solid var(--line); box-shadow:none; }
-  select,input[type=number],input[type=text] { background:#0b0d0c; color:var(--silver); border:1px solid var(--line);
-           border-radius:9px; padding:9px 11px; font-family:"JetBrains Mono",monospace; font-size:13px; margin:3px 6px 3px 0; }
+  button:disabled { background:#12160f; color:#4b5563; cursor:not-allowed; border:1px solid var(--line); box-shadow:none; }
+  select,input[type=number],input[type=text] { background:#070907; color:var(--silver); border:1px solid var(--line);
+           border-radius:10px; padding:10px 12px; font-family:"JetBrains Mono",monospace; font-size:13px; margin:3px 6px 3px 0; }
   input[type=text] { width:100%; }
   input:focus,select:focus { outline:none; border-color:rgba(74,222,128,.6); box-shadow:0 0 0 2px rgba(74,222,128,.12); }
 
-  .out { background:#070808; border:1px solid var(--line); border-radius:12px; margin-top:12px;
-         padding:13px 15px; max-height:360px; overflow:auto; font-family:"JetBrains Mono",monospace;
+  .out { background:#050605; border:1px solid var(--line); border-radius:12px; margin-top:14px;
+         padding:14px 16px; max-height:360px; overflow:auto; font-family:"JetBrains Mono",monospace;
          font-size:12.5px; white-space:pre-wrap; word-break:break-word; color:#cbd5e1; }
   .out:empty { display:none; }
   .out .step { color:var(--silver); font-weight:700; }
@@ -101,14 +149,31 @@ export const PLAYGROUND_HTML = `<!doctype html>
 
   .wide { grid-column:1 / -1; }
 
-  /* judge mode */
-  .judge { border:1px solid rgba(57,255,20,.4); background:
-           linear-gradient(180deg, rgba(57,255,20,.05), rgba(13,15,14,.94)); }
+  /* judge mode — the marquee card */
+  .judge { border:1px solid rgba(57,255,20,.45); background:
+           linear-gradient(180deg, rgba(57,255,20,.07), rgba(9,11,9,.96)); box-shadow:0 0 40px rgba(57,255,20,.08); }
   .judge h2 { color:var(--lime); }
-  .progress { height:6px; background:#111513; border-radius:3px; margin:12px 0 4px; overflow:hidden; }
-  .progress i { display:block; height:100%; width:0%; border-radius:3px;
-                background:linear-gradient(90deg, var(--aurora), var(--lime)); transition:width .6s ease; }
+  .progress { height:7px; background:#0d110d; border-radius:4px; margin:14px 0 5px; overflow:hidden; }
+  .progress i { display:block; height:100%; width:0%; border-radius:4px;
+                background:linear-gradient(90deg, var(--aurora), var(--lime)); box-shadow:0 0 14px rgba(57,255,20,.5); transition:width .6s ease; }
   .stepline { font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--dim); letter-spacing:.12em; min-height:16px; }
+
+  /* trade persona strip */
+  .trades { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  @media (max-width:1000px){ .trades{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .trades{grid-template-columns:1fr} }
+  .trade { position:relative; border:1px solid var(--line); border-radius:16px; padding:22px 20px 20px;
+           background:linear-gradient(180deg,rgba(14,16,14,.9),rgba(8,10,8,.95)); cursor:pointer;
+           transition:border-color .22s, transform .22s, box-shadow .22s; overflow:hidden; }
+  .trade:hover { border-color:rgba(74,222,128,.5); transform:translateY(-4px); box-shadow:0 18px 44px rgba(0,0,0,.5); }
+  .trade .num { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--dim2); letter-spacing:.2em; }
+  .trade .tag2 { position:absolute; top:18px; right:16px; border:1px solid rgba(74,222,128,.6); color:var(--aurora);
+                 border-radius:999px; padding:3px 11px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+  .trade h3 { font-weight:800; font-size:21px; margin:16px 0 8px; color:#fbfdfb; }
+  .trade h3 .g { color:var(--lime); }
+  .trade p { color:var(--dim); font-size:13px; line-height:1.5; }
+  .trade .go { margin-top:14px; color:var(--aurora); font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; display:flex; align-items:center; gap:8px; }
+  .trade .go::before { content:""; width:20px; height:1px; background:var(--aurora); }
 
   /* rendered digest */
   .brief { margin-top:12px; display:none; }
@@ -148,32 +213,65 @@ export const PLAYGROUND_HTML = `<!doctype html>
            padding:26px 16px 40px; text-transform:uppercase; }
   footer a { color:var(--aurora); text-decoration:none; }
 </style></head><body>
-<div class="sky"><i></i><i></i><i></i></div><div class="grain"></div>
+<canvas id="aurora"></canvas><div class="vign"></div><div class="grain"></div>
 
-<header>
-  <img class="logo" src="https://github.com/kr8tiv-ai/evolved/raw/main/assets/evolve-logo.png" alt="Evolve">
-  <h1>EVOLVED</h1>
-  <div class="rule"></div>
-  <div class="sub mono">LIVE PLAYGROUND — A COMPANY-IN-A-BOX FOR ANY SERVICE BUSINESS</div>
-  <div class="tag mono">PROVEN ON A REAL ALBERTA COMPANY · ANY TRADE IN ONE CALL · X LAYER TESTNET · NO INSTALL · DATA AUTO-RESTORES HOURLY</div>
-  <div class="chips mono" id="chips">
-    <span class="chip">service: <b id="c-status">checking…</b></span>
-    <span class="chip">tools: <b id="c-tools">—</b></span>
-    <span class="chip">X Layer testnet: <b id="c-chain">probing…</b></span>
-    <span class="chip">paid API calls: <b id="c-paid">—</b></span>
-    <span class="chip"><a href="https://github.com/kr8tiv-ai/evolved">github.com/kr8tiv-ai/evolved</a></span>
+<nav id="nav">
+  <div class="brand">
+    <img src="https://github.com/kr8tiv-ai/evolved/raw/main/assets/evolve-logo.png" alt="Evolve">
+    <b>EVOLVED</b>
   </div>
-</header>
+  <div class="nlinks">
+    <a href="#run">Run it</a>
+    <a href="#adapt">Make it yours</a>
+    <a href="#onchain">On-chain</a>
+    <a href="https://github.com/kr8tiv-ai/evolved">GitHub</a>
+    <a class="cta" href="#run" onclick="setTimeout(judgeMode,400)">▶ Judge Mode</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow-h">BUSINESS MANAGEMENT IN A BOX · MODEL CONTEXT PROTOCOL</div>
+  <h1 class="htitle">Run the whole<br>business with<br><span class="glow">one agent.</span></h1>
+  <p class="hlead">Evolved is the operating system that lets an AI run a service business end to end — quotes that price themselves, safety, receipts, dispatch, invoicing, and settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>.</p>
+  <div class="hcta">
+    <a class="btn-pill" href="#run" onclick="setTimeout(judgeMode,450)">▶ Watch it run itself</a>
+    <a class="btn-pill outline" href="#adapt">Make it your business</a>
+  </div>
+  <div class="hstats">
+    <div class="s"><b class="lime" id="h-tools">83</b><span>MCP tools · 16 domains</span></div>
+    <div class="s"><b>2</b><span>OKX rails · x402 + X Layer</span></div>
+    <div class="s"><b>2</b><span>human gates · both money</span></div>
+    <div class="s"><b id="h-tests">41</b><span>tests · live testnet probe</span></div>
+  </div>
+  <div class="chips" id="chips">
+    <span class="chip">service <b id="c-status">checking…</b></span>
+    <span class="chip">tools <b id="c-tools">—</b></span>
+    <span class="chip">X Layer testnet <b id="c-chain">probing…</b></span>
+    <span class="chip">paid calls <b id="c-paid">—</b></span>
+    <span class="chip static"><a href="https://github.com/kr8tiv-ai/evolved">github.com/kr8tiv-ai/evolved</a></span>
+  </div>
+  <svg class="treeline" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="#000" d="M0,120 L0,74 L28,62 L40,74 L60,48 L74,66 L96,40 L108,60 L120,66 L150,44 L166,64 L190,52 L210,70 L232,40 L248,62 L268,54 L292,30 L308,58 L330,64 L356,46 L372,66 L398,52 L420,72 L444,42 L462,64 L486,56 L510,34 L528,60 L552,66 L580,48 L598,68 L622,54 L648,36 L666,62 L690,58 L714,40 L732,64 L758,52 L784,70 L806,44 L826,64 L850,56 L876,32 L894,60 L918,66 L946,48 L964,68 L988,54 L1014,38 L1032,62 L1058,58 L1084,42 L1102,64 L1128,52 L1154,70 L1178,44 L1198,66 L1222,56 L1248,34 L1266,60 L1290,66 L1318,48 L1338,68 L1362,54 L1388,40 L1408,64 L1428,58 L1440,66 L1440,120 Z"/>
+  </svg>
+</section>
 
 <div class="tickerwrap"><div class="ticker" id="ticker"><span>booting the books…</span></div></div>
+
+<div class="section" id="run">
+  <div class="section-head">
+    <div class="kicker">See it work · 60 seconds</div>
+    <h2 class="sh">Watch one agent <span class="glow">run a company.</span></h2>
+    <p class="sp">Every button below hits the real live service. Nothing is faked; the data is synthetic and restores itself hourly. Start with Judge Mode — one click runs the entire story, hands-free.</p>
+  </div>
+</div>
 
 <main><div class="grid">
 
 <div class="card wide judge">
-  <div class="eyebrow">for the judges — hands-free</div>
-  <h2>▶ Judge Mode — the whole story, one click</h2>
-  <p class="hint">Autopilot runs the entire pitch against the live service: books → photo-quote → the autonomous lifecycle (watch it hold at both human money gates) → the raw x402 payment flow → the morning digest. About 45 seconds. Touch nothing.</p>
-  <button id="jm-btn" onclick="judgeMode()">▶ Run the 90-second story</button>
+  <div class="eyebrow">hands-free · one click</div>
+  <h2>▶ <span class="g">Judge Mode</span> — the whole business, autopilot</h2>
+  <p class="hint">One click runs the entire story against the live service: the books of a real company → a photo turned into a priced quote → the autonomous lifecycle (holding at both human money gates) → any-business spin-up → the workbook spine → the raw x402 on-chain payment → tomorrow's digest. About 60 seconds. Touch nothing.</p>
+  <button id="jm-btn" onclick="judgeMode()">▶ Run the whole story</button>
   <div class="progress"><i id="jm-bar"></i></div>
   <div class="stepline" id="jm-step"></div>
   <div class="out" id="jm-out"></div>
@@ -211,9 +309,9 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="out" id="lc-out"></div>
 </div>
 
-<div class="card">
+<div class="card" id="onchain">
   <div class="eyebrow">real invoices, real rail</div>
-  <h2>⛓️ Invoice → X Layer testnet</h2>
+  <h2>Invoice → <span class="g">X Layer testnet</span></h2>
   <p class="hint">A real invoice balance becomes an EIP-681 payment request in test OKB on chainId 1952. Evolved never holds keys — it only verifies settlement by read-only RPC.</p>
   <div>
     <button onclick="payRequest()">Create payment request</button>
@@ -255,10 +353,48 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="bars" id="rate-bars"></div>
 </div>
 
+</div></main>
+
+<div class="section" id="adapt">
+  <div class="section-head">
+    <div class="kicker">Make it yours · one call</div>
+    <h2 class="sh">What business are <span class="glow">you</span> running?</h2>
+    <p class="sp">Evolved is a toolkit, not a one-off. Pick a trade and preview exactly what <span class="mono">franchise_spinup</span> installs — the rate card into the quoting engine, the trade's hazards into every JHA, empty books, the full machine. Adding your own is one entry in <span class="mono">src/trades.ts</span>; <span class="mono">brand_configure</span> makes every rendered quote feel like your company. Read-only and safe to click here.</p>
+  </div>
+  <div class="trades">
+    <div class="trade" onclick="packPreview('pressure-washing')">
+      <div class="num">01</div><div class="tag2">Pressure washing</div>
+      <h3>I wash <span class="g">driveways &amp; siding.</span></h3>
+      <p>Rinse to strip-wash, priced per sqft. Wand-injection, slip, and ladder hazards in every JHA.</p>
+      <div class="go">Preview the pack</div>
+    </div>
+    <div class="trade" onclick="packPreview('line-painting')">
+      <div class="num">02</div><div class="tag2">Line painting</div>
+      <h3>I stripe <span class="g">parking lots.</span></h3>
+      <p>Re-stripe to full layout, per sqft. Live-traffic, fume, and heat-stress hazards baked in.</p>
+      <div class="go">Preview the pack</div>
+    </div>
+    <div class="trade" onclick="packPreview('mobile-detailing')">
+      <div class="num">03</div><div class="tag2">Mobile detailing</div>
+      <h3>I detail <span class="g">cars &amp; fleets.</span></h3>
+      <p>Express to full restoration, per unit. Chemical-exposure and customer-property hazards.</p>
+      <div class="go">Preview the pack</div>
+    </div>
+    <div class="trade" onclick="document.getElementById('fp-out').scrollIntoView({behavior:'smooth',block:'center'}); packPreview('pressure-washing')">
+      <div class="num">04</div><div class="tag2">Your trade</div>
+      <h3>I run <span class="g">something else.</span></h3>
+      <p>~30 lines in one file: your rate card + hazards. Then it is your OS — quoting, dispatch, payroll, on-chain invoicing.</p>
+      <div class="go">See how</div>
+    </div>
+  </div>
+</div>
+
+<main><div class="grid">
+
 <div class="card wide">
   <div class="eyebrow">the toolkit story — try it</div>
-  <h2>🧰 Make it yours — any trade, one call</h2>
-  <p class="hint">Evolved is an adaptable toolkit, not a one-off. Pick a trade and preview EXACTLY what <span class="mono">franchise_spinup</span> installs — its rate card in the quoting engine, its hazards in every FLHA, empty books, full machinery. Read-only and safe here; one call for real. Adding your own trade is one entry in <span class="mono">src/trades.ts</span>, then <span class="mono">brand_configure</span> makes it feel like YOUR company on every rendered quote. The server also exposes MCP <b>resources</b> and <b>prompts</b> — the whole spec, not just tools. Guide: <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/docs/ADAPT.md">docs/ADAPT.md</a> · <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/SECURITY.md">SECURITY.md</a></p>
+  <h2>What <span class="g">franchise_spinup</span> installs</h2>
+  <p class="hint">Pick a trade above, or here, and preview exactly what re-seeds — rate card, depth labels, trade-specific hazards. The server also speaks the whole MCP spec: <b style="color:#cdd3cd">resources</b> (rate table, hazard library, trade packs) and <b style="color:#cdd3cd">prompts</b>, not just tools. Guide: <a href="https://github.com/kr8tiv-ai/evolved/blob/main/docs/ADAPT.md">docs/ADAPT.md</a> · <a href="https://github.com/kr8tiv-ai/evolved/blob/main/SECURITY.md">SECURITY.md</a></p>
   <div>
     <select id="fp-pack"><option value="pressure-washing">pressure washing</option><option value="line-painting">parking lot line painting</option><option value="mobile-detailing">mobile auto detailing</option></select>
     <button onclick="packPreview()">Preview the pack</button>
@@ -268,15 +404,15 @@ export const PLAYGROUND_HTML = `<!doctype html>
 
 <div class="card">
   <div class="eyebrow">your books, your sheet</div>
-  <h2>📗 The workbook spine</h2>
-  <p class="hint">The whole OS renders as a real operations workbook — every collection a tab. With a Google service account (<span class="mono">EVOLVED_GOOGLE_SA</span>) it creates and syncs an actual Google Sheets workbook; with zero credentials it exports the identical tabs as CSV. Watch it write the spine live:</p>
+  <h2>The workbook <span class="g">spine</span></h2>
+  <p class="hint">The whole OS renders as a real operations workbook — every collection a tab. With a Google service account (<span class="mono">EVOLVED_GOOGLE_SA</span>) it creates, shares, and syncs an actual Google Sheets workbook; with zero credentials it exports the identical 20 tabs as CSV. Watch it write the spine live:</p>
   <div><button onclick="workbook()">Export the workbook</button></div>
   <div class="out" id="wb-out"></div>
 </div>
 
 <div class="card">
   <div class="eyebrow">done work → next work</div>
-  <h2>📊 Scorecard & reputation</h2>
+  <h2>Scorecard &amp; <span class="g">reputation</span></h2>
   <p class="hint">The Job P&amp;L scorecard (quoted vs actual, win rate, overall margin) plus the reputation ledger — reviews earned, response rate, and the testimonial bank ready for a website.</p>
   <div><button onclick="scorecard()">Run the scorecard</button></div>
   <div class="out" id="sc-out"></div>
@@ -567,9 +703,10 @@ async function rates(){
 }
 
 /* ---------- v3 cards: toolkit preview, workbook spine, scorecard ---------- */
-async function packPreview(){
+async function packPreview(preset){
   clearOut("fp-out");
-  var key = $("fp-pack").value;
+  var key = preset || $("fp-pack").value;
+  if (preset) { try { $("fp-pack").value = preset; } catch(e){} }
   show("fp-out", "→ franchise_preview { tradePack: \\"" + key + "\\" } — read-only");
   try {
     var r = await call("franchise_preview", { tradePack: key });
@@ -669,12 +806,90 @@ async function judgeMode(){
   jmRunning = false; $("jm-btn").disabled = false;
 }
 
+/* ---------- cinematic aurora backdrop (canvas) ---------- */
+function initAurora(){
+  var cv = document.getElementById("aurora");
+  if (!cv) return;
+  var ctx = cv.getContext("2d");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var W=0, H=0, dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W*dpr; cv.height = H*dpr; cv.style.width = W+"px"; cv.style.height = H+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize(); window.addEventListener("resize", resize);
+  // aurora bands + fog + rising embers
+  var bands = [
+    { col:"74,222,128",  amp:70, yy:0.30, wl:0.0016, sp:0.00022, th:150, a:0.20 },
+    { col:"34,211,238",  amp:52, yy:0.22, wl:0.0022, sp:-0.00017, th:90,  a:0.15 },
+    { col:"57,255,20",   amp:90, yy:0.42, wl:0.0012, sp:0.00013, th:120, a:0.13 }
+  ];
+  var fog = [];
+  for (var i=0;i<5;i++) fog.push({ x:Math.random(), y:Math.random()*0.6, r:200+Math.random()*260, sp:0.00002+Math.random()*0.00004, ph:Math.random()*6.28 });
+  var embers = [];
+  for (var j=0;j<44;j++) embers.push({ x:Math.random(), y:Math.random(), r:0.5+Math.random()*1.6, sp:0.00004+Math.random()*0.00010, tw:Math.random()*6.28, hue:Math.random()<0.7 });
+  function frame(t){
+    ctx.clearRect(0,0,W,H);
+    // deep base glow at top
+    var g0 = ctx.createRadialGradient(W*0.5,-H*0.15,0, W*0.5,-H*0.15, H*1.05);
+    g0.addColorStop(0,"rgba(16,42,26,0.55)"); g0.addColorStop(0.5,"rgba(6,12,8,0.6)"); g0.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g0; ctx.fillRect(0,0,W,H);
+    // drifting fog blobs
+    for (var f=0; f<fog.length; f++){
+      var fo=fog[f]; var fx=(fo.x + Math.sin(t*fo.sp+fo.ph)*0.12)*W; var fy=fo.y*H + Math.cos(t*fo.sp*0.7+fo.ph)*40;
+      var gg=ctx.createRadialGradient(fx,fy,0,fx,fy,fo.r);
+      gg.addColorStop(0,"rgba(40,70,52,0.10)"); gg.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(fx,fy,fo.r,0,6.2832); ctx.fill();
+    }
+    // aurora bands
+    for (var b=0; b<bands.length; b++){
+      var bd=bands[b]; var baseY=bd.yy*H;
+      var grad=ctx.createLinearGradient(0,baseY-bd.th,0,baseY+bd.th);
+      grad.addColorStop(0,"rgba("+bd.col+",0)");
+      grad.addColorStop(0.5,"rgba("+bd.col+","+bd.a+")");
+      grad.addColorStop(1,"rgba("+bd.col+",0)");
+      ctx.beginPath(); ctx.moveTo(0,H);
+      for (var x=0; x<=W; x+=14){
+        var y = baseY + Math.sin(x*bd.wl + t*bd.sp*1000)*bd.amp + Math.sin(x*bd.wl*2.3 + t*bd.sp*640)*bd.amp*0.35;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(W,0); ctx.lineTo(0,0); ctx.closePath();
+      ctx.fillStyle=grad; ctx.globalCompositeOperation="screen"; ctx.fill(); ctx.globalCompositeOperation="source-over";
+    }
+    // rising embers
+    ctx.globalCompositeOperation="screen";
+    for (var e=0; e<embers.length; e++){
+      var em=embers[e]; em.y -= em.sp* (reduce?0:16); if (em.y<-0.02){ em.y=1.02; em.x=Math.random(); }
+      var ex=em.x*W + Math.sin(t*0.0004+em.tw)*10; var ey=em.y*H;
+      var tw=0.4+0.6*Math.abs(Math.sin(t*0.001+em.tw));
+      ctx.fillStyle = em.hue ? "rgba(74,222,128,"+(0.5*tw)+")" : "rgba(226,240,226,"+(0.4*tw)+")";
+      ctx.beginPath(); ctx.arc(ex,ey,em.r,0,6.2832); ctx.fill();
+    }
+    ctx.globalCompositeOperation="source-over";
+  }
+  if (reduce){ frame(0); return; }
+  var running=true;
+  document.addEventListener("visibilitychange", function(){ running=!document.hidden; if(running) requestAnimationFrame(loop); });
+  function loop(t){ if(!running) return; frame(t); requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+}
+
+/* ---------- nav solidify on scroll ---------- */
+function initNav(){
+  var nav=document.getElementById("nav");
+  function onScroll(){ if (window.scrollY>60) nav.classList.add("solid"); else nav.classList.remove("solid"); }
+  window.addEventListener("scroll", onScroll, { passive:true }); onScroll();
+}
+
 /* ---------- boot ---------- */
 (async function(){
+  initAurora(); initNav();
   try {
     var h = await (await fetch("/health")).json();
     $("c-status").textContent = "live · v" + h.version;
     $("c-tools").textContent = h.tools;
+    var ht=$("h-tools"); if(ht) ht.textContent = h.tools;
   } catch(e){ $("c-status").textContent = "unreachable"; }
   try {
     var s = await call("xlayer_status", {});

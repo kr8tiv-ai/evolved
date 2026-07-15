@@ -291,6 +291,11 @@ async function sheetsFetch(token: string, url: string, body?: unknown, method = 
 }
 
 async function writeTabs(token: string, spreadsheetId: string, tabs: WorkbookTab[]): Promise<number> {
+  // Clear each tab first: values:batchUpdate only overwrites the cells it
+  // writes, so a shrinking collection would otherwise leave stale ghost rows.
+  await sheetsFetch(token, `${SHEETS}/${spreadsheetId}/values:batchClear`, {
+    ranges: tabs.map((t) => `'${t.title}'`),
+  });
   const result = await sheetsFetch(token, `${SHEETS}/${spreadsheetId}/values:batchUpdate`, {
     valueInputOption: "RAW",
     data: tabs.map((t) => ({ range: `'${t.title}'!A1`, values: t.rows.length ? t.rows : [[""]] })),
@@ -298,11 +303,29 @@ async function writeTabs(token: string, spreadsheetId: string, tabs: WorkbookTab
   return result.totalUpdatedCells ?? 0;
 }
 
+/**
+ * A spreadsheet created by a service account is visible only to that account
+ * until it is shared — without this, the returned URL dead-ends at Google's
+ * "You need access" page. drive.file scope covers files the SA created.
+ */
+async function shareWorkbook(token: string, spreadsheetId: string, email?: string): Promise<string> {
+  const perm = email
+    ? { role: "writer", type: "user", emailAddress: email }
+    : { role: "writer", type: "anyone" };
+  await sheetsFetch(
+    token,
+    `https://www.googleapis.com/drive/v3/files/${spreadsheetId}/permissions${email ? "" : "?sendNotificationEmail=false"}`,
+    perm,
+  );
+  return email ? `shared with ${email} (writer)` : "anyone with the link (writer)";
+}
+
 export async function createGoogleWorkbook(
   creds: ServiceAccount,
   title: string,
   tabs: WorkbookTab[],
-): Promise<{ spreadsheetId: string; url: string }> {
+  shareWith?: string,
+): Promise<{ spreadsheetId: string; url: string; sharing: string }> {
   const token = await accessToken(creds);
   const created = await sheetsFetch(token, SHEETS, {
     properties: { title },
@@ -310,7 +333,17 @@ export async function createGoogleWorkbook(
   });
   const spreadsheetId = created.spreadsheetId as string;
   await writeTabs(token, spreadsheetId, tabs);
-  return { spreadsheetId, url: created.spreadsheetUrl ?? `https://docs.google.com/spreadsheets/d/${spreadsheetId}` };
+  let sharing: string;
+  try {
+    sharing = await shareWorkbook(token, spreadsheetId, shareWith);
+  } catch (err) {
+    sharing = `NOT shared (Drive permissions call failed: ${err instanceof Error ? err.message.slice(0, 120) : err}) — share it from the service account, or use workbook_link with a sheet you own`;
+  }
+  return {
+    spreadsheetId,
+    url: created.spreadsheetUrl ?? `https://docs.google.com/spreadsheets/d/${spreadsheetId}`,
+    sharing,
+  };
 }
 
 export async function syncGoogleWorkbook(
@@ -334,7 +367,10 @@ export async function syncGoogleWorkbook(
 // CSV bundle (offline) — the zero-credential spine.
 
 function csvCell(v: string | number): string {
-  const s = String(v);
+  let s = String(v);
+  // Formula-injection guard: free text (customer names, field notes) must
+  // never open in Excel/Sheets as a live formula.
+  if (/^[=+\-@]/.test(s)) s = `'${s}`;
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 

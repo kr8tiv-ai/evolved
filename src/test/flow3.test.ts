@@ -115,18 +115,22 @@ test("field: the JHA is authored on-site — field capture creates or upgrades t
   assert.equal(captured.flha.source, "field");
   assert.ok(captured.flha.hazards.some((h: any) => /Pedestrians/.test(h.hazard)));
 
-  // A second capture the same day merges rather than duplicating.
+  // A second capture the same day merges rather than duplicating — and on a
+  // collision the crew's on-site version WINS over the earlier entry.
   const merged = await call("flha_field_capture", {
     jobId: "JOB-1043", capturedBy: "R. Nozzle", crew: ["T. Field", "R. Nozzle"],
     siteConditions: "Wind picked up from the west",
     hazards: [
-      { hazard: "Pedestrians crossing the work zone", risk: "high", mitigations: ["Cone and tape both approaches"] },
+      { hazard: "Pedestrians crossing the work zone", risk: "medium", mitigations: ["Foot traffic rerouted — barrier fencing installed by the GC"] },
       { hazard: "Dust drift toward doorway", risk: "medium", mitigations: ["Reposition containment curtain"] },
     ],
   });
   const names = merged.flha.hazards.map((h: any) => h.hazard);
   assert.equal(names.filter((n: string) => /Pedestrians/.test(n)).length, 1, "no duplicate hazards");
   assert.ok(names.some((n: string) => /Dust drift/.test(n)));
+  const ped = merged.flha.hazards.find((h: any) => /Pedestrians/.test(h.hazard));
+  assert.equal(ped.risk, "medium", "field capture replaces the earlier entry — on-site assessment wins");
+  assert.match(ped.mitigations[0], /barrier fencing/);
 });
 
 test("growth: review loop, reputation ledger, dispatch board, brand, pack preview", async () => {

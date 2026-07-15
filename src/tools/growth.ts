@@ -118,7 +118,10 @@ export function registerGrowthTools(server: McpServer): void {
       const cost = round2(done.reduce((s, r) => s + (r.cost ?? 0), 0));
       const sentQuotes = db.quotes.filter((q) => q.status !== "Draft");
       const won = sentQuotes.filter((q) => q.status === "Accepted");
-      const sqftWon = won.reduce((s, q) => s + (q.sqftTotal ?? 0), 0);
+      // $/sqft only over sqft-priced wins — flat-priced work (trailers,
+      // benches) would otherwise inflate the average.
+      const sqftPriced = won.filter((q) => q.sqftTotal);
+      const sqftWon = sqftPriced.reduce((s, q) => s + (q.sqftTotal ?? 0), 0);
       return ok({
         jobs: rows,
         scorecard: {
@@ -128,7 +131,7 @@ export function registerGrowthTools(server: McpServer): void {
           profit: money(round2(revenue - cost)),
           overallMarginPct: revenue ? round2(((revenue - cost) / revenue) * 100) : 0,
           quoteWinRate: sentQuotes.length ? `${Math.round((won.length / sentQuotes.length) * 100)}% (${won.length}/${sentQuotes.length})` : "no quotes sent",
-          avgDollarPerSqft: sqftWon ? money(round2(won.reduce((s, q) => s + q.subtotal, 0) / sqftWon)) : "n/a (flat-priced work)",
+          avgDollarPerSqft: sqftWon ? money(round2(sqftPriced.reduce((s, q) => s + q.subtotal, 0) / sqftWon)) : "n/a (flat-priced work)",
         },
       });
     },

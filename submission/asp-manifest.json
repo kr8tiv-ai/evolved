@@ -23,7 +23,9 @@
       { "name": "Field safety (FLHA)", "detail": "Hazard assessments drafted from job scope with per-hazard mitigations, standard PPE, muster points, end-of-day crew sign-off, permanent safety record." },
       { "name": "Autonomous operations", "detail": "Morning digest (one-thing-not-to-drop, money pulse, weather, quotes out), six ball-drop auto-raise rules, business snapshot, P&L and scorecard reporting." },
       { "name": "On-chain settlement & x402 (X Layer testnet)", "detail": "Invoices settle in test OKB via EIP-681 payment requests on chainId 1952, verified with read-only RPC (no keys ever held); Evolved itself monetizes per-call through an x402 402-challenge tier at POST /mcp-paid." },
-      { "name": "Autonomous lifecycle & frontier", "detail": "lifecycle_start/advance run lead to paid with human gates only at money; photo-to-quote, crew voice commands, CFO scenario simulator, and franchise_spinup (re-seed the whole OS for any trade)." }
+      { "name": "Autonomous lifecycle & frontier", "detail": "lifecycle_start/advance run lead to paid with human gates only at money; photo-to-quote, crew voice commands, CFO scenario simulator, and franchise_spinup (re-seed the whole OS for any trade)." },
+      { "name": "Workbook spine (Google Sheets / CSV)", "detail": "workbook_create builds a live 20-tab Google Sheets operations workbook (service account via EVOLVED_GOOGLE_SA, shared automatically); workbook_sync keeps it current; workbook_export writes the identical tabs as CSV with zero credentials." },
+      { "name": "Field operations & growth", "detail": "Job photo albums with gap detection, voice/text field notes, a crew time clock feeding real labor cost into Job P&L, JHAs authored on-site by the crew (flha_field_capture), review requests with a reputation ledger and testimonial bank, the Job P&L scorecard, the live dispatch board, brand_configure, and franchise_preview." }
     ],
     "toolCount": 83,
     "onChain": {
