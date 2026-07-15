@@ -1,6 +1,10 @@
 # Evolved — 90-second demo video
 
 **File:** [`evolved-demo.mp4`](evolved-demo.mp4) · 1920×1080 · 30 fps · ~86 seconds · H.264/AAC
+**Hosted:** streams from the live deployment at
+<https://powderblue-leopard-801168.hostingersite.com/demo.mp4> (served with a
+real `video/mp4` content type and byte-range support, so submission platforms
+can embed it directly — GitHub raw sends `nosniff`, which blocks playback).
 
 A branded, captioned walkthrough of Evolved — Evolve Eco Blasting's operations
 brain running live as an MCP Agentic Service Provider for the OKX AI Genesis

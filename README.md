@@ -199,7 +199,7 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |
-| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 86s, 1080p, on-brand, captioned, CC0 soundtrack ([notes](submission/DEMO-VIDEO.md)) |
+| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 86s, 1080p, on-brand, captioned, CC0 soundtrack ([notes](submission/DEMO-VIDEO.md)) — streams from the live deployment at [/demo.mp4](https://powderblue-leopard-801168.hostingersite.com/demo.mp4) |
 | Categories | Best Product · Revenue Rocket · Software Utility · Finance Copilot |
 
 MIT licensed. Synthetic data only; testnet only; no secrets anywhere in this repository. Evolved never holds keys and cannot move funds — by construction.
