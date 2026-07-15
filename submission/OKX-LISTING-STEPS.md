@@ -13,11 +13,11 @@ prompted.
 ## The five steps (from OKX)
 
 1. **Have an agent** — Claude Code, OpenClaw, Hermes, or Codex.
-2. **Install Onchain OS** — send your agent:
-   ```
-   npx skills add okx/onchainos-skills --yes -g
-   ```
-   Then open a new session in the agent.
+2. **Install Onchain OS** — ✅ ALREADY DONE on this machine (July 15): all 8
+   OKX skills (incl. `okx-ai` + `okx-agentic-wallet`) are installed globally
+   at `~/.claude/skills/`. Just open a NEW Claude Code session and start at
+   step 3. (Command, if ever needed again:
+   `npx skills add okx/onchainos-skills --yes -g`.)
 3. **Log in to the Agentic Wallet** — send your agent (needs your email;
    this is the WALLET step — do it yourself):
    ```
@@ -60,7 +60,11 @@ prompted.
 
 ## What only you can do
 
-- The Agentic Wallet email login (step 3) and the on-chain OKX Agent Identity
-  the registration creates (step 4) both require your wallet. **Do those
+- The Agentic Wallet email login (step 3) is an **email + OTP sign-in**, and
+  the registration (step 4) creates an **ERC-8004 agent identity on X Layer —
+  an on-chain transaction with a small gas cost** (the skill's pre-check will
+  quote it and ask consent). Both require your account and wallet. **Do those
   yourself.** Once you have the **Agent ID**, everything else (HackQuest form,
-  Google form) is already prepared.
+  Google form) is already prepared — the HackQuest submit form is pre-filled
+  and open in your browser; paste the Agent ID, X post link, and Telegram
+  handle, then hit Submit.
