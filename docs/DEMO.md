@@ -1,14 +1,15 @@
 # The 90-second demo
 
-> **v2 update — the two-act cut.** Act 1 (0–45s): `lifecycle_start` →
-> `lifecycle_advance` with approve + e-sign → watch the log stream: booked
-> on the first Good blast day, FLHA drafted, inventory burned down,
-> invoiced, on-chain payment request issued on X Layer testnet. Act 2
-> (45–80s): the x402 curl — 402 challenge, pay, 200 with the settlement
-> receipt header. Close (80–90s): "83 tools. A real company's operating
-> system, live on OKX.AI as an ASP, getting paid on-chain — try it in your
-> browser." (Show the playground URL.) The classic 10-beat cut below still
-> works as an alternative.
+> **v3 — the any-business cut (SHIPPED as `submission/evolved-demo.mp4`, 90.0s).**
+> Title (any service business, run by an AI) → premise (83 tools / 16 domains /
+> 41 tests, live `/health`) → **trade packs** (pressure washing, line painting,
+> mobile detailing, YOUR trade — `franchise_spinup`) → intake by text, voice,
+> or photo (`quote_from_photo`) → the autonomous lifecycle with two human money
+> gates → **the JHA authored on-site** (`flha_field_capture`) → **the workbook
+> spine** (`workbook_create` → Google Sheets; `workbook_export` → 20 CSV tabs,
+> zero credentials) → the raw x402 402 → proof → receipt flow → end card.
+> Renderer: `submission/render_video.py`. The classic 10-beat cut below still
+> works as a live alternative.
 
 Two ways to run it: the scripted terminal demo (zero setup beyond `npm run
 build`), or live through any MCP client. Both tell the same story — one agent
