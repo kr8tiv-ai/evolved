@@ -8,6 +8,10 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+import { loadDb } from "./store.js";
+import { HAZARD_LIBRARY, STANDARD_PPE } from "./engine/safety.js";
+import { TRADE_PACKS } from "./trades.js";
 import { registerQuotingTools } from "./tools/quoting.js";
 import { registerMoneyTools } from "./tools/money.js";
 import { registerPipelineTools } from "./tools/pipeline.js";
@@ -65,6 +69,80 @@ export function createServer(): McpServer {
   registerVoiceTools(server); // 1
   registerCfoTools(server); // 2
   registerOpsPlusTools(server); // 6
+
+  // ---- MCP resources: the reference data an agent should be able to READ,
+  // not just act on. Counted and enforced by the test suite.
+  server.registerResource(
+    "rate-table",
+    "evolved://rate-table",
+    { title: "Rate table (base + learned)", description: "Live $/sqft rate card with learning-loop state.", mimeType: "application/json" },
+    async (uri) => ({
+      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(loadDb().rateTable, null, 2) }],
+    }),
+  );
+  server.registerResource(
+    "hazard-library",
+    "evolved://hazard-library",
+    { title: "FLHA hazard library", description: "Per-hazard mitigations (built-in plus installed trade pack), and standard PPE.", mimeType: "application/json" },
+    async (uri) => ({
+      contents: [{
+        uri: uri.href, mimeType: "application/json",
+        text: JSON.stringify({
+          builtIn: HAZARD_LIBRARY.map(({ hazard, risk, mitigations }) => ({ hazard, risk, mitigations })),
+          installedTradePack: loadDb().customHazards,
+          standardPpe: STANDARD_PPE,
+        }, null, 2),
+      }],
+    }),
+  );
+  server.registerResource(
+    "trade-packs",
+    "evolved://trade-packs",
+    { title: "Trade packs", description: "Ready-made rate cards and hazard sets for adapting Evolved to other trades via franchise_spinup.", mimeType: "application/json" },
+    async (uri) => ({
+      contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(TRADE_PACKS, null, 2) }],
+    }),
+  );
+
+  // ---- MCP prompts: one-line entry points for humans driving MCP clients.
+  server.registerPrompt(
+    "morning-briefing",
+    { title: "Morning briefing", description: "Compile and narrate the owner's morning digest." },
+    async () => ({
+      messages: [{
+        role: "user",
+        content: { type: "text", text: "Run the morning_digest tool, then brief me like an operations manager: lead with the one thing not to drop, then money pulse, today's jobs, and anything the action-item scan raised. Keep it under 200 words, no fluff." },
+      }],
+    }),
+  );
+  server.registerPrompt(
+    "quote-a-job",
+    {
+      title: "Quote a job",
+      description: "Price a described job and draft the quote with a margin verdict.",
+      argsSchema: { jobDescription: z.string().describe("e.g. '600 sqft exposed-aggregate driveway in Sherwood Park, tight side access'") },
+    },
+    async ({ jobDescription }) => ({
+      messages: [{
+        role: "user",
+        content: { type: "text", text: "Quote this job: " + jobDescription + ". Use quote_price first, tell me the margin verdict plainly, and if it is healthy create the quote with quote_create and render the branded document. If anything is below break-even, flag it and stop." },
+      }],
+    }),
+  );
+  server.registerPrompt(
+    "run-the-lifecycle",
+    {
+      title: "Run the autonomous lifecycle",
+      description: "Drive a full engagement from lead to on-chain payment, pausing at the human money gates.",
+      argsSchema: { customer: z.string().describe("Customer name and what they want") },
+    },
+    async ({ customer }) => ({
+      messages: [{
+        role: "user",
+        content: { type: "text", text: "Start an autonomous lifecycle for: " + customer + ". Use lifecycle_start, show me the quote and the profitability verdict, and STOP at the approve-quote gate for my decision. After I approve, advance through e-sign, booking, FLHA, completion, and invoicing, then stop again at the payment gate and show me the on-chain payment request." },
+      }],
+    }),
+  );
 
   return server;
 }

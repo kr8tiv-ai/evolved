@@ -86,7 +86,7 @@ export function registerVoiceTools(server: McpServer): void {
               id: shortId("FLHA"), jobId: job.id, date: today(),
               crew: job.crew.length ? job.crew : [who],
               siteConditions: "Opened by voice — crew confirms conditions on site.",
-              hazards: hazardsForScope(job.scope), ppeConfirmed: STANDARD_PPE,
+              hazards: hazardsForScope(job.scope, [], d.customHazards), ppeConfirmed: STANDARD_PPE,
               musterPoint: "Truck staging area", openedBy: who, openedAt: nowIso(),
             };
             d.flhas.push(flha);

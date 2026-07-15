@@ -471,4 +471,6 @@ export interface Database {
   activity: ActivityEvent[];
   /** On-chain replay protection: every testnet tx hash ever accepted. */
   usedTxHashes: string[];
+  /** Trade-pack hazards merged into the FLHA library (adaptable toolkit). */
+  customHazards: HazardEntry[];
 }

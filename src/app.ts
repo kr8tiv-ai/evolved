@@ -82,6 +82,29 @@ export async function handleRequest(
 ): Promise<void> {
   const url = new URL(req.url ?? "/", "http://localhost");
 
+  // Security headers on every response. The CSP permits exactly what the
+  // playground needs: same-origin calls, Google Fonts, the repo's logo,
+  // and its own inline script/styles — nothing else loads or frames us.
+  res.setHeader("x-content-type-options", "nosniff");
+  res.setHeader("x-frame-options", "DENY");
+  res.setHeader("referrer-policy", "strict-origin-when-cross-origin");
+  res.setHeader("permissions-policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  res.setHeader("strict-transport-security", "max-age=31536000; includeSubDomains");
+  res.setHeader(
+    "content-security-policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src https://fonts.gstatic.com; img-src 'self' data: https://github.com https://raw.githubusercontent.com; " +
+    "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+  );
+
+  // Oversized payloads are refused before any route reads the stream.
+  const contentLength = Number(req.headers["content-length"] ?? 0);
+  if (req.method === "POST" && contentLength > 262_144) {
+    res.writeHead(413, { "content-type": "application/json" });
+    res.end(JSON.stringify({ ok: false, error: "Payload too large (256 KB cap)." }));
+    return;
+  }
+
   // The hosted playground — the zero-install judge experience.
   if ((url.pathname === "/" || url.pathname === "/playground" || url.pathname === "/demo") && req.method === "GET") {
     res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });

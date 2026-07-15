@@ -9,6 +9,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { DATA_DIR, loadDb, logActivity, nowIso, persist, round2, shortId, today, withDb } from "../store.js";
 import { buildSeed } from "../seed.js";
+import { findTradePack, TRADE_PACKS } from "../trades.js";
 import type { Database, RateEntry } from "../types.js";
 
 function ok(data: unknown) {
@@ -195,10 +196,13 @@ export function registerOpsPlusTools(server: McpServer): void {
     {
       title: "Business-in-a-box: spin up a new trade",
       description:
-        "The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library, digest, learning loop, on-chain invoicing). This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.",
+        "The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library with trade-specific hazards, digest, learning loop, on-chain invoicing). Pass tradePack for a ready-made pack (" +
+        TRADE_PACKS.map((p) => p.key).join(", ") +
+        ") or supply your own rates. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.",
       inputSchema: {
         companyName: z.string(),
-        trade: z.string().describe("e.g. pressure washing, line painting, mobile detailing"),
+        tradePack: z.string().optional().describe("Ready-made pack: " + TRADE_PACKS.map((p) => p.key).join(" | ")),
+        trade: z.string().optional().describe("Freeform trade name (defaults from tradePack)"),
         region: z.string().optional(),
         currency: z.string().optional(),
         gstRate: z.number().min(0).max(0.3).optional(),
@@ -213,6 +217,15 @@ export function registerOpsPlusTools(server: McpServer): void {
       if (!input.confirm) {
         return ok({ spunUp: false, error: "Set confirm:true — franchise_spinup replaces the current demo dataset (backup_create first if you want to keep it)." });
       }
+      const pack = input.tradePack ? findTradePack(input.tradePack) : undefined;
+      if (input.tradePack && !pack) {
+        return ok({ spunUp: false, error: `Unknown trade pack "${input.tradePack}". Available: ${TRADE_PACKS.map((p) => p.key).join(", ")}.` });
+      }
+      const trade = input.trade ?? pack?.trade;
+      if (!trade) {
+        return ok({ spunUp: false, error: "Provide trade or tradePack." });
+      }
+      const rates = input.rates ?? pack?.rateCard.map((r) => ({ depth: r.depth, ratePerSqft: r.ratePerSqft }));
       if (input.rates) {
         const provided = new Set(input.rates.map((r) => r.depth));
         const missing = (["very-light", "light", "medium", "heavy"] as const).filter((d) => !provided.has(d));
@@ -220,6 +233,7 @@ export function registerOpsPlusTools(server: McpServer): void {
           return ok({ spunUp: false, error: `Custom rate card must cover all four depths — missing: ${missing.join(", ")}.` });
         }
       }
+      const rateLabels = new Map(pack?.rateCard.map((r) => [r.depth, r.label]) ?? []);
       const fresh = buildSeed();
       const blank: Database = {
         ...fresh,
@@ -234,27 +248,33 @@ export function registerOpsPlusTools(server: McpServer): void {
         inventoryMovements: [], priceLog: [], vendors: [], inbox: [], todos: [],
         payments: [], esigns: [], lifecycles: [], reviews: [], insights: [],
         insightWeights: {}, activity: [],
-        rateTable: (input.rates
-          ? input.rates.map((r): RateEntry => ({
+        rateTable: (rates
+          ? rates.map((r): RateEntry => ({
               depth: r.depth,
-              label: `${r.depth} (${input.trade})`,
+              label: rateLabels.get(r.depth) ?? `${r.depth} (${trade})`,
               baseRate: r.ratePerSqft, learnedRate: r.ratePerSqft, samples: 0,
             }))
           : fresh.rateTable.map((r) => ({ ...r, learnedRate: r.baseRate, samples: 0 }))),
         suppliers: [], crew: [],
         inventory: fresh.inventory.map((i) => ({ ...i, onHand: 0, lastUnitCost: undefined, lastSupplier: undefined, lastPurchasedAt: undefined })),
+        customHazards: pack?.hazards ?? [],
       };
-      // Swap the live database wholesale.
+      // Swap the live database wholesale — but the replay ledger and revenue
+      // counters survive every reseed, franchise included.
       const current = loadDb();
+      blank.usedTxHashes = current.usedTxHashes;
+      blank.meta.paidCalls = current.meta.paidCalls ?? 0;
       Object.assign(current, blank);
-      logActivity(current, "franchise", `Spun up: ${input.companyName} (${input.trade}${input.region ? `, ${input.region}` : ""}).`);
+      logActivity(current, "franchise", `Spun up: ${input.companyName} (${trade}${input.region ? `, ${input.region}` : ""})${pack ? ` from the ${pack.key} trade pack` : ""}.`);
       persist();
       return ok({
         spunUp: true,
         company: blank.meta.company,
-        trade: input.trade,
+        trade,
+        tradePack: pack?.key,
         rateCard: blank.rateTable,
-        note: "Fresh books, full machinery: quoting, receipts, FLHA, digest, learning loop, and on-chain invoicing are live for the new company. demo_reset restores the Evolve demo dataset.",
+        tradeHazardsInstalled: (pack?.hazards ?? []).length,
+        note: "Fresh books, full machinery: quoting, receipts, FLHA (with trade-specific hazards), digest, learning loop, and on-chain invoicing are live for the new company. demo_reset restores the Evolve demo dataset.",
       });
     },
   );

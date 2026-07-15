@@ -107,11 +107,22 @@ export const STANDARD_PPE = [
   "High-visibility vest",
 ];
 
-/** Select applicable hazards for a scope of work. */
-export function hazardsForScope(scope: string, extra: string[] = []): HazardEntry[] {
-  const selected = HAZARD_LIBRARY.filter((h) => h.triggers.test(scope)).map(
-    ({ hazard, risk, mitigations }) => ({ hazard, risk, mitigations }),
-  );
+/**
+ * Select applicable hazards for a scope of work. Trade packs installed via
+ * franchise_spinup contribute `custom` entries, which always apply — a
+ * pressure-washing company's FLHA leads with pressure-washing hazards.
+ */
+export function hazardsForScope(
+  scope: string,
+  extra: string[] = [],
+  custom: HazardEntry[] = [],
+): HazardEntry[] {
+  const selected: HazardEntry[] = [
+    ...custom,
+    ...HAZARD_LIBRARY.filter((h) => h.triggers.test(scope)).map(
+      ({ hazard, risk, mitigations }) => ({ hazard, risk, mitigations }),
+    ),
+  ];
   for (const e of extra) {
     selected.push({
       hazard: e,

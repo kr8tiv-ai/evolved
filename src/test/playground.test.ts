@@ -35,6 +35,21 @@ test("playground: page serves on / and /playground, health lists it", async () =
     }
     const h = (await (await fetch(base + "/health")).json()) as { endpoints: Record<string, string> };
     assert.ok(h.endpoints["/"]);
+
+    // Security headers ride on every response.
+    const r = await fetch(base + "/");
+    assert.equal(r.headers.get("x-frame-options"), "DENY");
+    assert.equal(r.headers.get("x-content-type-options"), "nosniff");
+    assert.match(r.headers.get("content-security-policy") ?? "", /frame-ancestors 'none'/);
+    assert.ok(r.headers.get("strict-transport-security"));
+
+    // Oversized bodies are refused before any route reads them.
+    const big = await fetch(base + "/demo/call", {
+      method: "POST",
+      headers: { "content-type": "application/json", "content-length": "9999999" },
+      body: JSON.stringify({ tool: "weather_check", args: {} }),
+    }).catch(() => null);
+    if (big) assert.equal(big.status, 413);
   } finally { s.close(); }
 });
 

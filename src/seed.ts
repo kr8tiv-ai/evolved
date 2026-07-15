@@ -301,5 +301,6 @@ export function buildSeed(): Database {
     insightWeights: {},
     activity: [],
     usedTxHashes: [],
+    customHazards: [],
   };
 }

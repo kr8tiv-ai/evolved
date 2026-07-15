@@ -255,6 +255,12 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="bars" id="rate-bars"></div>
 </div>
 
+<div class="card wide">
+  <div class="eyebrow">the toolkit story</div>
+  <h2>🧰 Make it yours — any trade, one call</h2>
+  <p class="hint">Evolved is an adaptable toolkit, not a one-off. <span class="mono">franchise_spinup { tradePack: "pressure-washing" }</span> re-seeds the whole OS for another business — its rate card in the quoting engine, its hazards in every FLHA, empty books, full machinery. Three trade packs ship in the repo (pressure-washing, line-painting, mobile-detailing); adding yours is one entry in <span class="mono">src/trades.ts</span>. The server also exposes MCP <b>resources</b> (rate table, hazard library, trade packs) and <b>prompts</b> (morning-briefing, quote-a-job, run-the-lifecycle) — the whole spec, not just tools. Guide: <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/docs/ADAPT.md">docs/ADAPT.md</a> · <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/SECURITY.md">SECURITY.md</a></p>
+</div>
+
 <div class="card wide"><div class="cfg">
   <div>
     <div class="eyebrow">power users</div>

@@ -34,6 +34,7 @@ function ensureShape(d: Database): Database {
     d.insightWeights = {};
   }
   if (!Array.isArray(d.usedTxHashes)) d.usedTxHashes = [];
+  if (!Array.isArray(d.customHazards)) d.customHazards = [];
   return d;
 }
 

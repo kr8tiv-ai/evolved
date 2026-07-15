@@ -43,7 +43,7 @@ export function registerSafetyTools(server: McpServer): void {
             date: today(),
             crew: input.crew,
             siteConditions: input.siteConditions,
-            hazards: hazardsForScope(job.scope + " " + input.siteConditions, input.extraHazards ?? []),
+            hazards: hazardsForScope(job.scope + " " + input.siteConditions, input.extraHazards ?? [], db.customHazards),
             ppeConfirmed: STANDARD_PPE,
             musterPoint: input.musterPoint ?? "Truck staging area",
             openedBy: input.openedBy,

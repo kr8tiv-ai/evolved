@@ -153,7 +153,7 @@ async function advance(
       const flha = {
         id: shortId("FLHA"), jobId: job.id, date: job.scheduledDate ?? today(),
         crew: job.crew, siteConditions: "Auto-drafted at booking — crew confirms on arrival.",
-        hazards: hazardsForScope(job.scope), ppeConfirmed: STANDARD_PPE,
+        hazards: hazardsForScope(job.scope, [], db.customHazards), ppeConfirmed: STANDARD_PPE,
         musterPoint: "Truck staging area", openedBy: "Evolved (agent)", openedAt: nowIso(),
       };
       db.flhas.push(flha);

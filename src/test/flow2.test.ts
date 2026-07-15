@@ -344,6 +344,57 @@ test("review fixes: replay protection, declined e-sign is final, custom price br
   await server.close();
 });
 
+test("adaptable toolkit: MCP resources + prompts registered; trade pack installs rates AND hazards", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // The server speaks the whole MCP spec: resources and prompts, not just tools.
+  const resources = await client.listResources();
+  const uris = resources.resources.map((r) => r.uri);
+  for (const u of ["evolved://rate-table", "evolved://hazard-library", "evolved://trade-packs"]) {
+    assert.ok(uris.includes(u), `missing resource ${u}`);
+  }
+  const packRes = await client.readResource({ uri: "evolved://trade-packs" });
+  const packs = JSON.parse((packRes.contents[0] as { text: string }).text);
+  assert.ok(packs.some((p: { key: string }) => p.key === "pressure-washing"));
+
+  const prompts = await client.listPrompts();
+  const names = prompts.prompts.map((p) => p.name);
+  for (const n of ["morning-briefing", "quote-a-job", "run-the-lifecycle"]) {
+    assert.ok(names.includes(n), `missing prompt ${n}`);
+  }
+  const prompt = await client.getPrompt({ name: "quote-a-job", arguments: { jobDescription: "test driveway" } });
+  assert.match(JSON.stringify(prompt.messages), /quote_price/);
+
+  // Trade pack spin-up: rates land in the engine, hazards land in the FLHA.
+  const spun = await call("franchise_spinup", {
+    companyName: "Glacier Pressure Washing", tradePack: "pressure-washing", confirm: true,
+  });
+  assert.equal(spun.spunUp, true);
+  assert.equal(spun.tradePack, "pressure-washing");
+  assert.ok(spun.tradeHazardsInstalled >= 3);
+  const priced = await call("quote_price", { sqft: 1000, depth: "medium" });
+  assert.equal(priced.rate, 0.85, "pack rate card must drive the engine");
+
+  const lc = await call("lifecycle_start", {
+    customerName: "Wash Client", siteAddress: "1 Suds St", summary: "storefront wash",
+    surface: "sidewalk", sqft: 400, depth: "light",
+  });
+  await call("lifecycle_advance", { lifecycleId: lc.lifecycle.id, approveQuote: true, esignSigner: "W. Client" });
+  const db = loadDb();
+  const flha = db.flhas[db.flhas.length - 1];
+  assert.ok(
+    flha.hazards.some((h) => /high-pressure water injection/i.test(h.hazard)),
+    "trade-pack hazards must lead the drafted FLHA",
+  );
+
+  await call("demo_reset", {});
+  await client.close();
+  await server.close();
+});
+
 test("franchise spin-up re-seeds the OS for a new trade, demo_reset restores Evolve", async () => {
   resetDb();
   const { server, client } = await connect();
