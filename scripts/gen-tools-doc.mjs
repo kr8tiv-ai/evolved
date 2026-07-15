@@ -24,6 +24,9 @@ const DOMAINS = [
   ["Autonomous lifecycle", ["lifecycle_start","lifecycle_advance","lifecycle_status","quote_esign_sign","review_record"]],
   ["Frontier", ["quote_from_photo","voice_command","cfo_forecast","cfo_health"]],
   ["Business-in-a-box", ["insights_generate","insight_feedback","activity_feed","backup_create","backup_list","franchise_spinup"]],
+  ["Workbook spine (Google Sheets / CSV)", ["workbook_create","workbook_sync","workbook_link","workbook_export","workbook_status"]],
+  ["Field ops", ["field_photo_log","field_note","crew_checkin","crew_checkout","flha_field_capture"]],
+  ["Growth", ["review_request","reputation_report","job_pnl_report","dispatch_board","brand_configure","franchise_preview"]],
 ];
 
 function paramTable(schema) {

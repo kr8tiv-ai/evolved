@@ -50,7 +50,7 @@ prompted.
 - **Category:** Software Utility (also Finance Copilot)
 - **Description:** Business management in a box — any service business, spun
   up in one call; proven on a real Alberta company that runs on it and gets
-  paid on-chain. 67 MCP tools across 13 domains: quoting with a learning
+  paid on-chain. 83 MCP tools across 16 domains: quoting with a learning
   rate engine, receipts→books, FLHA safety, dispatch, invoicing, on-chain
   settlement in test OKB on X Layer, an autonomous lifecycle with human money
   gates, photo-to-quote, voice, an agentic CFO, and trade packs.

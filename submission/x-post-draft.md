@@ -34,7 +34,7 @@ One agent runs the whole engagement, humans approve only the money:
 ◆ Voice commands from the crew, a CFO simulator, a quote engine that learns from won jobs
 ◆ Trade packs ship today: pressure washing, line painting, mobile detailing — yours is one file away
 
-67 tools. 36 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
+83 tools. 41 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 Try it in your browser, zero install:
 powderblue-leopard-801168.hostingersite.com
@@ -49,7 +49,7 @@ github.com/kr8tiv-ai/evolved
 
 Most AI business tools are chatbots wearing a suit. #OKXAI
 
-Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 67 tools, open source.
+Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 83 tools, open source.
 
 powderblue-leopard-801168.hostingersite.com
 

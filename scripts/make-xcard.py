@@ -132,7 +132,7 @@ w2 = tracked_w(line2, mono_m, 3)
 tracked(dr, ((W - w2) // 2, ty + 322), line2, mono_m, "#4ade80", 3)
 
 # ---- chip row -------------------------------------------------------------------
-chips = ["67 MCP TOOLS", "x402 PAID TIER", "X LAYER TESTNET", "LIVE PLAYGROUND"]
+chips = ["83 MCP TOOLS", "x402 PAID TIER", "X LAYER TESTNET", "LIVE PLAYGROUND"]
 chip_f = font("JetBrainsMono-Bold.ttf", 21, fallback="consolab.ttf")
 pad_x, gap, ch_h = 26, 22, 52
 chip_ws = [tracked_w(c, chip_f, 2) + pad_x * 2 for c in chips]

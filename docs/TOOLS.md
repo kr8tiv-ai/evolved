@@ -1,6 +1,6 @@
 # Tool catalog
 
-Generated from the live server — 67 tools. Every tool returns JSON.
+Generated from the live server — 83 tools. Every tool returns JSON.
 
 ## Quoting intelligence
 
@@ -641,3 +641,141 @@ The productization story in one call: re-seed the entire operations brain for a 
 | `gstRate` | number | no |  |
 | `rates` | array of objects | no | Custom rate card — must cover all four depths; defaults to the blasting card |
 | `confirm` | boolean | yes | Must be true — this replaces the current demo dataset |
+
+## Workbook spine (Google Sheets / CSV)
+
+### `workbook_create`
+
+Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). Without credentials it explains the setup and falls back to the CSV export.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `title` | string | no | Spreadsheet title; defaults to '<Company> — Ops Workbook' |
+
+### `workbook_sync`
+
+Push the entire current database into the linked workbook — updates every tab (adds missing ones) in the linked Google Sheet, or refreshes the CSV bundle when running credential-free.
+
+_No parameters._
+
+### `workbook_link`
+
+Attach Evolved to a Google Sheets workbook you already have (by spreadsheet id). Subsequent workbook_sync calls write every tab into it. The service account in EVOLVED_GOOGLE_SA must have edit access to that sheet.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `spreadsheetId` | string | yes | The id from the sheet URL |
+
+### `workbook_export`
+
+Render the ENTIRE operating system — quotes, dispatch, expenses, invoices, inventory, crew, time log, photos, field notes, safety, reviews, action items, rate table, Job P&L, record log — as a CSV workbook bundle. Works offline with no credentials; the same tabs a Google Sheets sync writes.
+
+_No parameters._
+
+### `workbook_status`
+
+The state of the operations-workbook spine: linked Google Sheet (if any), tab list, cell counts, credential mode, and last sync time.
+
+_No parameters._
+
+## Field ops
+
+### `field_photo_log`
+
+File a before/after/progress photo against a job — the same discipline as the production company's job-photo folders. Returns the job's album state so gaps (a 'before' with no 'after') are visible immediately.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `jobId` | string | yes |  |
+| `kind` | `before` · `after` · `progress` | yes |  |
+| `caption` | string | yes |  |
+| `takenBy` | string | yes |  |
+
+### `field_note`
+
+A crew note from the field, by voice or text — a lead a neighbor mentioned, site access details, anything. Attaches to a job when given; otherwise it lands in the App Inbox for the filing engine so nothing is lost.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `text` | string | yes |  |
+| `by` | string | yes |  |
+| `jobId` | string | no |  |
+| `source` | `voice` · `text` | no |  |
+
+### `crew_checkin`
+
+Punch a crew member in against a job. One open entry per person per job — double punch-ins are refused, not silently duplicated.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `crewName` | string | yes |  |
+| `jobId` | string | yes |  |
+
+### `crew_checkout`
+
+Punch out: closes the open time entry, computes hours and wage from the crew member's rate (Time Log tab), and that labor flows into Job P&L as actual cost — quoted vs actual with no manual math.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `crewName` | string | yes |  |
+| `jobId` | string | yes |  |
+| `note` | string | no |  |
+
+### `flha_field_capture`
+
+The crew authors the day's hazard assessment ON-SITE — real hazards from the people standing in front of them, not a desk draft. Creates the job's FLHA for today (or upgrades an auto-draft): field-authored hazards are merged in and the record is marked source=field. Auto-drafts (flha_open) are starting points; this is the source of truth.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `jobId` | string | yes |  |
+| `capturedBy` | string | yes |  |
+| `crew` | array of string | yes |  |
+| `siteConditions` | string | yes |  |
+| `hazards` | array of objects | yes |  |
+| `musterPoint` | string | no |  |
+
+## Growth
+
+### `review_request`
+
+Draft the post-job review ask for a completed job — brand voice (no exclamation points), personal, with the one-line prompt that actually gets responses. Logs the request so reputation_report can track response rate. Draft only; a human sends it.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `jobId` | string | yes |  |
+
+### `reputation_report`
+
+The reputation ledger: average rating, five-star share, response rate on requests, review velocity, and the testimonial bank (best quotes, ready for the website). Reviews are earned data — this is the growth loop's dashboard.
+
+_No parameters._
+
+### `job_pnl_report`
+
+The Job P&L tab: every job's quoted-vs-actual — revenue, cost (time-log labor counted when actuals are missing), profit, margin, verdict — plus the business scorecard: jobs, total revenue, total cost, overall margin, quote win rate, and average $/sqft.
+
+_No parameters._
+
+### `dispatch_board`
+
+The live dispatch board, bucketed by the real pipeline statuses (Awaiting acceptance → Booked → Confirmed → In progress → Complete → Invoiced → Paid), with today's work, unscheduled-but-paid flags, and crew assignments.
+
+_No parameters._
+
+### `brand_configure`
+
+Make an adapted business feel like ITS OWN business: set the company name, tagline, and motto that flow into rendered quotes, invoices, review asks, and the workbook's Start Here tab. Pairs with franchise_spinup — spin up the trade, then brand it.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `company` | string | no |  |
+| `tagline` | string | no |  |
+| `motto` | string | no |  |
+
+### `franchise_preview`
+
+See exactly what franchise_spinup would install for a trade — rate card, depth labels, trade-specific hazards — WITHOUT touching the current business. Safe on shared demos; the adaptable toolkit's showroom.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `tradePack` | string | yes | One of: pressure-washing, line-painting, mobile-detailing — or any trade name to fuzzy-match |

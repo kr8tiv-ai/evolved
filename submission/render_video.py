@@ -14,9 +14,10 @@ import sys, math, subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
+import os
 W, H, FPS = 1920, 1080, 30
-HERE = r"C:\Users\lucid\AppData\Local\Temp\claude\C--Users-lucid-Desktop\2bb277fc-d67c-4df9-9e96-4d29bee47e6e\scratchpad\video"
-LOGO_PATH = r"C:\Users\lucid\Desktop\evolved\assets\evolve-logo.png"
+HERE = os.environ.get("EVOLVED_VIDEO_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "video-work"))
+LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "evolve-logo.png")
 
 # ---- palette -----------------------------------------------------------
 BG      = (10, 10, 10)
@@ -209,9 +210,11 @@ def s_title(t, dur):
     if ulp>0:
         uw=int(430*ulp); rrect([cx-uw//2,500,cx+uw//2,508], radius=4, fill=rgba(LIME,255))
     a3 = smooth((t-1.35)/0.7)
-    T((cx,552), "A real Alberta blasting company, run by an AI.", F('semi',46), SILVER, int(255*a3), 'ma')
-    a4 = smooth((t-1.9)/0.7)
-    draw_tracked((cx,650), "OKX AI GENESIS    ·    MCP AGENTIC SERVICE PROVIDER    ·    PAID ON-CHAIN",
+    T((cx,552), "Any service business, run by an AI.", F('semi',48), SILVER, int(255*a3), 'ma')
+    a3b = smooth((t-1.75)/0.6)
+    T((cx,616), "Proven on a real Alberta company. Paid on-chain.", F('reg',32), DIM, int(255*a3b), 'ma')
+    a4 = smooth((t-2.1)/0.7)
+    draw_tracked((cx,690), "OKX AI GENESIS    ·    MCP AGENTIC SERVICE PROVIDER    ·    X LAYER TESTNET",
                  F('bahn',27), GREEN, tracking=6, anchor='ma', alpha=int(220*a4))
     return flatten(img)
 
@@ -223,8 +226,8 @@ def s_premise(t, dur):
     T((70,205), "The operating system of a real company,", F('black',62), TEXT, int(255*a))
     a2 = smooth((t-0.5)/0.6)
     T((70,285), "live as an MCP service.", F('black',62), GREEN, int(255*a2))
-    chips = [("65","TOOLS · 13 DOMAINS"),("2","OKX RAILS · x402 + X LAYER"),
-             ("31","TESTS PASSING"),("2","HUMAN GATES · BOTH MONEY")]
+    chips = [("83","TOOLS · 16 DOMAINS"),("2","OKX RAILS · x402 + X LAYER"),
+             ("41","TESTS PASSING"),("2","HUMAN GATES · BOTH MONEY")]
     y0=430
     for i,(big,small) in enumerate(chips):
         ap = smooth((t-0.7-i*0.13)/0.5)
@@ -237,7 +240,7 @@ def s_premise(t, dur):
     if ap>0:
         by=632
         draw_tracked((70,by), "GET /health", F('monob',26), CYAN, alpha=int(255*ap))
-        T((250,by), '{ "ok": true, "service": "evolved", "protocol": "MCP Streamable HTTP", "tools": 65 }',
+        T((250,by), '{ "ok": true, "service": "evolved", "protocol": "MCP Streamable HTTP", "tools": 83 }',
           F('mono',26), DIM, int(255*ap))
         draw_tracked((70,by+44), "LIVE", F('bahn',20), GREEN, tracking=3, alpha=int(255*ap))
         T((146,by+44), "powderblue-leopard-801168.hostingersite.com", F('mono',24), DIM2, int(255*ap))
@@ -245,10 +248,46 @@ def s_premise(t, dur):
              "and running live as an agent-callable service."], t, 1.0)
     return flatten(img)
 
+TRADE_CARDS = [
+    ("PRESSURE WASHING", "Rinse $0.30 · Wash $0.50 · Deep $0.85 · Strip $1.50 /sqft",
+     "wand injection · wet-surface slips · ladder work", GREEN),
+    ("LINE PAINTING", "Re-stripe $0.22 · New $0.35 · Layout $0.55 · Stencils $1.10 /sqft",
+     "live traffic · fumes & overspray · heat stress", CYAN),
+    ("MOBILE DETAILING", "Express $8 · Full $14 · Detail $24 · Restore $45 /unit",
+     "chemical exposure · customer property", AMBER),
+    ("YOUR TRADE", "one entry in src/trades.ts — rate card + hazards, ~30 lines",
+     "then brand_configure makes it feel like YOUR company", LIME),
+]
+
+def s_trade(t, dur):
+    img = BASE.copy(); begin_layer()
+    scene_chrome(img, "ANY BUSINESS, ONE CALL", t/dur, t)
+    kicker("THE ADAPTABLE TOOLKIT", 70, 150, t, 0.1)
+    a = smooth((t-0.2)/0.5)
+    T((70,200), "Pick a trade. The whole machine is yours.", F('black',58), TEXT, int(255*a))
+    a2 = smooth((t-0.5)/0.5)
+    draw_tracked((70,286), "franchise_spinup { tradePack, companyName, confirm }", F('monob',30), GREEN, alpha=int(255*a2))
+    y0 = 360
+    for i,(name, rates, hz, col) in enumerate(TRADE_CARDS):
+        at = 0.75 + i*0.5
+        la = smooth((t-at)/0.5)
+        if la<=0: break
+        rise = int(18*(1-ease_out((t-at)/0.55)))
+        yy = y0 + i*118 - rise
+        panel_bg(img,[70, yy, 1850, yy+100], radius=14, fill=PANEL, alpha=int(235*la))
+        aa=int(255*la)
+        draw_tracked((100,yy+16), name, F('bahn',30), col, tracking=3, alpha=aa)
+        T((100,yy+58), rates, F('mono',25), SILVER, aa)
+        T((1100,yy+22), "hazards → every JHA:", F('reg',22), DIM2, int(aa*0.9))
+        T((1100,yy+54), hz, F('reg',24), DIM, int(aa*0.95))
+    caption(["Rate card into the quoting engine, trade hazards into every JHA,",
+             "empty books, full machinery — quoting, dispatch, payroll clock, on-chain invoicing."], t, 2.6)
+    return flatten(img)
+
 def s_photo(t, dur):
     img = BASE.copy(); begin_layer()
     scene_chrome(img, "ACT I · THE ENGAGEMENT", t/dur, t)
-    kicker("FRONTIER · PHOTO-TO-QUOTE", 70, 150, t, 0.1)
+    kicker("INTAKE · TEXT, VOICE, OR PHOTO", 70, 150, t, 0.1)
     a = smooth((t-0.2)/0.5)
     T((70,200), "A customer texts a photo.", F('black',58), TEXT, int(255*a))
     px0,py0,px1,py1 = 70, 300, 640, 760
@@ -350,10 +389,10 @@ FLHA_HAZ = [
 def s_flha(t, dur):
     img = BASE.copy(); begin_layer()
     scene_chrome(img, "ACT I · THE ENGAGEMENT", t/dur, t)
-    kicker("SAFETY · FLHA", 70, 132, t, 0.05)
+    kicker("SAFETY · JHA, AUTHORED ON-SITE", 70, 132, t, 0.05)
     a = smooth((t-0.15)/0.5)
-    T((70,180),"No FLHA, no blasting.", F('black',56), TEXT, int(255*a))
-    T((648,202),"drafted from the job scope — real hazards, real mitigations", F('reg',28), DIM, int(255*a))
+    T((70,180),"The crew writes the JHA on-site.", F('black',56), TEXT, int(255*a))
+    T((940,202),"flha_field_capture — auto-drafts are only starting points", F('reg',28), DIM, int(255*a))
     y0=282
     for i,(hz, risk, mit, rc) in enumerate(FLHA_HAZ):
         at = 0.5 + i*0.42
@@ -378,8 +417,40 @@ def s_flha(t, dur):
         draw_tracked((1614,636),"MUSTER POINT", F('bahn',22), GREEN, tracking=2, alpha=int(255*ra))
         T((1614,678),"Truck staging area", F('semi',27), SILVER, int(255*ra))
         draw_tracked((1614,732),"UNCONTROLLED → CONTROLLED", F('bahn',18), DIM2, tracking=2, alpha=int(255*ra))
-    caption(["Every job opens the day's hazard assessment before work starts —",
-             "specific mitigations from the hazard library, not boilerplate."], t, 1.6)
+    caption(["Captured by the people standing in front of the hazards,",
+             "signed off by the crew at end of day — the permanent safety record."], t, 1.6)
+    return flatten(img)
+
+WB_TABS = ["Start Here","Quotes","Customers","Leads","Dispatch","Expenses","Invoices",
+           "Inventory","Suppliers","Crew","Time Log","Job Photos","Field Notes",
+           "Safety (FLHA)","Reviews","Action Items","To-Do","Rate Table","Job P&L","Record Log"]
+
+def s_workbook(t, dur):
+    img = BASE.copy(); begin_layer()
+    scene_chrome(img, "THE WORKBOOK SPINE", t/dur, t)
+    kicker("YOUR BOOKS, YOUR SHEET", 70, 150, t, 0.1)
+    a = smooth((t-0.2)/0.5)
+    T((70,200), "The whole OS is a real workbook.", F('black',58), TEXT, int(255*a))
+    a2 = smooth((t-0.55)/0.5)
+    draw_tracked((70,290), "workbook_create", F('monob',30), GREEN, alpha=int(255*a2))
+    T((360,292), "→ a live Google Sheets ops workbook, every collection a tab", F('reg',28), DIM, int(255*a2))
+    a3 = smooth((t-0.85)/0.5)
+    draw_tracked((70,342), "workbook_export", F('monob',30), CYAN, alpha=int(255*a3))
+    T((360,344), "→ the identical 20 tabs as CSV — zero credentials, works offline", F('reg',28), DIM, int(255*a3))
+    # tab chips grid, 5 columns
+    x0, y0, cw, chh, gx, gy = 70, 440, 340, 74, 18, 16
+    for i, tab in enumerate(WB_TABS):
+        at = 1.1 + i*0.09
+        la = smooth((t-at)/0.4)
+        if la<=0: break
+        col = i % 5; row = i // 5
+        bx = x0 + col*(cw+gx); by = y0 + row*(chh+gy)
+        panel_bg(img,[bx,by,bx+cw,by+chh], radius=12, fill=PANEL, alpha=int(230*la))
+        aa = int(255*la)
+        rrect([bx+16,by+26,bx+22,by+48], radius=2, fill=rgba(GREEN,aa))
+        T((bx+38,by+22), tab, F('semi',26), TEXT, aa)
+    caption(["The spine the production company runs on — synced by the agent,",
+             "readable by any human, portable to any business."], t, 3.2)
     return flatten(img)
 
 def s_x402(t, dur):
@@ -494,13 +565,15 @@ def s_end(t, dur):
 #  TIMELINE
 # =======================================================================
 SCENES = [
-    (6.0,  s_title),
-    (8.5,  s_premise),
-    (13.5, s_photo),
-    (22.0, s_lifecycle),
-    (10.0, s_flha),
-    (19.0, s_x402),
-    (10.0, s_end),
+    (5.5,  s_title),
+    (8.0,  s_premise),
+    (8.5,  s_trade),
+    (11.5, s_photo),
+    (20.0, s_lifecycle),
+    (8.5,  s_flha),
+    (8.5,  s_workbook),
+    (15.5, s_x402),
+    (8.0,  s_end),
 ]
 OVERLAP = 0.5
 starts=[0.0]

@@ -153,7 +153,7 @@ def cover():
     tracked(d, (tx + 6, 336), "BUSINESS MANAGEMENT IN A BOX", JB(30), SILVER, 5)
     tracked(d, (tx + 6, 392), "ANY SERVICE BUSINESS, ONE CALL  ·  RUN BY AN AI  ·  PAID ON-CHAIN", JBR(19), AURORA, 1)
     # chips
-    chips = ["67 MCP TOOLS", "13 DOMAINS", "X LAYER TESTNET", "LIVE PLAYGROUND", "OPEN SOURCE · MIT"]
+    chips = ["83 MCP TOOLS", "16 DOMAINS", "X LAYER TESTNET", "LIVE PLAYGROUND", "OPEN SOURCE · MIT"]
     cx = 150
     cy = 500
     for c in chips:
@@ -263,7 +263,7 @@ def toolkit():
     img = base()
     logo(img, 60, 60, 54, glow=False)
     d = ImageDraw.Draw(img)
-    tracked(d, (150, 66), "67 TOOLS  ·  13 DOMAINS  ·  ANY TRADE IN ONE CALL", JB(28), SILVER, 2)
+    tracked(d, (150, 66), "83 TOOLS  ·  16 DOMAINS  ·  ANY TRADE IN ONE CALL", JB(28), SILVER, 2)
     tracked(d, (150, 112), "THE WHOLE MCP SPEC — TOOLS, RESOURCES, PROMPTS", JBR(17), AURORA, 2)
     domains = [
         "Quoting intelligence", "Money & invoicing", "Pipeline & dispatch",

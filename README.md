@@ -12,11 +12,11 @@
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://powderblue-leopard-801168.hostingersite.com/health)
-[![Tools](https://img.shields.io/badge/tools-67-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
-[![Tests](https://img.shields.io/badge/tests-36_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
+[![Tools](https://img.shields.io/badge/tools-83-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
+[![Tests](https://img.shields.io/badge/tests-41_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
-[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [67 tools](#the-tool-surface--67-tools-13-domains) · [Docs](docs/)
+[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [83 tools](#the-tool-surface--83-tools-16-domains) · [Docs](docs/)
 
 </div>
 
@@ -51,7 +51,7 @@ Then run the whole company locally — no keys, no accounts, no funds:
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
-npm test        # 36 tests — including a LIVE X Layer testnet probe
+npm test        # 41 tests — including a LIVE X Layer testnet probe
 npm run demo    # the business loop, narrated in your terminal
 ```
 
@@ -62,8 +62,9 @@ npm run demo    # the business loop, narrated in your terminal
 - **Real-world ASP, both OKX rails.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC, and Evolved itself is monetized per-call through x402. An SMB earning on-chain *and* an agent service billing on-chain, in one submission.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). 36 tests pass, one of them live against X Layer testnet.
-- **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call. Business management in a box is the product, not the tagline.
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). 41 tests pass, one of them live against X Layer testnet.
+- **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 20 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
+- **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
 ## Watch one agent run the whole engagement
 
@@ -115,9 +116,9 @@ The company is swappable. `franchise_spinup { tradePack: "pressure-washing", con
 
 ## Full parity with the production system
 
-Everything the live field app does, as first-class tools: **inventory control** (par levels, reorder suggestions priced from real COD receipts, per-job burn-down, supplier price-spike watch), **contacts/CRM** (customers with balances, suppliers with pricebooks, crew with certifications), **the ops-sheet engine** (the data spine rendered as the operations workbook — 14 tabs, append-only discipline, and the field App Inbox with a deterministic filing engine), and **accounting depth** (tiered-OCR receipts with vendor canonicalization and duplicate guards, discrepancy reports, escalating receivables reminders, P&L with reclaimable GST).
+Everything the live field app and ops workbook do, as first-class tools: **inventory control** (par levels, reorder suggestions priced from real COD receipts, per-job burn-down, supplier price-spike watch), **contacts/CRM** (customers with balances, suppliers with pricebooks, crew with certifications), **the ops-sheet engine** (the data spine rendered as the operations workbook — the field App Inbox with a deterministic filing engine), **accounting depth** (tiered-OCR receipts with vendor canonicalization and duplicate guards, discrepancy reports, escalating receivables reminders, P&L with reclaimable GST), **the workbook spine** (a real Google Sheets workbook created and synced from the database, or the same 20 tabs as CSV with zero credentials), **field operations** (before/after photo albums with gap detection, voice and text field notes that never get lost, a crew time clock that feeds real labor cost into Job P&L, and hazard assessments authored ON-SITE by the crew — auto-drafts are only starting points), and **growth** (review requests with a tracked response rate, the reputation ledger and testimonial bank, the Job P&L scorecard with win rate and overall margin, and the live dispatch board).
 
-## The tool surface — 67 tools, 13 domains
+## The tool surface — 83 tools, 16 domains
 
 | Domain | Tools |
 |---|---|
@@ -134,6 +135,9 @@ Everything the live field app does, as first-class tools: **inventory control** 
 | **Autonomous lifecycle** | `lifecycle_start` · `lifecycle_advance` · `lifecycle_status` · `quote_esign_sign` · `review_record` |
 | **Frontier** | `quote_from_photo` · `voice_command` · `cfo_forecast` · `cfo_health` |
 | **Business-in-a-box** | `insights_generate` · `insight_feedback` · `activity_feed` · `backup_create` · `backup_list` · `franchise_spinup` |
+| **Workbook spine** | `workbook_create` · `workbook_sync` · `workbook_link` · `workbook_export` · `workbook_status` |
+| **Field ops** | `field_photo_log` · `field_note` · `crew_checkin` · `crew_checkout` · `flha_field_capture` |
+| **Growth** | `review_request` · `reputation_report` · `job_pnl_report` · `dispatch_board` · `brand_configure` · `franchise_preview` |
 
 Parameter-level reference, generated from the live server so it cannot drift: [docs/TOOLS.md](docs/TOOLS.md).
 
@@ -145,17 +149,18 @@ Three layers, dependencies pointing one way: tools validate and delegate, engine
 src/
 ├── index.ts            stdio entry — plug into Claude Desktop / any MCP client
 ├── http.ts · app.ts    Streamable HTTP: /mcp (free) · /mcp-paid (x402) · /health · /stats
-├── server.ts           assembles all 67 tools + 3 MCP resources + 3 prompts
+├── server.ts           assembles all 83 tools + 3 MCP resources + 3 prompts
 ├── playground.ts       the zero-install browser playground (Judge Mode lives here)
-├── tools/              13 domains — thin, zod-validated handlers (quoting, money, pipeline,
+├── tools/              16 domains — thin, zod-validated handlers (quoting, money, pipeline,
 │                       safety, inventory, contacts, sheet, accounting, payments, lifecycle,
-│                       vision, voice, cfo, ops, opsplus)
+│                       vision, voice, cfo, ops, opsplus, workbook, field, growth)
 ├── engine/             pure business logic — pricing + learning loop, OCR, safety/FLHA,
 │                       weather gating, digest, actions (ball-drop rules), CFO, NLU (voice),
-│                       vision, x402/X Layer payments, brand rendering
+│                       vision, x402/X Layer payments, brand rendering, and the Google
+│                       Sheets workbook spine (service-account JWT via node:crypto, no SDK)
 ├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
 ├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
-└── test/               36 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+└── test/               41 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
 ```
 
 ## Wire it into your agent
@@ -184,7 +189,11 @@ npm test
 # ✔ review fixes: replay protection, declined e-sign is final, custom price break-even flag
 # ✔ franchise spin-up re-seeds the OS for a new trade
 # ✔ pricing: confidence rises with data, quote range tightens, market benchmark flags under/over
-# … 36 passing
+# ✔ workbook: 20 tabs cover the whole OS; CSV export writes real files; no-creds create falls back
+# ✔ field ops: photo album gaps, note routing to the inbox, time clock feeds Job P&L labor
+# ✔ safety: the JHA is authored on-site — field capture creates or upgrades the day's FLHA
+# ✔ growth: review loop, reputation ledger, dispatch board flags, brand config, pack preview
+# … 41 passing
 ```
 
 The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

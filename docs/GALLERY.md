@@ -13,7 +13,7 @@ uploaded to the HackQuest project.
 ### Paid on-chain — x402 on X Layer (402 → proof → receipt)
 ![On-chain x402 flow](../assets/gallery/03-onchain.png)
 
-### 67 tools · 13 domains · any trade in one call
+### 83 tools · 16 domains · any trade in one call
 ![Toolkit and domains](../assets/gallery/04-toolkit.png)
 
 ---

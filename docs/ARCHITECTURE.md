@@ -14,7 +14,7 @@ flowchart TB
         A[stdio — src/index.ts]
         B[Streamable HTTP — src/http.ts<br>POST /mcp, stateless, free A2MCP endpoint]
     end
-    subgraph surface [Tool surface — src/tools/* — 67 tools]
+    subgraph surface [Tool surface — src/tools/* — 83 tools]
         Q[quoting 7 · money 5 · pipeline 6<br>safety 3 · ops 6]
         R[inventory 5 · contacts 5 · sheet 6<br>accounting 3 · payments 4]
         S2[lifecycle 5 · vision 1 · voice 1<br>cfo 2 · opsplus 6]
@@ -37,11 +37,20 @@ clients and over Streamable HTTP for hosted use. The HTTP entry point is
 deliberately **stateless** — a fresh server and transport per request — so the
 free A2MCP endpoint scales horizontally and holds no session state.
 
-**Tool surface.** 67 tools in 13 domains (the five originals plus inventory,
+**Tool surface.** 83 tools in 16 domains (the five originals plus inventory,
 contacts/CRM, the ops-sheet engine, accounting depth, on-chain payments,
-the autonomous lifecycle, the frontier set, and business-in-a-box). Tools
-validate input with zod, call engines, and return JSON. They never reach
-around the engines to touch the store directly for business logic.
+the autonomous lifecycle, the frontier set, business-in-a-box, the workbook
+spine, field ops, and growth). Tools validate input with zod, call engines,
+and return JSON. They never reach around the engines to touch the store
+directly for business logic.
+
+**The workbook spine.** The production company lives in a Google Sheets
+operations workbook; `src/engine/sheets.ts` makes that portable. It renders
+the entire database as 20 tabs, creates and syncs a real Google Sheets
+workbook through a service-account JWT signed with `node:crypto` (no SDK
+dependency, no stored tokens), and exports the identical tabs as CSV when no
+credentials exist — the spine works offline by default and upgrades with one
+env var (`EVOLVED_GOOGLE_SA`).
 
 **Engines.** Pure logic, no MCP awareness. This is where the company's real
 math and policy live: the rate table, the 5% GST and 25%-of-total deposit,

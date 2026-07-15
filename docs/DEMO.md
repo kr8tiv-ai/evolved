@@ -5,7 +5,7 @@
 > on the first Good blast day, FLHA drafted, inventory burned down,
 > invoiced, on-chain payment request issued on X Layer testnet. Act 2
 > (45–80s): the x402 curl — 402 challenge, pay, 200 with the settlement
-> receipt header. Close (80–90s): "67 tools. A real company's operating
+> receipt header. Close (80–90s): "83 tools. A real company's operating
 > system, live on OKX.AI as an ASP, getting paid on-chain — try it in your
 > browser." (Show the playground URL.) The classic 10-beat cut below still
 > works as an alternative.
