@@ -2,7 +2,7 @@
 
 <img src="assets/hero.png" alt="Evolved — Evolve Eco Blasting's operations brain as an autonomous agentic service" width="100%">
 
-### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company that runs on it and gets paid on-chain.
+### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company, settling its invoices in OKB on X Layer testnet, verified on-chain.
 
 **▶ [TRY IT LIVE — the browser playground](https://powderblue-leopard-801168.hostingersite.com/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
 

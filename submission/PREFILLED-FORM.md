@@ -44,7 +44,7 @@ A2MCP
 1. [ ] HackQuest: log in and hit Register on hackquest.io/hackathons/OKXAI-Genesis-Hackathon (account-bound; 2 minutes).
 2. [ ] Onchain OS listing (docs/OKX-LISTING.md) -> capture the **Agent ID**.
 3. [ ] Optional but judge-recommended: set EVOLVED_PAYTO to your testnet wallet, settle ONE real X Layer testnet payment, pin the txHash + OKLink link in README/video/X post.
-4. [ ] Record the <=90s video (docs/DEMO.md two-act cut; show the playground and the franchise_spinup moment).
+4. [x] Demo video DONE — submission/evolved-demo.mp4 (86s, funk soundtrack), streams at https://powderblue-leopard-801168.hostingersite.com/demo.mp4; attach it natively to the X post.
 5. [ ] Post on X with #OKXAI (submission/x-post-draft.md) -> capture the post URL.
 6. [ ] Open the pre-filled link above, fill the four fields, submit.
 7. [ ] Screenshot the form confirmation.

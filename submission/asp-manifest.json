@@ -1,5 +1,5 @@
 {
-  "$comment": "Evolved — ASP registration answer sheet for OKX.AI (A2MCP). OKX's registration runs conversationally through the Onchain OS skill; these are the answers to paste when prompted. Replace <ENDPOINT_HOST> after deploying.",
+  "$comment": "Evolved — ASP registration answer sheet for OKX.AI (A2MCP). OKX's registration runs conversationally through the Onchain OS skill; these are the answers to paste when prompted. All URLs are live.",
   "asp": {
     "name": "Evolved",
     "tagline": "Business management in a box — any service business, spun up in one call; proven on a real company that gets paid on-chain",

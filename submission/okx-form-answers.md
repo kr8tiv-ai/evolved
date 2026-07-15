@@ -44,7 +44,7 @@ Every rate, rule, and workflow in Evolved is production truth from a company tha
 
 1. [x] Deploy to a public host — DONE: https://powderblue-leopard-801168.hostingersite.com/mcp (Hostinger managed hosting; see docs/DEPLOY-HOSTINGER.md).
 2. [ ] Onchain OS: install skill, log in to Agentic Wallet (your email), register A2MCP ASP, list it (prompts in docs/OKX-LISTING.md; answers in submission/asp-manifest.json).
-3. [ ] Record the ≤90s demo (cut plan in docs/DEMO.md).
+3. [x] Demo video DONE — submission/evolved-demo.mp4, hosted at /demo.mp4 (see submission/DEMO-VIDEO.md).
 4. [ ] Post on X with #OKXAI (draft in submission/x-post-draft.md) + video.
 5. [ ] Fill this form with the endpoint URL, Agent ID, and X post link.
 6. [ ] Confirm the listing passes review (~24h) — required for eligibility, so do not leave it past July 16.

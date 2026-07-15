@@ -3,8 +3,9 @@
 Evolved lists as an **A2MCP Agentic Service Provider** — the standardized
 MCP-service class. Per OKX's ASP requirements, an A2MCP endpoint must be one
 of two compliant forms: **a free endpoint that returns the result directly**,
-or an x402-based paid endpoint. Evolved ships the free form; the paid upgrade
-path is documented below.
+or an x402-based paid endpoint. Evolved ships **both**: the free endpoint at
+`POST /mcp` and an implemented x402 pay-per-call tier at `POST /mcp-paid`
+(details below).
 
 ## Why A2MCP (not A2A)
 

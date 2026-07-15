@@ -46,7 +46,7 @@ fully CC0 build.
 
 ## How it was built
 
-- `render.py` — deterministic Pillow frame renderer (title, premise, photo-quote,
+- [`render_video.py`](render_video.py) — deterministic Pillow frame renderer (title, premise, photo-quote,
   lifecycle, FLHA, x402, end card) with animated captions, composited to 1080p30.
 - `build_music.py` — the original CC0 lofi track (superseded by the licensed
   funk soundtrack in the current cut).

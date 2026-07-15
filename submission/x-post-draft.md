@@ -5,25 +5,33 @@
 >
 > **Media plan (X allows one video OR up to four images per post, not both):**
 > - **Main post** → attach the demo video `submission/evolved-demo.mp4`
->   (86s, funk soundtrack, also streaming at
->   https://powderblue-leopard-801168.hostingersite.com/demo.mp4).
+>   (86s — under the 140s free-tier video cap; funk soundtrack; also streaming
+>   at https://powderblue-leopard-801168.hostingersite.com/demo.mp4).
 > - **Reply 1** → attach the branded card `assets/x-post-card.png`
 >   (1600×900, also staged at `Desktop\HACKQUEST-IMAGES\x-post-card.png`).
+>
+> **PREMIUM CHECK (do this first):** the main post is ~1,000 characters and
+> only publishes on an X Premium account (long-form). Open the composer — if
+> you don't see the raised character limit, use the ≤280 FALLBACK below
+> instead. #OKXAI sits in the FIRST line either way, so it survives timeline
+> truncation, quote-tweets, and screenshots.
 
 ---
 
-**Main post:**
+**Main post (Premium long-form, video attached):**
 
-Most AI business tools are chatbots wearing a suit.
+Most AI business tools are chatbots wearing a suit. #OKXAI
 
-Evolved is a company-in-a-box for the agent economy: ANY service business, spun up in one call — and it's proven, because a real Alberta blasting company already runs on it and gets PAID ON-CHAIN via @okx X Layer.
+Evolved is a company-in-a-box for the agent economy: ANY service business, spun up in one call.
+
+Not vaporware. A real Alberta blasting company runs on this playbook today — and Evolved settles its invoices in OKB on @okx X Layer testnet, verified on-chain, no keys ever held.
 
 One agent runs the whole engagement, humans approve only the money:
 ◆ Photo → priced branded quote in seconds
 ◆ E-sign → weather-gated booking → FLHA safety → receipts → invoice
-◆ Invoice settles in OKB on X Layer (testnet) — verified on-chain, no keys ever held
-◆ Evolved itself is a paid ASP via x402: 402 challenge → pay per call → answer
-◆ Voice commands from the crew, a CFO simulator, and a quote engine that learns from won jobs
+◆ Invoices settle in OKB on X Layer testnet — read-only RPC verify, replay-protected
+◆ x402: other agents pay Evolved per call via a live 402 payment challenge
+◆ Voice commands from the crew, a CFO simulator, a quote engine that learns from won jobs
 ◆ Trade packs ship today: pressure washing, line painting, mobile detailing — yours is one file away
 
 67 tools. 36 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
@@ -37,11 +45,23 @@ github.com/kr8tiv-ai/evolved
 
 ---
 
+**FALLBACK main post (≤280, any account tier, video attached):**
+
+Most AI business tools are chatbots wearing a suit. #OKXAI
+
+Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 67 tools, open source.
+
+powderblue-leopard-801168.hostingersite.com
+
+github.com/kr8tiv-ai/evolved
+
+---
+
 **Reply 1 (thread — attach assets/x-post-card.png):**
 
-Why it is different: two feedback loops.
+The moat: it learns from every job. Two feedback loops.
 
-Every completed job records quoted rate vs actual cost — the engine prices the next job smarter. And the books re-audit themselves daily: deposit in but unscheduled, invoice unpaid 7 days, job done but never invoiced — auto-raised, not remembered.
+Every job records quoted rate vs actual cost — the engine prices the next job smarter. And the books re-audit themselves on every pass: deposit in but unscheduled, invoice unpaid, job done but never invoiced — auto-raised.
 
 **Reply 2 (thread, optional):**
 
@@ -49,5 +69,7 @@ Born on a jobsite, not in a pitch deck. The production system runs the company t
 
 ---
 
-Character check: main post ≈ 990 chars — fine for Premium; if posting from a
-non-Premium account, trim the bullet block to the first three bullets.
+Character audit (X-weighted, URLs = 23 via t.co): main ≈ 1,000 (Premium
+long-form required), fallback ≤ 280, Reply 1 ≤ 280, Reply 2 ≤ 280. Video is
+86s — under the 140s cap on every tier. Upload the video NATIVELY (not as a
+link) — the eligibility requirement is "video attached to main post."

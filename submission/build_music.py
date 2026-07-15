@@ -213,8 +213,8 @@ buf[-fo:] *= np.linspace(1,0,fo)[:,None]
 # write wav
 buf16 = np.clip(buf, -1, 1)
 buf16 = (buf16*32767).astype(np.int16)
-import wave
-path = r"C:\Users\lucid\AppData\Local\Temp\claude\C--Users-lucid-Desktop\2bb277fc-d67c-4df9-9e96-4d29bee47e6e\scratchpad\video\evolved_lofi.wav"
+import wave, os, sys
+path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "evolved_lofi.wav")
 with wave.open(path,'w') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes(buf16.tobytes())
