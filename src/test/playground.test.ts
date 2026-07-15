@@ -29,7 +29,9 @@ test("playground: page serves on / and /playground, health lists it", async () =
       assert.match(r.headers.get("content-type") ?? "", /text\/html/);
       const html = await r.text();
       assert.match(html, /EVOLVED/);
-      assert.match(html, /LIVE PLAYGROUND/);
+      assert.match(html, /Run the whole/);
+      assert.match(html, /Judge Mode/);
+      assert.match(html, /media\/hero\.webm/);
       assert.match(html, /x402/i);
       assert.match(html, /lifecycle_start/);
     }

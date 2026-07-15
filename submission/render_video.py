@@ -391,32 +391,34 @@ def s_flha(t, dur):
     scene_chrome(img, "ACT I · THE ENGAGEMENT", t/dur, t)
     kicker("SAFETY · JHA, AUTHORED ON-SITE", 70, 132, t, 0.05)
     a = smooth((t-0.15)/0.5)
-    T((70,180),"The crew writes the JHA on-site.", F('black',56), TEXT, int(255*a))
-    T((940,202),"flha_field_capture — auto-drafts are only starting points", F('reg',28), DIM, int(255*a))
-    y0=282
+    T((70,176),"The crew writes the JHA on-site.", F('black',52), TEXT, int(255*a))
+    T((72,244),"flha_field_capture — hazards from the people standing in front of them; auto-drafts are only starting points", F('reg',25), DIM, int(255*a))
+    y0=302
     for i,(hz, risk, mit, rc) in enumerate(FLHA_HAZ):
         at = 0.5 + i*0.42
         la = smooth((t-at)/0.5)
         if la<=0: break
         rise = int(18*(1-ease_out((t-at)/0.55)))
-        yy = y0 + i*104 - rise
-        panel_bg(img,[70, yy, 1540, yy+88], radius=14, fill=PANEL, alpha=int(235*la))
+        yy = y0 + i*96 - rise
+        panel_bg(img,[70, yy, 1540, yy+84], radius=14, fill=PANEL, alpha=int(235*la))
         aa=int(255*la)
-        rrect([90, yy+24, 176, yy+64], radius=9, fill=rgba(rc,int(42*la)), outline=rgba(rc,aa), width=2)
-        draw_tracked((133,yy+34), risk, F('bahn',22), rc, tracking=1, anchor='ma', alpha=aa)
-        T((200,yy+15), hz, F('semi',30), TEXT, aa)
-        T((200,yy+52), mit, F('reg',22), DIM, int(aa*0.92))
+        rrect([90, yy+22, 176, yy+62], radius=9, fill=rgba(rc,int(42*la)), outline=rgba(rc,aa), width=2)
+        draw_tracked((133,yy+32), risk, F('bahn',22), rc, tracking=1, anchor='ma', alpha=aa)
+        T((200,yy+13), hz, F('semi',29), TEXT, aa)
+        T((200,yy+50), mit, F('reg',22), DIM, int(aa*0.92))
     ra = smooth((t-1.4)/0.6)
     if ra>0:
-        panel_bg(img,[1590,282,1850,802], radius=14, fill=PANEL2, alpha=int(235*ra))
-        draw_tracked((1614,306),"PPE CONFIRMED", F('bahn',22), GREEN, tracking=2, alpha=int(255*ra))
+        panel_bg(img,[1590,302,1850,790], radius=14, fill=PANEL2, alpha=int(235*ra))
+        draw_tracked((1614,326),"PPE CONFIRMED", F('bahn',22), GREEN, tracking=2, alpha=int(255*ra))
         for j,p in enumerate(["Steel-toe boots","Blast hood","P100 respirator","Dual hearing","Cut gloves","Hi-vis vest"]):
             pa=smooth((t-1.55-j*0.08)/0.4)
             if pa<=0: break
-            T((1614,352+j*44), "✓  "+p, F('reg',26), TEXT, int(255*pa))
-        draw_tracked((1614,636),"MUSTER POINT", F('bahn',22), GREEN, tracking=2, alpha=int(255*ra))
-        T((1614,678),"Truck staging area", F('semi',27), SILVER, int(255*ra))
-        draw_tracked((1614,732),"UNCONTROLLED → CONTROLLED", F('bahn',18), DIM2, tracking=2, alpha=int(255*ra))
+            py = 370+j*44
+            rrect([1614, py+7, 1628, py+21], radius=3, fill=rgba(GREEN,int(255*pa)))
+            T((1642,py), p, F('reg',26), TEXT, int(255*pa))
+        draw_tracked((1614,648),"MUSTER POINT", F('bahn',22), GREEN, tracking=2, alpha=int(255*ra))
+        T((1614,688),"Truck staging area", F('semi',27), SILVER, int(255*ra))
+        draw_tracked((1614,740),"SIGNED OFF AT END OF DAY", F('bahn',14), DIM2, tracking=1, alpha=int(255*ra))
     caption(["Captured by the people standing in front of the hazards,",
              "signed off by the crew at end of day — the permanent safety record."], t, 1.6)
     return flatten(img)

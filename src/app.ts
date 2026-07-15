@@ -97,7 +97,7 @@ export async function handleRequest(
     "content-security-policy",
     "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src https://fonts.gstatic.com; img-src 'self' data: https://github.com https://raw.githubusercontent.com; " +
-    "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+    "media-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
   );
 
   // Oversized payloads are refused before any route reads the stream.
@@ -156,6 +156,35 @@ export async function handleRequest(
       if (req.method === "HEAD") { res.end(); return; }
       createReadStream(file).pipe(res);
     }
+    return;
+  }
+
+  // Self-hosted brand media (the real Evolve site's optimized assets) — the
+  // playground's hero video and card imagery, served same-origin so the CSP
+  // stays closed to external hosts.
+  if (url.pathname.startsWith("/media/") && (req.method === "GET" || req.method === "HEAD")) {
+    const MEDIA_TYPES: Record<string, string> = {
+      "hero.webm": "video/webm", "hero-poster.webp": "image/webp",
+      "decks.webp": "image/webp", "cornerlog.webp": "image/webp",
+      "motors.webp": "image/webp", "industrial.webp": "image/webp",
+    };
+    const name = url.pathname.slice("/media/".length);
+    const type = MEDIA_TYPES[name];
+    const { existsSync, statSync, createReadStream } = await import("node:fs");
+    const { join } = await import("node:path");
+    const file = type ? join(process.cwd(), "media", name) : undefined;
+    if (!file || !existsSync(file)) {
+      res.writeHead(404, { "content-type": "application/json" });
+      res.end(JSON.stringify({ ok: false, error: "No such media." }));
+      return;
+    }
+    res.writeHead(200, {
+      "content-type": type,
+      "content-length": String(statSync(file).size),
+      "cache-control": "public, max-age=86400",
+    });
+    if (req.method === "HEAD") { res.end(); return; }
+    createReadStream(file).pipe(res);
     return;
   }
 

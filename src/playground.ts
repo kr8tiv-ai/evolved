@@ -52,9 +52,29 @@ export const PLAYGROUND_HTML = `<!doctype html>
              font-size:12px; letter-spacing:.1em; text-transform:uppercase; box-shadow:0 0 22px rgba(57,255,20,.35); }
   @media (max-width:820px){ nav .nlinks a:not(.cta){ display:none } nav{padding:14px 18px} }
 
-  /* hero */
+  /* hero — real site footage under a cinematic shade */
   .hero { position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center;
-          max-width:1180px; margin:0 auto; padding:120px 26px 90px; }
+          padding:120px 0 90px; }
+  .hero-inner { position:relative; z-index:3; max-width:1180px; margin:0 auto; padding:0 26px; width:100%;
+                will-change:transform, opacity; }
+  .herowrap { position:absolute; inset:0; overflow:hidden; z-index:0; }
+  .herovid { position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+             filter:brightness(.52) saturate(1.15) contrast(1.05); will-change:transform; }
+  .heroshade { position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.28) 34%, rgba(0,0,0,.45) 68%, #000 100%),
+               radial-gradient(90% 60% at 28% 46%, rgba(0,0,0,.28), transparent 70%); }
+
+  /* reveal-on-scroll (GSAP-grade easing, zero deps) */
+  .rv { opacity:0; transform:translateY(30px); transition:opacity .8s cubic-bezier(.2,.65,.15,1), transform .8s cubic-bezier(.2,.65,.15,1); }
+  .rv.in { opacity:1; transform:none; }
+  .rv-d1 { transition-delay:.08s } .rv-d2 { transition-delay:.16s } .rv-d3 { transition-delay:.24s } .rv-d4 { transition-delay:.32s }
+  @media (prefers-reduced-motion: reduce){ .rv{ opacity:1; transform:none; transition:none } }
+
+  /* giant outlined ghost word behind section heads */
+  .section-head { position:relative; }
+  .bg-word { position:absolute; top:-58px; left:-10px; z-index:-1; font-weight:900; white-space:nowrap;
+             font-size:clamp(90px, 15vw, 200px); letter-spacing:-.02em; text-transform:uppercase; line-height:1;
+             color:transparent; -webkit-text-stroke:1px rgba(74,222,128,.13); pointer-events:none; user-select:none; }
   .hero .eyebrow-h { display:flex; align-items:center; gap:14px; color:var(--aurora);
                      font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.34em;
                      text-transform:uppercase; margin-bottom:22px; }
@@ -89,13 +109,16 @@ export const PLAYGROUND_HTML = `<!doctype html>
   /* treeline silhouette at hero base */
   .treeline { position:absolute; bottom:0; left:0; right:0; width:100%; height:120px; z-index:1; pointer-events:none; opacity:.9; }
 
-  /* live business ticker */
+  /* the marquee — big, bold, alive */
   .tickerwrap { position:relative; z-index:2; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-                background:rgba(4,5,4,.9); overflow:hidden; white-space:nowrap; }
-  .ticker { display:inline-block; padding:11px 0; animation:tick 46s linear infinite;
-            font-family:"JetBrains Mono",monospace; font-size:12.5px; letter-spacing:.08em; color:var(--dim); }
-  .ticker b { color:var(--aurora); font-weight:600; } .ticker i { color:var(--lime); font-style:normal; }
-  .ticker span { margin:0 26px; }
+                background:rgba(3,4,3,.92); overflow:hidden; white-space:nowrap; }
+  .ticker { display:inline-block; padding:20px 0; animation:tick 52s linear infinite;
+            font-family:"Archivo"; font-weight:800; font-size:clamp(18px,2.2vw,28px); letter-spacing:.08em;
+            text-transform:uppercase; color:#3a423a; }
+  .ticker b { color:var(--silver); font-weight:800; } .ticker i { color:var(--lime); font-style:normal;
+            text-shadow:0 0 18px rgba(57,255,20,.4); }
+  .ticker span { margin:0 34px; }
+  .ticker span::after { content:"◆"; color:rgba(74,222,128,.55); font-size:.55em; margin-left:68px; vertical-align:middle; }
   @keyframes tick { from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
 
   /* section headers */
@@ -158,22 +181,30 @@ export const PLAYGROUND_HTML = `<!doctype html>
                 background:linear-gradient(90deg, var(--aurora), var(--lime)); box-shadow:0 0 14px rgba(57,255,20,.5); transition:width .6s ease; }
   .stepline { font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--dim); letter-spacing:.12em; min-height:16px; }
 
-  /* trade persona strip */
+  /* trade persona strip — real jobsite imagery, like the mother site */
   .trades { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
   @media (max-width:1000px){ .trades{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:560px){ .trades{grid-template-columns:1fr} }
-  .trade { position:relative; border:1px solid var(--line); border-radius:16px; padding:22px 20px 20px;
-           background:linear-gradient(180deg,rgba(14,16,14,.9),rgba(8,10,8,.95)); cursor:pointer;
+  .trade { position:relative; border:1px solid var(--line); border-radius:16px; padding:150px 20px 20px;
+           background:#060806; cursor:pointer; isolation:isolate;
            transition:border-color .22s, transform .22s, box-shadow .22s; overflow:hidden; }
-  .trade:hover { border-color:rgba(74,222,128,.5); transform:translateY(-4px); box-shadow:0 18px 44px rgba(0,0,0,.5); }
-  .trade .num { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--dim2); letter-spacing:.2em; }
-  .trade .tag2 { position:absolute; top:18px; right:16px; border:1px solid rgba(74,222,128,.6); color:var(--aurora);
-                 border-radius:999px; padding:3px 11px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
-  .trade h3 { font-weight:800; font-size:21px; margin:16px 0 8px; color:#fbfdfb; }
-  .trade h3 .g { color:var(--lime); }
-  .trade p { color:var(--dim); font-size:13px; line-height:1.5; }
+  .trade .ph { position:absolute; inset:0; z-index:-2; background-position:center; background-size:cover;
+               opacity:.55; filter:saturate(.9) contrast(1.05); transform:scale(1.001);
+               transition:transform .9s cubic-bezier(.2,.65,.15,1), opacity .3s; }
+  .trade .shade { position:absolute; inset:0; z-index:-1;
+                  background:linear-gradient(180deg, rgba(4,6,4,.18) 0%, rgba(3,5,3,.72) 52%, rgba(2,4,2,.96) 100%); }
+  .trade:hover { border-color:rgba(74,222,128,.55); transform:translateY(-5px); box-shadow:0 22px 54px rgba(0,0,0,.6); }
+  .trade:hover .ph { transform:scale(1.07); opacity:.68; }
+  .trade .num { position:absolute; top:18px; left:20px; font-family:"JetBrains Mono",monospace; font-size:11px; color:#c6cdc6; letter-spacing:.2em; text-shadow:0 1px 8px rgba(0,0,0,.8); }
+  .trade .tag2 { position:absolute; top:14px; right:14px; border:1px solid rgba(74,222,128,.7); color:#d9ffe2;
+                 background:rgba(3,6,3,.55); backdrop-filter:blur(3px);
+                 border-radius:999px; padding:4px 12px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+  .trade h3 { font-weight:800; font-size:21px; margin:0 0 8px; color:#fbfdfb; text-shadow:0 2px 14px rgba(0,0,0,.7); }
+  .trade h3 .g { color:var(--lime); text-shadow:0 0 16px rgba(57,255,20,.55); }
+  .trade p { color:#b7bfb7; font-size:13px; line-height:1.5; text-shadow:0 1px 8px rgba(0,0,0,.8); }
   .trade .go { margin-top:14px; color:var(--aurora); font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; display:flex; align-items:center; gap:8px; }
-  .trade .go::before { content:""; width:20px; height:1px; background:var(--aurora); }
+  .trade .go::before { content:""; width:20px; height:1px; background:var(--aurora); transition:width .25s; }
+  .trade:hover .go::before { width:34px; }
 
   /* rendered digest */
   .brief { margin-top:12px; display:none; }
@@ -230,6 +261,13 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </nav>
 
 <section class="hero">
+  <div class="herowrap">
+    <video class="herovid" id="herovid" autoplay muted loop playsinline poster="/media/hero-poster.webp">
+      <source src="/media/hero.webm" type="video/webm">
+    </video>
+    <div class="heroshade"></div>
+  </div>
+  <div class="hero-inner" id="heroInner">
   <div class="eyebrow-h">BUSINESS MANAGEMENT IN A BOX · MODEL CONTEXT PROTOCOL</div>
   <h1 class="htitle">Run the whole<br>business with<br><span class="glow">one agent.</span></h1>
   <p class="hlead">Evolved is the operating system that lets an AI run a service business end to end — quotes that price themselves, safety, receipts, dispatch, invoicing, and settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>.</p>
@@ -250,6 +288,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <span class="chip">paid calls <b id="c-paid">—</b></span>
     <span class="chip static"><a href="https://github.com/kr8tiv-ai/evolved">github.com/kr8tiv-ai/evolved</a></span>
   </div>
+  </div>
   <svg class="treeline" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
     <path fill="#000" d="M0,120 L0,74 L28,62 L40,74 L60,48 L74,66 L96,40 L108,60 L120,66 L150,44 L166,64 L190,52 L210,70 L232,40 L248,62 L268,54 L292,30 L308,58 L330,64 L356,46 L372,66 L398,52 L420,72 L444,42 L462,64 L486,56 L510,34 L528,60 L552,66 L580,48 L598,68 L622,54 L648,36 L666,62 L690,58 L714,40 L732,64 L758,52 L784,70 L806,44 L826,64 L850,56 L876,32 L894,60 L918,66 L946,48 L964,68 L988,54 L1014,38 L1032,62 L1058,58 L1084,42 L1102,64 L1128,52 L1154,70 L1178,44 L1198,66 L1222,56 L1248,34 L1266,60 L1290,66 L1318,48 L1338,68 L1362,54 L1388,40 L1408,64 L1428,58 L1440,66 L1440,120 Z"/>
   </svg>
@@ -258,7 +297,8 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <div class="tickerwrap"><div class="ticker" id="ticker"><span>booting the books…</span></div></div>
 
 <div class="section" id="run">
-  <div class="section-head">
+  <div class="section-head rv">
+    <div class="bg-word">Operate</div>
     <div class="kicker">See it work · 60 seconds</div>
     <h2 class="sh">Watch one agent <span class="glow">run a company.</span></h2>
     <p class="sp">Every button below hits the real live service. Nothing is faked; the data is synthetic and restores itself hourly. Start with Judge Mode — one click runs the entire story, hands-free.</p>
@@ -356,31 +396,36 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </div></main>
 
 <div class="section" id="adapt">
-  <div class="section-head">
+  <div class="section-head rv">
+    <div class="bg-word">Adapt</div>
     <div class="kicker">Make it yours · one call</div>
     <h2 class="sh">What business are <span class="glow">you</span> running?</h2>
     <p class="sp">Evolved is a toolkit, not a one-off. Pick a trade and preview exactly what <span class="mono">franchise_spinup</span> installs — the rate card into the quoting engine, the trade's hazards into every JHA, empty books, the full machine. Adding your own is one entry in <span class="mono">src/trades.ts</span>; <span class="mono">brand_configure</span> makes every rendered quote feel like your company. Read-only and safe to click here.</p>
   </div>
   <div class="trades">
-    <div class="trade" onclick="packPreview('pressure-washing')">
+    <div class="trade rv" onclick="packPreview('pressure-washing')">
+      <i class="ph" style="background-image:url('/media/decks.webp')"></i><i class="shade"></i>
       <div class="num">01</div><div class="tag2">Pressure washing</div>
       <h3>I wash <span class="g">driveways &amp; siding.</span></h3>
       <p>Rinse to strip-wash, priced per sqft. Wand-injection, slip, and ladder hazards in every JHA.</p>
       <div class="go">Preview the pack</div>
     </div>
-    <div class="trade" onclick="packPreview('line-painting')">
+    <div class="trade rv rv-d1" onclick="packPreview('line-painting')">
+      <i class="ph" style="background-image:url('/media/industrial.webp')"></i><i class="shade"></i>
       <div class="num">02</div><div class="tag2">Line painting</div>
       <h3>I stripe <span class="g">parking lots.</span></h3>
       <p>Re-stripe to full layout, per sqft. Live-traffic, fume, and heat-stress hazards baked in.</p>
       <div class="go">Preview the pack</div>
     </div>
-    <div class="trade" onclick="packPreview('mobile-detailing')">
+    <div class="trade rv rv-d2" onclick="packPreview('mobile-detailing')">
+      <i class="ph" style="background-image:url('/media/motors.webp')"></i><i class="shade"></i>
       <div class="num">03</div><div class="tag2">Mobile detailing</div>
       <h3>I detail <span class="g">cars &amp; fleets.</span></h3>
       <p>Express to full restoration, per unit. Chemical-exposure and customer-property hazards.</p>
       <div class="go">Preview the pack</div>
     </div>
-    <div class="trade" onclick="document.getElementById('fp-out').scrollIntoView({behavior:'smooth',block:'center'}); packPreview('pressure-washing')">
+    <div class="trade rv rv-d3" onclick="document.getElementById('fp-out').scrollIntoView({behavior:'smooth',block:'center'}); packPreview('pressure-washing')">
+      <i class="ph" style="background-image:url('/media/cornerlog.webp')"></i><i class="shade"></i>
       <div class="num">04</div><div class="tag2">Your trade</div>
       <h3>I run <span class="g">something else.</span></h3>
       <p>~30 lines in one file: your rate card + hazards. Then it is your OS — quoting, dispatch, payroll, on-chain invoicing.</p>
@@ -481,17 +526,18 @@ async function ticker(){
     var snap = await call("business_snapshot", {});
     var stats = await (await fetch("/stats")).json();
     var parts = [
+      "<span>QUOTES THAT <i>PRICE THEMSELVES</i></span>",
       "<span>RECEIVABLES <i>$" + Number(snap.money.receivables).toLocaleString() + "</i></span>",
+      "<span>PAID <i>ON-CHAIN</i></span>",
       "<span>QUOTES OUT <b>" + snap.funnel.quotesOut + "</b></span>",
       "<span>JOBS BOOKED <b>" + snap.funnel.jobsBooked + "</b></span>",
+      "<span>ANY TRADE <i>ONE CALL</i></span>",
       "<span>NEW LEADS <b>" + snap.funnel.newLeads + "</b></span>",
-      "<span>RECEIPTS ON FILE <b>" + snap.money.receiptsOnFile + "</b></span>",
-      "<span>FLHA AWAITING SIGN-OFF <b>" + snap.safety.awaitingSignoff + "</b></span>",
       "<span>PAID API CALLS <i>" + stats.paidApiCalls + "</i></span>",
       "<span>ON-CHAIN SETTLEMENTS <i>" + stats.invoicePaymentsSettled + "</i></span>",
-      "<span>MODE <b>" + esc(stats.mode.split(" ")[0].toUpperCase()) + "</b></span>"
-    ].join("·");
-    $("ticker").innerHTML = parts + "·" + parts; // duplicate for seamless loop
+      "<span>HUMANS GATE <b>ONLY MONEY</b></span>"
+    ].join("");
+    $("ticker").innerHTML = parts + parts; // duplicate for seamless loop
     $("c-paid").textContent = stats.paidApiCalls;
   } catch(e) { /* ticker is decoration; never noisy */ }
 }
@@ -821,14 +867,14 @@ function initAurora(){
   resize(); window.addEventListener("resize", resize);
   // aurora bands + fog + rising embers
   var bands = [
-    { col:"74,222,128",  amp:70, yy:0.30, wl:0.0016, sp:0.00022, th:150, a:0.20 },
-    { col:"34,211,238",  amp:52, yy:0.22, wl:0.0022, sp:-0.00017, th:90,  a:0.15 },
-    { col:"57,255,20",   amp:90, yy:0.42, wl:0.0012, sp:0.00013, th:120, a:0.13 }
+    { col:"74,222,128",  amp:70, yy:0.30, wl:0.0016, sp:0.00022, th:150, a:0.09 },
+    { col:"34,211,238",  amp:52, yy:0.22, wl:0.0022, sp:-0.00017, th:90,  a:0.06 },
+    { col:"57,255,20",   amp:90, yy:0.42, wl:0.0012, sp:0.00013, th:120, a:0.05 }
   ];
   var fog = [];
-  for (var i=0;i<5;i++) fog.push({ x:Math.random(), y:Math.random()*0.6, r:200+Math.random()*260, sp:0.00002+Math.random()*0.00004, ph:Math.random()*6.28 });
+  for (var i=0;i<4;i++) fog.push({ x:Math.random(), y:Math.random()*0.6, r:200+Math.random()*260, sp:0.00002+Math.random()*0.00004, ph:Math.random()*6.28 });
   var embers = [];
-  for (var j=0;j<44;j++) embers.push({ x:Math.random(), y:Math.random(), r:0.5+Math.random()*1.6, sp:0.00004+Math.random()*0.00010, tw:Math.random()*6.28, hue:Math.random()<0.7 });
+  for (var j=0;j<22;j++) embers.push({ x:Math.random(), y:Math.random(), r:0.5+Math.random()*1.4, sp:0.00004+Math.random()*0.00008, tw:Math.random()*6.28, hue:Math.random()<0.7 });
   function frame(t){
     ctx.clearRect(0,0,W,H);
     // deep base glow at top
@@ -839,7 +885,7 @@ function initAurora(){
     for (var f=0; f<fog.length; f++){
       var fo=fog[f]; var fx=(fo.x + Math.sin(t*fo.sp+fo.ph)*0.12)*W; var fy=fo.y*H + Math.cos(t*fo.sp*0.7+fo.ph)*40;
       var gg=ctx.createRadialGradient(fx,fy,0,fx,fy,fo.r);
-      gg.addColorStop(0,"rgba(40,70,52,0.10)"); gg.addColorStop(1,"rgba(0,0,0,0)");
+      gg.addColorStop(0,"rgba(40,70,52,0.06)"); gg.addColorStop(1,"rgba(0,0,0,0)");
       ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(fx,fy,fo.r,0,6.2832); ctx.fill();
     }
     // aurora bands
@@ -875,16 +921,40 @@ function initAurora(){
   requestAnimationFrame(loop);
 }
 
-/* ---------- nav solidify on scroll ---------- */
+/* ---------- nav solidify + hero parallax on scroll ---------- */
 function initNav(){
   var nav=document.getElementById("nav");
-  function onScroll(){ if (window.scrollY>60) nav.classList.add("solid"); else nav.classList.remove("solid"); }
-  window.addEventListener("scroll", onScroll, { passive:true }); onScroll();
+  var hi=document.getElementById("heroInner");
+  var hv=document.getElementById("herovid");
+  var raf=false;
+  function apply(){
+    raf=false;
+    var y=window.scrollY;
+    if (y>60) nav.classList.add("solid"); else nav.classList.remove("solid");
+    if (hi){ hi.style.transform="translateY("+(y*0.18)+"px)"; hi.style.opacity=Math.max(0,1-y/720); }
+    if (hv){ hv.style.transform="translateY("+(y*0.10)+"px) scale(1.02)"; }
+  }
+  window.addEventListener("scroll", function(){ if(!raf){ raf=true; requestAnimationFrame(apply); } }, { passive:true });
+  apply();
+}
+
+/* ---------- reveal on scroll (auto-tags cards; GSAP-grade easing, zero deps) ---------- */
+function initReveal(){
+  var els=document.querySelectorAll(".card, .section-head, .trade");
+  var idx=0;
+  els.forEach(function(el){ if(!el.classList.contains("rv")) el.classList.add("rv"); });
+  if (!("IntersectionObserver" in window)){ els.forEach(function(el){ el.classList.add("in"); }); return; }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, { rootMargin:"0px 0px -8% 0px", threshold:0.08 });
+  els.forEach(function(el){ io.observe(el); });
 }
 
 /* ---------- boot ---------- */
 (async function(){
-  initAurora(); initNav();
+  initAurora(); initNav(); initReveal();
   try {
     var h = await (await fetch("/health")).json();
     $("c-status").textContent = "live · v" + h.version;
