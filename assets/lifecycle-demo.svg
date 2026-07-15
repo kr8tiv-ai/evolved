@@ -1,0 +1,60 @@
+<svg width="880" height="470" viewBox="0 0 880 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Evolved autonomous lifecycle demo — animated terminal">
+  <style>
+    .card { fill: #0d0f0e; stroke: #1f2937; stroke-width: 1.5; }
+    .bar  { fill: #131614; }
+    text  { font-family: 'JetBrains Mono','Cascadia Code',Consolas,monospace; font-size: 15px; }
+    .t    { fill: #9ca3af; font-size: 13px; letter-spacing: 2px; }
+    .p    { fill: #39ff14; }
+    .s    { fill: #f3f4f6; }
+    .d    { fill: #9ca3af; }
+    .g    { fill: #39ff14; font-weight: bold; }
+    .a    { fill: #4ade80; }
+    .ok   { fill: #4ade80; font-weight: bold; }
+    .l { opacity: 0; }
+    @keyframes k1  { 0%,2%  {opacity:0} 4%  {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k2  { 0%,8%  {opacity:0} 10% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k3  { 0%,14% {opacity:0} 16% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k4  { 0%,22% {opacity:0} 24% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k5  { 0%,28% {opacity:0} 30% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k6  { 0%,34% {opacity:0} 36% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k7  { 0%,40% {opacity:0} 42% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k8  { 0%,46% {opacity:0} 48% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k9  { 0%,52% {opacity:0} 54% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k10 { 0%,60% {opacity:0} 62% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k11 { 0%,68% {opacity:0} 70% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    @keyframes k12 { 0%,76% {opacity:0} 78% {opacity:1} 94% {opacity:1} 100% {opacity:0} }
+    .l1  { animation: k1  20s linear infinite; }
+    .l2  { animation: k2  20s linear infinite; }
+    .l3  { animation: k3  20s linear infinite; }
+    .l4  { animation: k4  20s linear infinite; }
+    .l5  { animation: k5  20s linear infinite; }
+    .l6  { animation: k6  20s linear infinite; }
+    .l7  { animation: k7  20s linear infinite; }
+    .l8  { animation: k8  20s linear infinite; }
+    .l9  { animation: k9  20s linear infinite; }
+    .l10 { animation: k10 20s linear infinite; }
+    .l11 { animation: k11 20s linear infinite; }
+    .l12 { animation: k12 20s linear infinite; }
+  </style>
+
+  <rect class="card" x="1" y="1" width="878" height="468" rx="14"/>
+  <rect class="bar" x="2" y="2" width="876" height="40" rx="13"/>
+  <rect class="bar" x="2" y="24" width="876" height="18"/>
+  <circle cx="26" cy="22" r="6" fill="#ef4444" opacity="0.85"/>
+  <circle cx="48" cy="22" r="6" fill="#f59e0b" opacity="0.85"/>
+  <circle cx="70" cy="22" r="6" fill="#4ade80" opacity="0.9"/>
+  <text class="t" x="440" y="27" text-anchor="middle">EVOLVED — ONE AGENT, LEAD TO PAID</text>
+
+  <g class="l l1"><text x="28" y="78"><tspan class="p">$</tspan><tspan class="s"> lifecycle_start</tspan><tspan class="d"> { "Aurora Ridge Dental", 520 sqft sidewalk, light blast }</tspan></text></g>
+  <g class="l l2"><text x="28" y="108"><tspan class="a">◆ quoted   </tspan><tspan class="s"> ECO-Q-071526-01 — $2,635.96</tspan><tspan class="d"> · learned rate · margin 62.6% (healthy)</tspan></text></g>
+  <g class="l l3"><text x="28" y="138"><tspan class="g">▓ GATE     </tspan><tspan class="s"> approve-quote</tspan><tspan class="d"> — money waits for the human</tspan></text></g>
+  <g class="l l4"><text x="28" y="176"><tspan class="p">$</tspan><tspan class="s"> lifecycle_advance</tspan><tspan class="d"> { approveQuote: true, esignSigner: "Dr. A. Ridge" }</tspan></text></g>
+  <g class="l l5"><text x="28" y="206"><tspan class="a">◆ esigned  </tspan><tspan class="s"> accepted</tspan><tspan class="d"> — HMAC token verified · job opened · deposit recorded</tspan></text></g>
+  <g class="l l6"><text x="28" y="236"><tspan class="a">◆ scheduled</tspan><tspan class="s"> first Good blast day</tspan><tspan class="d"> — 21°C, wind 12 km/h, precip 10%</tspan></text></g>
+  <g class="l l7"><text x="28" y="266"><tspan class="a">◆ flha     </tspan><tspan class="s"> 8 hazards drafted from scope</tspan><tspan class="d"> — mitigations, PPE, muster point</tspan></text></g>
+  <g class="l l8"><text x="28" y="296"><tspan class="a">◆ complete </tspan><tspan class="s"> 43% margin</tspan><tspan class="d"> · media burned down from inventory · FLHA signed off</tspan></text></g>
+  <g class="l l9"><text x="28" y="326"><tspan class="a">◆ invoiced </tspan><tspan class="s"> balance $1,977 → 19.77 OKB</tspan><tspan class="d"> on X Layer testnet (eip155:1952)</tspan></text></g>
+  <g class="l l10"><text x="28" y="356"><tspan class="g">▓ GATE     </tspan><tspan class="s"> confirm-payment</tspan><tspan class="d"> — txHash verified on-chain, or simulated in demo</tspan></text></g>
+  <g class="l l11"><text x="28" y="394"><tspan class="p">$</tspan><tspan class="s"> lifecycle_advance</tspan><tspan class="d"> { simulatePayment: true }</tspan></text></g>
+  <g class="l l12"><text x="28" y="424"><tspan class="ok">✔ closed   </tspan><tspan class="s"> paid · review requested · rate engine taught</tspan><tspan class="d"> — nothing dropped</tspan></text></g>
+</svg>
