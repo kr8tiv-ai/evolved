@@ -27,3 +27,6 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+
+# large reproducible media source (regenerate with submission/build_music.py)
+submission/*.wav
