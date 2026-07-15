@@ -45,8 +45,8 @@ real secrets and no real funds.
 
 ## Music — royalty-free (Pixabay Content License)
 
-The soundtrack is **"Joyful Rhythm Walk (Funk)" by lightbeatsmusic**, licensed
-under the [Pixabay Content License](https://pixabay.com/service/license-summary/)
+The soundtrack is **"Background No Copyright Music" by absolutesound**,
+licensed under the [Pixabay Content License](https://pixabay.com/service/license-summary/)
 (free for commercial use, no attribution required; the track is embedded in the
 video, not redistributed standalone). Faded in/out and level-matched with
 ffmpeg (`-af volume,afade`), AAC 192k.
