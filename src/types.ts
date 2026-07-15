@@ -437,7 +437,11 @@ export interface ActivityEvent {
 }
 
 export interface Database {
-  meta: { company: string; currency: string; gstRate: number; seededAt: string };
+  meta: {
+    company: string; currency: string; gstRate: number; seededAt: string;
+    /** Lifetime settled x402 paid calls on this deployment (survives resets). */
+    paidCalls?: number;
+  };
   customers: Customer[];
   leads: Lead[];
   quotes: Quote[];

@@ -7,11 +7,74 @@
 
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer, SERVER_INFO, TOOL_COUNT } from "./server.js";
+import { PLAYGROUND_HTML } from "./playground.js";
 import {
   DEMO_PAYTO, demoOkbPricePerCall, paymentsMode, simulatedSettlement,
   verifyOnChain, x402Envelope,
 } from "./engine/payments.js";
+
+// ---------------------------------------------------------------------------
+// Abuse protection: a small per-IP sliding-window rate limit on every
+// state-touching route. Generous for a human clicking a demo, hostile to
+// scripts hammering shared demo state.
+const RATE_LIMIT = Number(process.env.EVOLVED_RATE_LIMIT ?? 40); // req/min/ip
+const rateBook = new Map<string, { n: number; t: number }>();
+function rateLimited(req: IncomingMessage): boolean {
+  const ip = (String(req.headers["x-forwarded-for"] ?? "").split(",")[0].trim()) ||
+    req.socket.remoteAddress || "unknown";
+  const now = Date.now();
+  const slot = rateBook.get(ip);
+  if (!slot || now - slot.t > 60_000) {
+    rateBook.set(ip, { n: 1, t: now });
+    if (rateBook.size > 5000) rateBook.clear(); // bounded memory
+    return false;
+  }
+  slot.n += 1;
+  return slot.n > RATE_LIMIT;
+}
+
+// ---------------------------------------------------------------------------
+// The playground's demo executor: a persistent in-process MCP client with a
+// strict tool whitelist. Real tool calls, demo scope — nothing destructive
+// beyond what the hourly auto-reseed heals, and franchise_spinup/backups
+// stay off the browser surface entirely.
+const DEMO_TOOLS = new Set([
+  "business_snapshot", "morning_digest", "weather_check", "xlayer_status",
+  "x402_info", "pricing_rates", "quote_price", "quote_from_photo",
+  "pipeline_view", "flha_open", "flha_signoff", "safety_log",
+  "lifecycle_start", "lifecycle_advance", "lifecycle_status",
+  "invoice_payment_request", "invoice_payment_check",
+  "cfo_forecast", "cfo_health", "voice_command", "demo_reset",
+]);
+
+let demoClient: Client | null = null;
+async function getDemoClient(): Promise<Client> {
+  if (demoClient) return demoClient;
+  const server = createServer();
+  const client = new Client({ name: "evolved-playground", version: SERVER_INFO.version });
+  const [ct, st] = InMemoryTransport.createLinkedPair();
+  await server.connect(st);
+  await client.connect(ct);
+  demoClient = client;
+  return client;
+}
+
+function readBody(req: IncomingMessage, maxBytes = 64_000): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks: Buffer[] = [];
+    req.on("data", (c: Buffer) => {
+      size += c.length;
+      if (size > maxBytes) { reject(new Error("Body too large")); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    req.on("error", reject);
+  });
+}
 
 export async function handleRequest(
   req: IncomingMessage,
@@ -19,7 +82,57 @@ export async function handleRequest(
 ): Promise<void> {
   const url = new URL(req.url ?? "/", "http://localhost");
 
-  if (url.pathname === "/" || url.pathname === "/health") {
+  // The hosted playground — the zero-install judge experience.
+  if ((url.pathname === "/" || url.pathname === "/playground" || url.pathname === "/demo") && req.method === "GET") {
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
+    res.end(PLAYGROUND_HTML);
+    return;
+  }
+
+  if (url.pathname === "/demo/call" && req.method === "POST") {
+    if (rateLimited(req)) {
+      res.writeHead(429, { "content-type": "application/json", "retry-after": "60" });
+      res.end(JSON.stringify({ error: "Rate limit: this shared demo allows " + RATE_LIMIT + " calls/minute per IP. Take a breath and try again." }));
+      return;
+    }
+    try {
+      const body = JSON.parse(await readBody(req)) as { tool?: string; args?: Record<string, unknown> };
+      const tool = String(body.tool ?? "");
+      if (!DEMO_TOOLS.has(tool)) {
+        res.writeHead(403, { "content-type": "application/json" });
+        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 65-tool surface.` }));
+        return;
+      }
+      const client = await getDemoClient();
+      const result = await client.callTool({ name: tool, arguments: body.args ?? {} });
+      const text = (result as { content?: { type: string; text?: string }[] }).content?.find((c) => c.type === "text")?.text ?? "{}";
+      let parsed: unknown;
+      try { parsed = JSON.parse(text); } catch { parsed = text; }
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ tool, result: parsed }));
+    } catch (err) {
+      res.writeHead(400, { "content-type": "application/json" });
+      res.end(JSON.stringify({ error: String(err instanceof Error ? err.message : err) }));
+    }
+    return;
+  }
+
+  // Deployment revenue/settlement counters — the honest x402 scoreboard.
+  if (url.pathname === "/stats" && req.method === "GET") {
+    const { loadDb } = await import("./store.js");
+    const db = loadDb();
+    res.writeHead(200, { "content-type": "application/json" });
+    res.end(JSON.stringify({
+      paidApiCalls: db.meta.paidCalls ?? 0,
+      invoicePaymentsSettled: db.payments.filter((p) => p.status === "paid").length,
+      txHashesConsumed: db.usedTxHashes.length,
+      mode: process.env.EVOLVED_X402_MODE === "live" ? "live (fails closed)" : "simulated (demo, always labeled)",
+      note: "Counters survive demo resets. Shared synthetic dataset; books reseed hourly.",
+    }));
+    return;
+  }
+
+  if (url.pathname === "/health") {
     res.writeHead(200, { "content-type": "application/json" });
     res.end(
       JSON.stringify({
@@ -28,12 +141,19 @@ export async function handleRequest(
         version: SERVER_INFO.version,
         protocol: "MCP Streamable HTTP",
         endpoints: {
+          "/": "interactive playground (browser, zero install)",
           "/mcp": "free (A2MCP free endpoint — results returned directly)",
           "/mcp-paid": "x402 pay-per-call (X Layer TESTNET, scheme exact)",
         },
         tools: TOOL_COUNT,
       }),
     );
+    return;
+  }
+
+  if ((url.pathname === "/mcp" || url.pathname === "/mcp-paid") && rateLimited(req)) {
+    res.writeHead(429, { "content-type": "application/json", "retry-after": "60" });
+    res.end(JSON.stringify({ ok: false, error: `Rate limit: ${RATE_LIMIT} requests/minute per IP on this shared demo endpoint.` }));
     return;
   }
 
@@ -95,6 +215,14 @@ export async function handleRequest(
       "x-payment-response",
       Buffer.from(JSON.stringify({ settled: true, mode: result.mode, detail: result.detail })).toString("base64"),
     );
+    // Paid calls are revenue: count them in the books (survives demo resets).
+    {
+      const { withDb: w, logActivity: la } = await import("./store.js");
+      w((d) => {
+        d.meta.paidCalls = (d.meta.paidCalls ?? 0) + 1;
+        la(d, "x402", `Paid API call settled (${result.mode}).`);
+      });
+    }
     // fall through to MCP handling below
   }
 

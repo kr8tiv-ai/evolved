@@ -61,7 +61,13 @@ export function persist(): void {
 }
 
 export function resetDb(): Database {
+  // Replay protection and revenue counters survive demo resets: a reseed
+  // must never re-arm spent transaction hashes or zero the earnings ledger.
+  const carryTx = db?.usedTxHashes ?? [];
+  const carryPaid = db?.meta?.paidCalls ?? 0;
   db = buildSeed();
+  db.usedTxHashes = carryTx;
+  db.meta.paidCalls = carryPaid;
   persist();
   return db;
 }

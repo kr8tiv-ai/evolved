@@ -1,6 +1,8 @@
 # X post draft — #OKXAI (DO NOT POST AUTOMATICALLY — Matt posts this)
 
-> Post with the ≤90-second demo video attached (cut plan in docs/DEMO.md).
+> ORDER MATTERS: post only AFTER the OKX.AI listing is registered (the post
+> says the service is on OKX.AI — make it true first). Attach the ≤90-second
+> demo video (cut plan in docs/DEMO.md).
 
 ---
 
@@ -18,7 +20,10 @@ One agent runs the whole engagement, humans approve only the money:
 ◆ Voice commands from the crew, a CFO simulator, and a quote engine that learns from won jobs
 ◆ franchise_spinup clones the whole OS for ANY trade in one call
 
-65 tools. 30 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
+65 tools. 31 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
+
+Try it in your browser, zero install:
+powderblue-leopard-801168.hostingersite.com
 
 github.com/kr8tiv-ai/evolved
 

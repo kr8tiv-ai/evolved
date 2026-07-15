@@ -58,6 +58,23 @@ Price per call is a fixed testnet demo amount (0.0001 OKB). The free
 `/mcp` endpoint is unaffected — that is the A2MCP free tier required for
 OKX.AI listing; `/mcp-paid` is the monetization story on top.
 
+## Honest scope notes
+
+- **Shared demo instance.** The hosted deployment runs one synthetic data
+  spine shared by all callers, guarded by a tool whitelist on the browser
+  playground, per-IP rate limiting, and an hourly automatic reseed.
+  Replay-protection hashes and the paid-call counter survive resets by
+  design. Production multi-tenancy (per-customer spines) is a deployment
+  concern, not a code rewrite — every tool already works against an
+  injected store path (`EVOLVED_DATA_DIR`).
+- **x402 proof profile.** This implementation accepts a transaction-hash
+  proof (`{"txHash":"0x…"}`) verified by read-only RPC, or a labeled
+  simulated proof in demo mode. The full x402 specification's
+  signed-payload flow (`PAYMENT-SIGNATURE` with facilitator settlement,
+  e.g. the OKX Payment SDK) is the planned upgrade; the 402 challenge
+  envelope and settlement receipt headers already follow the spec shape,
+  so the swap is confined to proof verification.
+
 ## Tests that keep this honest
 
 - Base-unit conversion (incl. the classic `0.1 × 10^18` float trap)

@@ -22,7 +22,11 @@ function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
 }
 
-const ESIGN_SECRET = process.env.EVOLVED_ESIGN_SECRET ?? "evolved-demo-esign-secret";
+// No committed default secret: without EVOLVED_ESIGN_SECRET each process
+// generates its own. Verification compares the STORED token string, so
+// existing e-sign records remain valid across restarts either way.
+const ESIGN_SECRET =
+  process.env.EVOLVED_ESIGN_SECRET ?? randomBytes(24).toString("hex");
 
 export function esignToken(quoteId: string, nonce: string): string {
   return createHmac("sha256", ESIGN_SECRET).update(`${quoteId}:${nonce}`).digest("hex").slice(0, 24);

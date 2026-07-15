@@ -4,6 +4,8 @@
 
 ### A real Alberta blasting company, run by an autonomous AI, that gets paid on-chain.
 
+**▶ [TRY IT LIVE — the browser playground](https://powderblue-leopard-801168.hostingersite.com/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
+
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
@@ -32,10 +34,14 @@ curl -i -X POST https://powderblue-leopard-801168.hostingersite.com/mcp-paid \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
 
 # 3 · Pay the challenge, get the service (settlement receipt in the X-PAYMENT-RESPONSE header)
+#     (header is base64 of {"simulated":true} — quote-safe on every shell, incl. PowerShell)
 curl -i -X POST https://powderblue-leopard-801168.hostingersite.com/mcp-paid \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
-  -H 'X-PAYMENT: {"simulated":true}' \
+  -H 'X-PAYMENT: eyJzaW11bGF0ZWQiOnRydWV9' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
+
+# 4 · The revenue scoreboard (paid calls + settlements, survives demo resets)
+curl https://powderblue-leopard-801168.hostingersite.com/stats
 ```
 
 Then run the whole company locally — no keys, no accounts, no funds:
@@ -49,12 +55,12 @@ npm run demo    # the business loop, narrated in your terminal
 
 ## Why this wins
 
-**Every "AI for business" demo is a chatbot wearing a suit. This is the operating system of a real company.** Evolve Eco Blasting prices driveways, catches receipts from truck cabs, and briefs its owner at 6:30 AM using the production system this repo is built from — the math, the safety practice, and the ball-drop rules here are the ones a working Alberta abrasive-blasting company runs on today. The demo dataset is synthetic; nothing else is.
+**Every "AI for business" demo is a chatbot wearing a suit. This is built from the operating system of a real company** — Evolve Eco Blasting prices driveways, catches receipts from truck cabs, and briefs its owner at 6:30 AM on a production system whose logic is reimplemented, extended, and tested here. The rates, the GST and deposit policy, the safety practice, and the ball-drop rules are the ones a working Alberta abrasive-blasting company runs on today. The demo dataset is synthetic; the math is not.
 
 - **Real-world ASP, both OKX rails.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC, and Evolved itself is monetized per-call through x402. An SMB earning on-chain *and* an agent service billing on-chain, in one submission.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history); the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A 78-agent adversarial review audited every tool; 29 confirmed findings — including on-chain replay protection and e-sign decline finality — are fixed and regression-tested. 31 tests pass, one of them live against X Layer testnet.
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). 31 tests pass, one of them live against X Layer testnet.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call. Business management in a box is the product, not the tagline.
 
 ## Watch one agent run the whole engagement
@@ -73,7 +79,7 @@ flowchart LR
     D --> E[FLHA drafted<br><i>hazards + mitigations<br>from scope</i>]
     E --> F[Work done<br><i>actuals, inventory<br>burn-down, receipts</i>]
     F --> H[Invoice<br><i>deposit applied</i>]
-    H --> I[On-chain payment<br><i>EIP-681 on X Layer<br>testnet · replay-proof</i>]
+    H --> I[On-chain payment<br><i>EIP-681 on X Layer<br>testnet · replay-protected</i>]
     I --> G2{{"🔒 HUMAN GATE<br>confirm settlement"}}
     G2 --> J[Review request +<br>rate engine taught]
     J -.->|smarter pricing| B
@@ -153,7 +159,7 @@ npm test
 # … 31 passing
 ```
 
-The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other findings from a 78-agent adversarial review of this codebase. Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## The submission
 
@@ -161,7 +167,8 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 
 | | |
 |---|---|
-| Live endpoint | `https://powderblue-leopard-801168.hostingersite.com/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` |
+| **Try it live** | [powderblue-leopard-801168.hostingersite.com](https://powderblue-leopard-801168.hostingersite.com/) — browser playground, zero install |
+| Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |
 | Categories | Best Product · Revenue Rocket · Software Utility · Finance Copilot |

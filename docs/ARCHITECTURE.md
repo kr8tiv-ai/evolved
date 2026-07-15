@@ -99,5 +99,8 @@ shape.
 - The repository contains synthetic data exclusively — invented names,
   numbers, addresses, and dollar figures.
 - `.gitignore` blocks env files, keys, tokens, and service-account patterns.
-- The HTTP endpoint is read-your-own-data by design: each deployment owns its
-  spine; there is no cross-tenant state.
+- Each deployment owns one data spine. The public demo deployment is a
+  single shared synthetic dataset — disclosed on the playground — protected
+  by a demo-scope tool whitelist, per-IP rate limits, and an hourly reseed;
+  per-customer isolation is a deployment choice (separate `EVOLVED_DATA_DIR`
+  per tenant), not a rewrite.

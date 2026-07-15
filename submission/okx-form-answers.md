@@ -23,7 +23,7 @@ Evolved packages the live operating system of Evolve Eco Blasting (an abrasive-b
 
 **Repository:** https://github.com/kr8tiv-ai/evolved
 
-**Demo:** `npm run demo` runs the full loop (lead → quote → job → safety → books → digest) with zero credentials; demo video attached to the X post.
+**Demo:** LIVE browser playground, zero install: https://powderblue-leopard-801168.hostingersite.com/ (voice commands, photo-to-quote, the autonomous lifecycle with human money gates, and the raw x402 402 → proof → receipt flow). Locally, `npm run demo` runs the full loop with zero credentials; demo video attached to the X post.
 
 **X post link (#OKXAI):** ← fill after posting
 
@@ -43,3 +43,4 @@ Every rate, rule, and workflow in Evolved is production truth from a company tha
 4. [ ] Post on X with #OKXAI (draft in submission/x-post-draft.md) + video.
 5. [ ] Fill this form with the endpoint URL, Agent ID, and X post link.
 6. [ ] Confirm the listing passes review (~24h) — required for eligibility, so do not leave it past July 16.
+7. [ ] HIGH-IMPACT OPTIONAL (judges called this the single strongest artifact): set `EVOLVED_PAYTO` to a testnet address you control on the deployment, send yourself one REAL X Layer testnet payment through `invoice_payment_request` → wallet → `invoice_payment_check {txHash}`, and pin the txHash + OKLink explorer link in the README, the X post, and the video. It converts "simulated by default" into on-chain proof.

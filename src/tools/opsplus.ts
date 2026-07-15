@@ -3,7 +3,7 @@
  */
 
 import { createHash } from "node:crypto";
-import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -154,7 +154,7 @@ export function registerOpsPlusTools(server: McpServer): void {
     "backup_create",
     {
       title: "Back up the books",
-      description: "Full snapshot of the data spine to a timestamped backup file — the never-pruned safety net.",
+      description: "Full snapshot of the data spine to a timestamped backup file. Keeps the most recent 25 snapshots (rotation guards shared demo hosts against disk-fill).",
       inputSchema: {},
     },
     async () => {
@@ -163,8 +163,13 @@ export function registerOpsPlusTools(server: McpServer): void {
       mkdirSync(dir, { recursive: true });
       const file = join(dir, `evolved-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
       writeFileSync(file, JSON.stringify(db, null, 2), "utf8");
+      // Rotate: cap the snapshot count so an anonymous loop cannot fill the disk.
+      const existing = readdirSync(dir).filter((f) => f.startsWith("evolved-backup-")).sort();
+      for (const stale of existing.slice(0, Math.max(0, existing.length - 25))) {
+        try { unlinkSync(join(dir, stale)); } catch { /* best effort */ }
+      }
       withDb((d) => logActivity(d, "backup", `Backup written: ${file}`));
-      return ok({ file, note: "Backups are never pruned automatically." });
+      return ok({ file, retained: Math.min(existing.length, 25), note: "Most recent 25 snapshots are retained." });
     },
   );
 
