@@ -1,5 +1,10 @@
 # OKX AI Genesis Hackathon — Google form answers (draft)
 
+> **SUPERSEDED for the actual submission: use [PREFILLED-FORM.md](PREFILLED-FORM.md)** —
+> it contains the pre-filled link (static fields already populated on the real
+> 7-field form) plus the four Matt-only fields and the launch-day run sheet.
+> This file remains as the long-form answer bank.
+
 Form: https://forms.gle/mddEUagmDbyV37ws8 — deadline July 17, 2026, 23:59 UTC.
 Matt submits this by hand. Field labels may differ slightly; map by meaning.
 
