@@ -33,7 +33,7 @@ so on the page. It is protected by:
 | Body caps | 256 KB request cap before any route reads the stream; 64 KB on demo calls |
 | Auto-reseed | The synthetic books restore hourly; replay ledger and revenue counters survive |
 | Backup rotation | Snapshot count capped at 25 — no disk-fill loop |
-| Security headers | CSP (no external script origins), `X-Frame-Options: DENY`, `nosniff`, HSTS, restrictive Permissions-Policy |
+| Security headers | CSP (no external script origins), `X-Frame-Options: DENY`, `nosniff`, HSTS, restrictive Permissions-Policy. Note: on the hosted demo, Hostinger's edge replaces the app's CSP with its platform default — the full CSP applies on self-hosted deployments and is asserted by the test suite |
 | E-sign integrity | HMAC tokens; no committed default secret (per-process random unless `EVOLVED_ESIGN_SECRET` is set); recorded declines are final and cannot be overwritten |
 
 ## Secrets policy
