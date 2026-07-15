@@ -40,8 +40,9 @@ export const TOOL_COUNT = 65;
 export function createServer(): McpServer {
   const server = new McpServer(SERVER_INFO, {
     instructions: [
-      "Evolved is the operations brain of a real industrial-services company,",
-      "packaged as an agentic service. It runs the full loop: capture a lead",
+      "Evolved is a company operating system any service business can spin",
+      "up in one call (franchise_spinup + trade packs) — proven on the real",
+      "Alberta company it was built from. It runs the full loop: capture a lead",
       "(typed, voice, or photo), price it with a learning rate engine, e-sign",
       "the quote, book weather-gated work, open and sign off the day's FLHA,",
       "burn down inventory, ingest receipts through tiered OCR into live",
