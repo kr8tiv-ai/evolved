@@ -34,14 +34,21 @@ AMBER   = (255, 176, 66)
 REDX    = (248, 113, 113)
 BORDER  = (36, 44, 36)
 
+# Brand typography: Neue Montreal (the Evolve site's own display face,
+# licensed locally) + JetBrains Mono for labels/terminals. Falls back to
+# Segoe/Consolas if the brand fonts are absent.
+_LOCALFONTS = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Microsoft", "Windows", "Fonts")
+def _font_path(name, fallback):
+    p = os.path.join(_LOCALFONTS, name)
+    return p if os.path.exists(p) else fallback
 FONTS = {
-    'black':  r"C:\Windows\Fonts\seguibl.ttf",
-    'semi':   r"C:\Windows\Fonts\seguisb.ttf",
-    'reg':    r"C:\Windows\Fonts\segoeui.ttf",
-    'bold':   r"C:\Windows\Fonts\segoeuib.ttf",
-    'bahn':   r"C:\Windows\Fonts\bahnschrift.ttf",
-    'mono':   r"C:\Windows\Fonts\consola.ttf",
-    'monob':  r"C:\Windows\Fonts\consolab.ttf",
+    'black':  _font_path("NeueMontreal-Bold.otf",   r"C:\Windows\Fonts\seguibl.ttf"),
+    'semi':   _font_path("NeueMontreal-Medium.otf", r"C:\Windows\Fonts\seguisb.ttf"),
+    'reg':    _font_path("NeueMontreal-Regular.otf", r"C:\Windows\Fonts\segoeui.ttf"),
+    'bold':   _font_path("NeueMontreal-Bold.otf",   r"C:\Windows\Fonts\segoeuib.ttf"),
+    'bahn':   _font_path("JetBrainsMono-Bold.ttf",  r"C:\Windows\Fonts\bahnschrift.ttf"),
+    'mono':   _font_path("JetBrainsMono-Regular.ttf", r"C:\Windows\Fonts\consola.ttf"),
+    'monob':  _font_path("JetBrainsMono-Bold.ttf",  r"C:\Windows\Fonts\consolab.ttf"),
 }
 _fc = {}
 def F(name, size):
@@ -243,7 +250,7 @@ def s_premise(t, dur):
         T((250,by), '{ "ok": true, "service": "evolved", "protocol": "MCP Streamable HTTP", "tools": 83 }',
           F('mono',26), DIM, int(255*ap))
         draw_tracked((70,by+44), "LIVE", F('bahn',20), GREEN, tracking=3, alpha=int(255*ap))
-        T((146,by+44), "powderblue-leopard-801168.hostingersite.com", F('mono',24), DIM2, int(255*ap))
+        T((146,by+44), "evolvedmcp.cloud", F('mono',24), DIM2, int(255*ap))
     caption(["Evolve Eco Blasting's real ops brain — reimplemented, extended,",
              "and running live as an agent-callable service."], t, 1.0)
     return flatten(img)
@@ -547,7 +554,7 @@ def s_end(t, dur):
     if ulp>0:
         uw=int(360*ulp); rrect([cx-uw//2,432,cx+uw//2,440],radius=4,fill=rgba(LIME,255))
     ctas=[("GITHUB","github.com/kr8tiv-ai/evolved",GREEN),
-          ("LIVE ENDPOINT","powderblue-leopard-801168.hostingersite.com",CYAN),
+          ("LIVE ENDPOINT","evolvedmcp.cloud",CYAN),
           ("PLAYGROUND","zero install · /mcp · /mcp-paid · /health",SILVER)]
     for i,(k,v,c) in enumerate(ctas):
         ca=smooth((t-1.3-i*0.22)/0.5)

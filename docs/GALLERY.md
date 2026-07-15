@@ -19,6 +19,6 @@ uploaded to the HackQuest project.
 ---
 
 The product in action is live and clickable — run **Judge Mode** at
-[the playground](https://powderblue-leopard-801168.hostingersite.com) to see
+[the playground](https://evolvedmcp.cloud) to see
 the lifecycle, the x402 settlement, the CFO chart, and the rate-learning bars
 in motion. Regenerate these cards with `python scripts/make-gallery.py`.

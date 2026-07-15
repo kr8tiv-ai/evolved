@@ -6,7 +6,7 @@
 > **Media plan (X allows one video OR up to four images per post, not both):**
 > - **Main post** → attach the demo video `submission/evolved-demo.mp4`
 >   (90s — under the 140s free-tier video cap; funk soundtrack; also streaming
->   at https://powderblue-leopard-801168.hostingersite.com/demo.mp4).
+>   at https://evolvedmcp.cloud/demo.mp4).
 > - **Reply 1** → attach the branded card `assets/x-post-card.png`
 >   (1600×900, also staged at `Desktop\HACKQUEST-IMAGES\x-post-card.png`).
 >
@@ -37,7 +37,7 @@ One agent runs the whole engagement, humans approve only the money:
 83 tools. 41 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 Try it in your browser, zero install:
-powderblue-leopard-801168.hostingersite.com
+evolvedmcp.cloud
 
 github.com/kr8tiv-ai/evolved
 
@@ -51,7 +51,7 @@ Most AI business tools are chatbots wearing a suit. #OKXAI
 
 Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 83 tools, open source.
 
-powderblue-leopard-801168.hostingersite.com
+evolvedmcp.cloud
 
 github.com/kr8tiv-ai/evolved
 

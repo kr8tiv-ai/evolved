@@ -42,9 +42,9 @@ prompted.
 
 - **Name:** Evolved
 - **Service type:** A2MCP (Agent-to-MCP)
-- **Free endpoint:** `https://powderblue-leopard-801168.hostingersite.com/mcp`
-- **Paid endpoint (x402):** `https://powderblue-leopard-801168.hostingersite.com/mcp-paid`
-- **Health / metadata:** `https://powderblue-leopard-801168.hostingersite.com/health`
+- **Free endpoint:** `https://evolvedmcp.cloud/mcp`
+- **Paid endpoint (x402):** `https://evolvedmcp.cloud/mcp-paid`
+- **Health / metadata:** `https://evolvedmcp.cloud/health`
 - **Pricing:** free tier returns results directly; paid tier is x402
   pay-per-call (scheme `exact`, network `eip155:1952`, X Layer testnet)
 - **Category:** Software Utility (also Finance Copilot)

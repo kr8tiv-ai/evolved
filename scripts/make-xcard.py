@@ -146,7 +146,7 @@ for c, cw in zip(chips, chip_ws):
     cx += cw + gap
 
 # ---- footer ---------------------------------------------------------------------
-foot = "OKX AI GENESIS HACKATHON  ·  #OKXAI  ·  POWDERBLUE-LEOPARD-801168.HOSTINGERSITE.COM  ·  GITHUB.COM/KR8TIV-AI/EVOLVED"
+foot = "OKX AI GENESIS HACKATHON  ·  #OKXAI  ·  EVOLVEDMCP.CLOUD  ·  GITHUB.COM/KR8TIV-AI/EVOLVED"
 wf = tracked_w(foot, mono_s, 1)
 tracked(dr, ((W - wf) // 2, H - 86), foot, mono_s, "#9ca3af", 1)
 

@@ -4,14 +4,14 @@
 
 ### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company, settling its invoices in OKB on X Layer testnet, verified on-chain.
 
-**▶ [TRY IT LIVE — the browser playground](https://powderblue-leopard-801168.hostingersite.com/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
+**▶ [TRY IT LIVE — the browser playground](https://evolvedmcp.cloud/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
 
 **🎬 [Watch the 90-second demo](submission/evolved-demo.mp4)** — branded, captioned, two-act cut ([notes + license](submission/DEMO-VIDEO.md)).
 
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
-[![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://powderblue-leopard-801168.hostingersite.com/health)
+[![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://evolvedmcp.cloud/health)
 [![Tools](https://img.shields.io/badge/tools-83-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
 [![Tests](https://img.shields.io/badge/tests-41_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
@@ -28,22 +28,22 @@ The service is live. You can verify every headline claim from your terminal befo
 
 ```bash
 # 1 · It exists, and it is an MCP service (10 seconds)
-curl https://powderblue-leopard-801168.hostingersite.com/health
+curl https://evolvedmcp.cloud/health
 
 # 2 · It monetizes as an ASP — x402 pay-per-call (the 402 challenge, scheme "exact", eip155:1952)
-curl -i -X POST https://powderblue-leopard-801168.hostingersite.com/mcp-paid \
+curl -i -X POST https://evolvedmcp.cloud/mcp-paid \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
 
 # 3 · Pay the challenge, get the service (settlement receipt in the X-PAYMENT-RESPONSE header)
 #     (header is base64 of {"simulated":true} — quote-safe on every shell, incl. PowerShell)
-curl -i -X POST https://powderblue-leopard-801168.hostingersite.com/mcp-paid \
+curl -i -X POST https://evolvedmcp.cloud/mcp-paid \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -H 'X-PAYMENT: eyJzaW11bGF0ZWQiOnRydWV9' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
 
 # 4 · The revenue scoreboard (paid calls + settlements, survives demo resets)
-curl https://powderblue-leopard-801168.hostingersite.com/stats
+curl https://evolvedmcp.cloud/stats
 ```
 
 Then run the whole company locally — no keys, no accounts, no funds:
@@ -204,11 +204,11 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 
 | | |
 |---|---|
-| **Try it live** | [powderblue-leopard-801168.hostingersite.com](https://powderblue-leopard-801168.hostingersite.com/) — browser playground, zero install |
+| **Try it live** | [evolvedmcp.cloud](https://evolvedmcp.cloud/) — browser playground, zero install |
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |
-| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 90s, 1080p, on-brand, captioned, royalty-free funk soundtrack ([notes](submission/DEMO-VIDEO.md)) — streams from the live deployment at [/demo.mp4](https://powderblue-leopard-801168.hostingersite.com/demo.mp4) |
+| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 90s, 1080p, on-brand, captioned, royalty-free funk soundtrack ([notes](submission/DEMO-VIDEO.md)) — streams from the live deployment at [/demo.mp4](https://evolvedmcp.cloud/demo.mp4) |
 | Categories | Best Product · Revenue Rocket · Software Utility · Finance Copilot |
 
 MIT licensed. Synthetic data only; testnet only; no secrets anywhere in this repository. Evolved never holds keys and cannot move funds — by construction.

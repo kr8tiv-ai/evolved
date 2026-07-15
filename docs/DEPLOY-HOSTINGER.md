@@ -2,8 +2,8 @@
 
 **The endpoint is LIVE:**
 
-- `https://powderblue-leopard-801168.hostingersite.com/mcp` — MCP Streamable HTTP (the free A2MCP endpoint)
-- `https://powderblue-leopard-801168.hostingersite.com/health` — service metadata for reviewers
+- `https://evolvedmcp.cloud/mcp` — MCP Streamable HTTP (the free A2MCP endpoint)
+- `https://evolvedmcp.cloud/health` — service metadata for reviewers
 
 Deployed on Hostinger managed hosting as a Node.js application on its own
 free subdomain site — fully isolated from every other site on the account,
@@ -32,13 +32,13 @@ Websites → the subdomain site → Node.js deploy). The platform runs
 `npm ci`, `npm run build`, and restarts the app. Verify with:
 
 ```bash
-curl https://powderblue-leopard-801168.hostingersite.com/health
+curl https://evolvedmcp.cloud/health
 ```
 
 And a real MCP handshake:
 
 ```bash
-curl -s -X POST https://powderblue-leopard-801168.hostingersite.com/mcp \
+curl -s -X POST https://evolvedmcp.cloud/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}'
