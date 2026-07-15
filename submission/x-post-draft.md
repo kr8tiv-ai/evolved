@@ -10,7 +10,7 @@
 
 Most AI business tools are chatbots wearing a suit.
 
-Evolved is the actual operations brain of a real abrasive-blasting company in Alberta — packaged as an MCP agent on @okx AI, and now it gets the company PAID ON-CHAIN.
+Evolved is a company-in-a-box for the agent economy: ANY service business, spun up in one call — and it's proven, because a real Alberta blasting company already runs on it and gets PAID ON-CHAIN via @okx X Layer.
 
 One agent runs the whole engagement, humans approve only the money:
 ◆ Photo → priced branded quote in seconds
@@ -18,7 +18,7 @@ One agent runs the whole engagement, humans approve only the money:
 ◆ Invoice settles in OKB on X Layer (testnet) — verified on-chain, no keys ever held
 ◆ Evolved itself is a paid ASP via x402: 402 challenge → pay per call → answer
 ◆ Voice commands from the crew, a CFO simulator, and a quote engine that learns from won jobs
-◆ franchise_spinup clones the whole OS for ANY trade in one call
+◆ Trade packs ship today: pressure washing, line painting, mobile detailing — yours is one file away
 
 65 tools. 31 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 

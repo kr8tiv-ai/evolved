@@ -125,7 +125,7 @@ def tracked(dr, pos, s, f, fill, tr):
 
 dr = ImageDraw.Draw(img)
 tracked(dr, (tx + 6, ty + 190), "BUSINESS MANAGEMENT IN A BOX", mono, "#f3f4f6", 6)
-tracked(dr, (tx + 6, ty + 248), "A REAL COMPANY · RUN BY AN AUTONOMOUS AI · PAID ON-CHAIN", mono_s, "#4ade80", 2)
+tracked(dr, (tx + 6, ty + 248), "ANY SERVICE BUSINESS, ONE CALL · PROVEN ON A REAL COMPANY · PAID ON-CHAIN", mono_s, "#4ade80", 1)
 
 # bottom-center hackathon stamp
 stamp = "OKX AI GENESIS HACKATHON · MCP AGENTIC SERVICE PROVIDER · X LAYER TESTNET 1952"

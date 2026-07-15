@@ -154,8 +154,8 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <img class="logo" src="https://github.com/kr8tiv-ai/evolved/raw/main/assets/evolve-logo.png" alt="Evolve">
   <h1>EVOLVED</h1>
   <div class="rule"></div>
-  <div class="sub mono">LIVE PLAYGROUND — RUN A REAL COMPANY'S AI FROM YOUR BROWSER</div>
-  <div class="tag mono">SYNTHETIC DATA · X LAYER TESTNET · NO INSTALL · NO KEYS · DATA AUTO-RESTORES HOURLY</div>
+  <div class="sub mono">LIVE PLAYGROUND — A COMPANY-IN-A-BOX FOR ANY SERVICE BUSINESS</div>
+  <div class="tag mono">PROVEN ON A REAL ALBERTA COMPANY · ANY TRADE IN ONE CALL · X LAYER TESTNET · NO INSTALL · DATA AUTO-RESTORES HOURLY</div>
   <div class="chips mono" id="chips">
     <span class="chip">service: <b id="c-status">checking…</b></span>
     <span class="chip">tools: <b id="c-tools">—</b></span>

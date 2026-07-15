@@ -2,7 +2,7 @@
 
 <img src="assets/hero.png" alt="Evolved — Evolve Eco Blasting's operations brain as an autonomous agentic service" width="100%">
 
-### A real Alberta blasting company, run by an autonomous AI, that gets paid on-chain.
+### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company that runs on it and gets paid on-chain.
 
 **▶ [TRY IT LIVE — the browser playground](https://powderblue-leopard-801168.hostingersite.com/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
 
@@ -55,7 +55,7 @@ npm run demo    # the business loop, narrated in your terminal
 
 ## Why this wins
 
-**Every "AI for business" demo is a chatbot wearing a suit. This is built from the operating system of a real company** — Evolve Eco Blasting prices driveways, catches receipts from truck cabs, and briefs its owner at 6:30 AM on a production system whose logic is reimplemented, extended, and tested here. The rates, the GST and deposit policy, the safety practice, and the ball-drop rules are the ones a working Alberta abrasive-blasting company runs on today. The demo dataset is synthetic; the math is not.
+**Every "AI for business" demo is a chatbot wearing a suit. Evolved is a complete company operating system any service business can spin up in one call — and it is built from the operating system of a real one.** `franchise_spinup { tradePack: "pressure-washing" }` hands the whole machine to another trade in seconds; the credibility comes from Evolve Eco Blasting, the working Alberta abrasive-blasting company whose rates, GST and deposit policy, safety practice, and ball-drop rules run the demo — reimplemented, extended, and tested here. The demo dataset is synthetic; the math is not, and neither is the trade.
 
 - **Real-world ASP, both OKX rails.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC, and Evolved itself is monetized per-call through x402. An SMB earning on-chain *and* an agent service billing on-chain, in one submission.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
