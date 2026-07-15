@@ -16,6 +16,14 @@ const DOMAINS = [
   ["Pipeline", ["lead_capture","lead_update","pipeline_view","job_schedule","job_complete","customer_list"]],
   ["Safety", ["flha_open","flha_signoff","safety_log"]],
   ["Autonomous ops", ["morning_digest","action_items_scan","action_item_resolve","weather_check","business_snapshot","demo_reset"]],
+  ["Inventory control", ["inventory_status","inventory_receive","inventory_consume","inventory_reorder_suggestions","price_watch"]],
+  ["Contacts / CRM", ["contact_search","supplier_add","supplier_pricebook","crew_add","crew_roster"]],
+  ["Ops-sheet engine", ["sheet_tabs","sheet_read","sheet_append_todo","inbox_submit","inbox_list","inbox_file"]],
+  ["Accounting depth", ["vendor_rollup","receipt_report","invoice_remind"]],
+  ["On-chain payments (X Layer testnet)", ["invoice_payment_request","invoice_payment_check","xlayer_status","x402_info"]],
+  ["Autonomous lifecycle", ["lifecycle_start","lifecycle_advance","lifecycle_status","quote_esign_sign","review_record"]],
+  ["Frontier", ["quote_from_photo","voice_command","cfo_forecast","cfo_health"]],
+  ["Business-in-a-box", ["insights_generate","insight_feedback","activity_feed","backup_create","backup_list","franchise_spinup"]],
 ];
 
 function paramTable(schema) {

@@ -1,5 +1,14 @@
 # The 90-second demo
 
+> **v2 update — the two-act cut.** Act 1 (0–45s): `lifecycle_start` →
+> `lifecycle_advance` with approve + e-sign → watch the log stream: booked
+> on the first Good blast day, FLHA drafted, inventory burned down,
+> invoiced, on-chain payment request issued on X Layer testnet. Act 2
+> (45–80s): the x402 curl — 402 challenge, pay, 200 with the settlement
+> receipt header. Close (80–90s): "65 tools. A real company's operating
+> system, listed on OKX.AI, getting paid on-chain." The classic 10-beat
+> cut below still works as an alternative.
+
 Two ways to run it: the scripted terminal demo (zero setup beyond `npm run
 build`), or live through any MCP client. Both tell the same story — one agent
 running a company's whole day.

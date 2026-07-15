@@ -6,8 +6,9 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { runOcrPipeline } from "../engine/ocr.js";
 import { renderInvoiceHtml, writeDocument } from "../engine/brand.js";
+import { upsertVendor } from "./accounting.js";
 import {
-  addDays, loadDb, money, nowIso, round2, shortId, today, withDb,
+  addDays, loadDb, logActivity, money, nowIso, round2, shortId, today, withDb,
 } from "../store.js";
 import type { Invoice, Receipt } from "../types.js";
 
@@ -66,9 +67,32 @@ export function registerMoneyTools(server: McpServer): void {
             createdAt: nowIso(),
           };
           db.receipts.push(receipt);
+          const canonicalVendor = upsertVendor(db, receipt);
+
+          // Price-spike detection: compare line items to the price log.
+          const spikes: string[] = [];
+          for (const li of receipt.lineItems) {
+            const priorEntries = db.priceLog
+              .filter((p) => li.description.toLowerCase().includes(p.product.toLowerCase().split(" ")[0]) || p.product.toLowerCase().includes(li.description.toLowerCase().split(" ")[0]))
+              .sort((a, b) => b.date.localeCompare(a.date));
+            const prior = priorEntries[0];
+            const qtyMatch = li.description.match(/x\s?(\d+)|(\d+)\s?(?:bags?|pairs?|units?)/i);
+            const qty = qtyMatch ? Number(qtyMatch[1] ?? qtyMatch[2]) : null;
+            if (prior && qty && qty > 0) {
+              const unit = round2(li.amount / qty);
+              const changePct = round2(((unit - prior.unitPrice) / prior.unitPrice) * 100);
+              if (changePct >= 10) {
+                spikes.push(`${li.description}: $${unit}/unit vs $${prior.unitPrice} last time (+${changePct}%) — price spike.`);
+              }
+            }
+          }
+          logActivity(db, "receipts", `Receipt posted: ${canonicalVendor} ${money(receipt.total)} (${receipt.category}).`);
+
           return {
             posted: true,
             receipt,
+            vendorCanonical: canonicalVendor,
+            priceSpikes: spikes,
             note: jobId
               ? `Attributed to ${jobId} — will appear in that job's P&L.`
               : "No job attribution — categorized as overhead.",

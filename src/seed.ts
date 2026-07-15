@@ -239,5 +239,64 @@ export function buildSeed(): Database {
     ],
 
     quoteCounter: {},
+
+    suppliers: [
+      { id: "SUP-001", name: "Prairie Abrasives Supply", location: "Edmonton", phone: "780-555-0301", website: "prairieabrasives.example", products: "Crushed glass, garnet, soda media", createdAt: isoDaysAgo(120) },
+      { id: "SUP-002", name: "Northside Safety Co.", location: "Edmonton", phone: "780-555-0302", products: "PPE, respirator cartridges, hearing protection", createdAt: isoDaysAgo(100) },
+      { id: "SUP-003", name: "Foothills Equipment Rentals", location: "Leduc", phone: "780-555-0303", products: "Compressors, hose, couplers", createdAt: isoDaysAgo(80) },
+    ],
+
+    crew: [
+      { id: "CREW-001", name: "T. Field", role: "lead-tech", phone: "780-555-0401", certifications: ["CSTS-2020", "First Aid Level 1", "Respirator fit-tested"], hourlyRate: 45, active: true, createdAt: isoDaysAgo(200) },
+      { id: "CREW-002", name: "R. Nozzle", role: "tech", phone: "780-555-0402", certifications: ["CSTS-2020", "Respirator fit-tested"], hourlyRate: 38, active: true, createdAt: isoDaysAgo(150) },
+    ],
+
+    inventory: [
+      { id: "INV-001", section: "Materials & Media", name: "Crushed glass 40/70", unit: "50 lb bag", onHand: 22, parLevel: 40, reorderAt: 15, preferredSupplierId: "SUP-001", lastUnitCost: 35, lastSupplier: "Prairie Abrasives Supply", lastPurchasedAt: daysAgo(9) },
+      { id: "INV-002", section: "Materials & Media", name: "Garnet 80 mesh", unit: "55 lb bag", onHand: 6, parLevel: 12, reorderAt: 5, preferredSupplierId: "SUP-001", lastUnitCost: 35.12, lastSupplier: "Prairie Abrasives Supply", lastPurchasedAt: daysAgo(9) },
+      { id: "INV-003", section: "Consumables & PPE", name: "P100 cartridges", unit: "pair", onHand: 4, parLevel: 10, reorderAt: 4, preferredSupplierId: "SUP-002", lastUnitCost: 14.99, lastSupplier: "Mark's Work Wearhouse", lastPurchasedAt: daysAgo(15) },
+      { id: "INV-004", section: "Consumables & PPE", name: "Cut-resistant gloves", unit: "pair", onHand: 8, parLevel: 8, reorderAt: 3, lastUnitCost: 21.7, lastPurchasedAt: daysAgo(15) },
+      { id: "INV-005", section: "Equipment & General", name: "Blast hose 50 ft", unit: "each", onHand: 3, parLevel: 3, reorderAt: 1, lastUnitCost: 189.99, lastSupplier: "Princess Auto", lastPurchasedAt: daysAgo(4) },
+      { id: "INV-006", section: "Equipment & General", name: "Quick couplers", unit: "each", onHand: 9, parLevel: 8, reorderAt: 4, lastUnitCost: 20.36, lastSupplier: "Princess Auto", lastPurchasedAt: daysAgo(4) },
+    ],
+
+    inventoryMovements: [
+      { id: "MOV-001", itemId: "INV-001", delta: 30, reason: "received", receiptId: "RCPT-2001", unitCost: 35, at: isoDaysAgo(9) },
+      { id: "MOV-002", itemId: "INV-001", delta: -14, reason: "consumed", jobId: "JOB-1041", at: isoDaysAgo(6) },
+      { id: "MOV-003", itemId: "INV-002", delta: 4, reason: "received", receiptId: "RCPT-2001", unitCost: 35.12, at: isoDaysAgo(9) },
+      { id: "MOV-004", itemId: "INV-003", delta: -2, reason: "consumed", jobId: "JOB-1041", at: isoDaysAgo(6) },
+    ],
+
+    priceLog: [
+      { id: "PL-001", date: daysAgo(9), supplier: "Prairie Abrasives Supply", product: "Crushed glass 40/70", itemId: "INV-001", unitType: "50 lb bag", qty: 30, unitPrice: 35, totalPaid: 1050, receiptId: "RCPT-2001" },
+      { id: "PL-002", date: daysAgo(74), supplier: "Prairie Abrasives Supply", product: "Crushed glass 40/70", itemId: "INV-001", unitType: "50 lb bag", qty: 25, unitPrice: 31.5, totalPaid: 787.5 },
+      { id: "PL-003", date: daysAgo(9), supplier: "Prairie Abrasives Supply", product: "Garnet 80 mesh", itemId: "INV-002", unitType: "55 lb bag", qty: 4, unitPrice: 35.12, totalPaid: 140.48, receiptId: "RCPT-2001" },
+    ],
+
+    vendors: [
+      { canonical: "Prairie Abrasives Supply", aliases: ["prairie abrasives supply"], category: "Abrasive media", firstSeen: daysAgo(74), totalSpend: 2037.5, receipts: 2 },
+      { canonical: "Petro-Canada", aliases: ["petro-canada", "petro canada"], category: "Fuel", firstSeen: daysAgo(40), totalSpend: 164, receipts: 1 },
+    ],
+
+    inbox: [
+      {
+        id: "INBX-001", at: isoDaysAgo(0), capturedBy: "R. Nozzle", category: "quick",
+        summary: "Neighbor at the Silver Berry job asked for a card - wants her garage pad done",
+        fields: { phone: "780-555-0177", where: "Silver Berry Rd" }, status: "NEW",
+      },
+    ],
+
+    todos: [
+      { id: "TODO-001", task: "Fit-test new P100 cartridges before Thursday job", category: "Safety", priority: "high", status: "Open", added: daysAgo(2), due: daysAhead(2) },
+      { id: "TODO-002", task: "Call Foothills about compressor service interval", category: "Equipment", priority: "normal", status: "Open", added: daysAgo(5) },
+    ],
+
+    payments: [],
+    esigns: [],
+    lifecycles: [],
+    reviews: [],
+    insights: [],
+    insightWeights: {},
+    activity: [],
   };
 }

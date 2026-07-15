@@ -1,6 +1,6 @@
 # Tool catalog
 
-Generated from the live server — 27 tools. Every tool returns JSON.
+Generated from the live server — 65 tools. Every tool returns JSON.
 
 ## Quoting intelligence
 
@@ -261,3 +261,363 @@ _No parameters._
 Restore the synthetic demo dataset to its seeded state (all names, numbers, and dollar figures are invented). Useful between demo runs.
 
 _No parameters._
+
+## Inventory control
+
+### `inventory_status`
+
+Stock levels across all three sections (Materials & Media, Consumables & PPE, Equipment & General) with par levels, reorder thresholds, low-stock flags, and last-paid pricing. The count that used to live on a clipboard.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `section` | `Materials & Media` · `Consumables & PPE` · `Equipment & General` | no |  |
+| `lowStockOnly` | boolean | no |  |
+
+### `inventory_receive`
+
+Book received stock: bumps on-hand, records the movement, updates last-paid cost/supplier, and appends to the price log (so the price-watch and reorder engines learn real COD pricing). Link the receipt id when it came through the receipt pipeline.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `item` | string | yes | Item id or name (fuzzy match ok) |
+| `qty` | number | yes |  |
+| `unitCost` | number | no |  |
+| `supplier` | string | no |  |
+| `receiptId` | string | no |  |
+
+### `inventory_consume`
+
+Log media/consumable usage against a job. Decrements stock, records the burn-down movement (fuel for per-job P&L and reorder forecasting), and warns the moment an item crosses its reorder threshold.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `item` | string | yes | Item id or name (fuzzy match ok) |
+| `qty` | number | yes |  |
+| `jobId` | string | no |  |
+
+### `inventory_reorder_suggestions`
+
+Everything at or below its reorder point, with suggested order quantity (back to par), preferred supplier, last-paid unit price, estimated cost, and recent burn rate so nothing runs out mid-job.
+
+_No parameters._
+
+### `price_watch`
+
+Supplier price history per product from real purchases: last price vs previous, percent change, and spike flags (≥10% increase). Catches supplier creep before it eats the margin.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `product` | string | no | Filter to one product (fuzzy) |
+
+## Contacts / CRM
+
+### `contact_search`
+
+One search across the whole rolodex. Customers come back with their quotes, jobs, and open balance; suppliers with their pricebook summary; crew with certifications and rate.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `query` | string | yes |  |
+
+### `supplier_add`
+
+Add a supplier to the rolodex with products carried and contact details.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `name` | string | yes |  |
+| `location` | string | no |  |
+| `phone` | string | no |  |
+| `website` | string | no |  |
+| `products` | string | no |  |
+| `notes` | string | no |  |
+
+### `supplier_pricebook`
+
+What the company actually pays each supplier, by product: purchase history from the price log with latest unit prices — the negotiating sheet for the next order.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `supplier` | string | no |  |
+
+### `crew_add`
+
+Add a crew member with role, certifications, and loaded hourly rate. Feeds job costing and FLHA rosters.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `name` | string | yes |  |
+| `role` | `lead-tech` · `tech` · `apprentice` | yes |  |
+| `phone` | string | no |  |
+| `certifications` | array of string | no |  |
+| `hourlyRate` | number | yes |  |
+
+### `crew_roster`
+
+Active crew with roles, rates, certifications, expiring-cert flags, and current job assignments from the dispatch board.
+
+_No parameters._
+
+## Ops-sheet engine
+
+### `sheet_tabs`
+
+The data spine as an operations workbook: every tab with its row count. This is the system of record — every tool writes through it.
+
+_No parameters._
+
+### `sheet_read`
+
+Read any tab as headers + rows (display values), like the production router's readTab.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `tab` | string | yes |  |
+| `maxRows` | integer | no |  |
+
+### `sheet_append_todo`
+
+Append-only write to the To-Do tab (the workbook discipline: insert, never overwrite).
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `task` | string | yes |  |
+| `category` | string | no |  |
+| `priority` | `low` · `normal` · `high` | no |  |
+| `due` | string | no |  |
+
+### `inbox_submit`
+
+The crew-facing capture path: anything from the field lands as exactly one append-only inbox row (lead, receipt note, job photo note, supplier, todo, quick thought). Nothing touches the books directly — the filing engine routes it.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `capturedBy` | string | yes |  |
+| `category` | `lead` · `receipt` · `todo` · `supplier` · `quick` · `job_note` | yes |  |
+| `summary` | string | yes |  |
+| `fields` | object | no |  |
+
+### `inbox_list`
+
+Inbox rows by status — NEW rows await filing; NEEDS REVIEW rows want a human or smarter judgment.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `status` | `NEW` · `FILED` · `NEEDS REVIEW` | no |  |
+
+### `inbox_file`
+
+Deterministically route NEW inbox rows to the right book: lead → Leads (+customer), todo → To-Do, supplier → Suppliers, receipt → the OCR expense pipeline, quick → keyword-sniffed or NEEDS REVIEW. Append-only, idempotent per row, exactly like the production autopilot.
+
+_No parameters._
+
+## Accounting depth
+
+### `vendor_rollup`
+
+Canonicalized vendor spend: total spend, receipt count, category, first seen — with new-vendor flags. Misspellings and variants roll up to one vendor record.
+
+_No parameters._
+
+### `receipt_report`
+
+The 3-day style audit: receipts with OCR warnings, arithmetic that does not reconcile (subtotal + GST ≠ total), future/stale dates, and missing job attribution on job-sized spends. Clean receipts are counted, dirty ones are itemized.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `days` | integer | no |  |
+
+### `invoice_remind`
+
+Draft polite-but-firm reminder messages for every unpaid invoice, escalating tone with age (gentle < 7 days, direct 7–20, final notice 21+). Brand voice: no exclamation points, abrasive blasting not sandblasting.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `invoiceId` | string | no | One invoice, or omit for all outstanding |
+
+## On-chain payments (X Layer testnet)
+
+### `invoice_payment_request`
+
+Turn an invoice's balance due into an on-chain payment request on OKX X Layer TESTNET: EIP-681 payment URI, recipient, amount in test OKB (fixed synthetic FX rate), chain details, and explorer link. Testnet and demo funds only — Evolved never signs or moves assets.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `invoiceId` | string | yes |  |
+| `payTo` | string | no | Override recipient address (0x…); default is the documented demo address |
+
+### `invoice_payment_check`
+
+Confirm settlement of a payment request. Live mode verifies the transaction hash on X Layer testnet via read-only RPC (exists, succeeded, correct recipient, sufficient value); simulated mode (default demo) accepts a simulated settlement and labels it clearly. On confirmation the invoice flips to Paid and the job to Paid.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `paymentId` | string | yes |  |
+| `txHash` | string | no | X Layer testnet transaction hash (required in live mode) |
+| `simulate` | boolean | no | Demo-mode settlement without a real transaction |
+
+### `xlayer_status`
+
+Live read-only connectivity check against the X Layer testnet RPC: chain id and latest block. Proof the on-chain rail is real, not a mock.
+
+_No parameters._
+
+### `x402_info`
+
+How Evolved monetizes as an ASP: the HTTP endpoint exposes POST /mcp (free) and POST /mcp-paid (x402). The paid route answers 402 Payment Required with an accepts envelope (scheme exact, network eip155:1952) until the caller presents payment proof in the X-PAYMENT header. Returns the exact envelope and a curl walkthrough.
+
+_No parameters._
+
+## Autonomous lifecycle
+
+### `lifecycle_start`
+
+Kick off the full lead-to-paid lifecycle from one description: creates the lead and customer, prices the work with the learning engine, drafts the quote, and pauses at the human money gate (approve-quote). From there lifecycle_advance runs everything: e-sign, weather-gated booking, FLHA, completion with actuals and inventory burn-down, invoicing, on-chain payment on X Layer testnet, review request, and the pricing learning loop.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `customerName` | string | yes |  |
+| `phone` | string | no |  |
+| `siteAddress` | string | yes |  |
+| `summary` | string | yes | What the customer wants, one line |
+| `surface` | `driveway` · `sidewalk` · `patio` · `garage-pad` · `exposed-aggregate` · `trailer` · `equipment` · `fence` · `brick` · `other` | yes |  |
+| `sqft` | number | yes |  |
+| `depth` | `very-light` · `light` · `medium` · `heavy` | yes |  |
+| `access` | `easy` · `moderate` · `difficult` | no |  |
+
+### `lifecycle_advance`
+
+Push a lifecycle forward through every stage it can reach. Provide approveQuote:true to clear the quote money gate, esignSigner to record client acceptance, and simulatePayment:true or txHash to settle the on-chain invoice. Everything between gates advances automatically and is logged step by step.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `lifecycleId` | string | yes |  |
+| `approveQuote` | boolean | no |  |
+| `esignSigner` | string | no |  |
+| `simulatePayment` | boolean | no |  |
+| `txHash` | string | no |  |
+
+### `lifecycle_status`
+
+Every lifecycle with stage, open gates, and full step log — the audit trail of an autonomous engagement.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `lifecycleId` | string | no |  |
+
+### `quote_esign_sign`
+
+Record a client's e-signature on a sent quote using its HMAC acceptance token. Signature is verified against the token, timestamped, and becomes part of the permanent record; accepting opens the job.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `esignId` | string | yes |  |
+| `token` | string | yes |  |
+| `signerName` | string | yes |  |
+| `decision` | `accept` · `decline` | yes |  |
+
+### `review_record`
+
+Log the customer's post-job review (1–5 rating and comment) against the review request — closes the loop on the engagement and builds the reputation ledger.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `reviewId` | string | yes |  |
+| `rating` | integer | yes |  |
+| `comment` | string | no |  |
+
+## Frontier
+
+### `quote_from_photo`
+
+A customer texts a photo; this turns it into a priced, branded draft quote. Vision (Claude, when a key is present) or a deterministic offline estimator (real JPEG/PNG pixel parsing + hints) estimates surface, area, condition, and blast depth; the learning rate engine prices it with a full profitability check; optionally books it straight into the ledger as a draft quote. Every photo quote carries a measure-to-confirm clause and feeds the learning loop when the job closes.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `imageBase64` | string | no | The customer's photo, base64 (JPEG/PNG) |
+| `mediaType` | string | no | image/jpeg or image/png |
+| `surface` | `driveway` · `sidewalk` · `patio` · `garage-pad` · `exposed-aggregate` · `trailer` · `equipment` · `fence` · `brick` · `other` | no |  |
+| `approxWidthFt` | number | no |  |
+| `approxLengthFt` | number | no |  |
+| `conditionNote` | string | no |  |
+| `customerName` | string | no | Provide to create the draft quote in the books |
+| `siteAddress` | string | no |  |
+
+### `voice_command`
+
+Field crew talk, the books listen. Deterministic intent parsing handles: media/consumable usage ('used four bags of crushed glass on the Kowalczyk job'), FLHA start ('open the FLHA for job 1043'), navigation ('next stop?'), receipt logging ('log receipt: PETRO-CANADA … TOTAL $150'), todos ('remind me to grab couplers'), job status — and anything unrecognized is captured to the App Inbox so no thought is ever lost. Returns the action taken plus a short spoken-style reply.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `utterance` | string | yes |  |
+| `speaker` | string | no | Crew member name (default: crew) |
+
+### `cfo_forecast`
+
+Answer the questions owners lose sleep over, with numbers: add a second truck (capex, added fixed cost, utilization ramp, break-even month), change rates (with price elasticity), or shock demand. 12-month monthly cash table grounded in the company's actual books and cost model, seasonality from the blast-day weather gates, and every assumption stated in the output.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `scenario` | `baseline` · `add-truck` · `rate-change` · `demand-shock` | yes |  |
+| `truckCapexCad` | number | no |  |
+| `truckMonthlyFixedCad` | number | no |  |
+| `extraCrew` | integer | no |  |
+| `ratePct` | number | no | rate-change: percent, e.g. 10 or -5 |
+| `demandPct` | number | no | demand-shock: percent, e.g. -20 |
+
+### `cfo_health`
+
+The CFO one-pager: receivables aging, customer concentration risk, monthly run-rate from the books, weather-capacity outlook (share of blastable days ahead), review reputation, and the three numbers to fix first.
+
+_No parameters._
+
+## Business-in-a-box
+
+### `insights_generate`
+
+The deterministic business brain: spend pulse vs last month, top and new vendors, inbox backlog, reorder alerts, pending on-chain settlements. Insights are fingerprint-deduplicated (refreshed, never duplicated) and ranked by learned importance weights that your feedback trains.
+
+_No parameters._
+
+### `insight_feedback`
+
+Rate an insight (Important / Not important / Done). Ratings adjust per-category weights, so the brain learns what this owner actually cares about — the feedback loop from the production Insights tab.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `insightId` | string | yes |  |
+| `rating` | `Important` · `Not important` · `Done` | yes |  |
+
+### `activity_feed`
+
+The audit trail: every capture, filing, receipt, payment, and voice command in reverse-chronological order.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `limit` | integer | no |  |
+
+### `backup_create`
+
+Full snapshot of the data spine to a timestamped backup file — the never-pruned safety net.
+
+_No parameters._
+
+### `backup_list`
+
+Every backup snapshot on file.
+
+_No parameters._
+
+### `franchise_spinup`
+
+The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library, digest, learning loop, on-chain invoicing). This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `companyName` | string | yes |  |
+| `trade` | string | yes | e.g. pressure washing, line painting, mobile detailing |
+| `region` | string | no |  |
+| `currency` | string | no |  |
+| `gstRate` | number | no |  |
+| `rates` | array of objects | no | Custom rate card; defaults to the blasting card |
+| `confirm` | boolean | yes | Must be true — this replaces the current demo dataset |

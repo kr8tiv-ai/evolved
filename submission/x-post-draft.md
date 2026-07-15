@@ -8,18 +8,17 @@
 
 Most AI business tools are chatbots wearing a suit.
 
-Evolved is the actual operations brain of a real abrasive-blasting company in Alberta — the system that prices driveways, catches receipts from truck cabs, and briefs the owner at 6:30 AM — packaged as an MCP agent anyone on @okx AI can use.
+Evolved is the actual operations brain of a real abrasive-blasting company in Alberta — packaged as an MCP agent on @okx AI, and now it gets the company PAID ON-CHAIN.
 
-One agent, the whole company:
-◆ Quote engine that learns from won jobs (driveways converged to $9/sqft on their own)
-◆ Receipts → books via tiered OCR, job-matched, duplicate-guarded
-◆ Weather-gated dispatch, FLHA safety with crew sign-off
-◆ A ball-drop catcher that raises what you forgot
-◆ One morning digest. Nothing slips.
+One agent runs the whole engagement, humans approve only the money:
+◆ Photo → priced branded quote in seconds
+◆ E-sign → weather-gated booking → FLHA safety → receipts → invoice
+◆ Invoice settles in OKB on X Layer (testnet) — verified on-chain, no keys ever held
+◆ Evolved itself is a paid ASP via x402: 402 challenge → pay per call → answer
+◆ Voice commands from the crew, a CFO simulator, and a quote engine that learns from won jobs
+◆ franchise_spinup clones the whole OS for ANY trade in one call
 
-27 tools. Fully open source. Synthetic demo data, real math.
-
-Listed as a free A2MCP service on OKX.AI — demo below.
+65 tools. 30 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 github.com/kr8tiv-ai/evolved
 

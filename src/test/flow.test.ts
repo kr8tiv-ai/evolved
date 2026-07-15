@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createServer } from "../server.js";
+import { createServer, TOOL_COUNT } from "../server.js";
 import { resetDb } from "../store.js";
 
 async function connect() {
@@ -31,7 +31,7 @@ test("full loop: lead → quote → accept → schedule → flha → receipt →
     client.callTool({ name, arguments: args }).then(parse);
 
   const tools = await client.listTools();
-  assert.equal(tools.tools.length, 27, "expected 27 tools");
+  assert.equal(tools.tools.length, TOOL_COUNT, `expected ${TOOL_COUNT} tools`);
 
   const { lead, customer } = await call("lead_capture", {
     name: "Test Client", source: "test", summary: "test job",

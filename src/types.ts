@@ -242,6 +242,200 @@ export interface PricingOutcome {
   recordedAt: string;
 }
 
+// ---------- contacts / CRM ----------
+
+export interface Supplier {
+  id: string;
+  name: string;
+  location?: string;
+  phone?: string;
+  website?: string;
+  products?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface CrewMember {
+  id: string;
+  name: string;
+  role: "lead-tech" | "tech" | "apprentice";
+  phone?: string;
+  certifications: string[];
+  hourlyRate: number;
+  active: boolean;
+  createdAt: string;
+}
+
+// ---------- inventory ----------
+
+export type InventorySection =
+  | "Materials & Media"
+  | "Consumables & PPE"
+  | "Equipment & General";
+
+export interface InventoryItem {
+  id: string;
+  section: InventorySection;
+  name: string;
+  unit: string;
+  onHand: number;
+  parLevel: number;
+  reorderAt: number;
+  preferredSupplierId?: string;
+  lastUnitCost?: number;
+  lastSupplier?: string;
+  lastPurchasedAt?: string;
+  notes?: string;
+}
+
+export interface InventoryMovement {
+  id: string;
+  itemId: string;
+  delta: number;
+  reason: "received" | "consumed" | "adjustment";
+  jobId?: string;
+  receiptId?: string;
+  unitCost?: number;
+  at: string;
+}
+
+export interface PriceLogEntry {
+  id: string;
+  date: string;
+  supplier: string;
+  product: string;
+  itemId?: string;
+  unitType: string;
+  qty: number;
+  unitPrice: number;
+  totalPaid: number;
+  receiptId?: string;
+  notes?: string;
+}
+
+export interface VendorRecord {
+  canonical: string;
+  aliases: string[];
+  category: string;
+  firstSeen: string;
+  totalSpend: number;
+  receipts: number;
+}
+
+// ---------- app inbox (field capture) ----------
+
+export interface InboxRow {
+  id: string;
+  at: string;
+  capturedBy: string;
+  category: string;
+  summary: string;
+  fields: Record<string, string>;
+  status: "NEW" | "FILED" | "NEEDS REVIEW";
+  filedTo?: string;
+}
+
+export interface Todo {
+  id: string;
+  task: string;
+  category: string;
+  priority: "low" | "normal" | "high";
+  status: "Open" | "Done";
+  added: string;
+  due?: string;
+  notes?: string;
+}
+
+// ---------- on-chain payments (X Layer testnet) ----------
+
+export interface PaymentRequest {
+  id: string;
+  invoiceId: string;
+  network: string; // CAIP-2, e.g. eip155:1952 (X Layer testnet)
+  chainId: number;
+  payTo: string;
+  asset: { symbol: string; address: string | null; decimals: number };
+  amountCad: number;
+  amountAsset: string; // human units
+  amountBaseUnits: string; // integer string
+  uri: string; // EIP-681
+  status: "pending" | "paid" | "expired";
+  mode: "simulated" | "live";
+  txHash?: string;
+  createdAt: string;
+  paidAt?: string;
+  expiresAt: string;
+}
+
+// ---------- e-sign ----------
+
+export interface EsignRecord {
+  id: string;
+  quoteId: string;
+  token: string;
+  status: "sent" | "signed" | "declined";
+  signerName?: string;
+  signedAt?: string;
+  sentAt: string;
+}
+
+// ---------- autonomous lifecycle ----------
+
+export interface LifecycleGate {
+  gate: "approve-quote" | "confirm-payment";
+  reason: string;
+  raisedAt: string;
+  clearedAt?: string;
+}
+
+export interface Lifecycle {
+  id: string;
+  stage: string;
+  leadId?: string;
+  customerId?: string;
+  quoteId?: string;
+  esignId?: string;
+  jobId?: string;
+  flhaId?: string;
+  invoiceId?: string;
+  paymentId?: string;
+  reviewId?: string;
+  gates: LifecycleGate[];
+  log: { at: string; step: string; detail: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReviewRequest {
+  id: string;
+  jobId: string;
+  customerId: string;
+  status: "requested" | "received";
+  rating?: number;
+  comment?: string;
+  requestedAt: string;
+  receivedAt?: string;
+}
+
+// ---------- insights / activity / backups ----------
+
+export interface Insight {
+  id: string;
+  date: string;
+  category: string;
+  text: string;
+  suggestedAction?: string;
+  score: number;
+  status: "New" | "Important" | "Not important" | "Done";
+  fingerprint: string;
+}
+
+export interface ActivityEvent {
+  at: string;
+  source: string;
+  message: string;
+}
+
 export interface Database {
   meta: { company: string; currency: string; gstRate: number; seededAt: string };
   customers: Customer[];
@@ -255,4 +449,20 @@ export interface Database {
   rateTable: RateEntry[];
   pricingOutcomes: PricingOutcome[];
   quoteCounter: Record<string, number>; // per-MMDDYY sequence
+  // ---- parity expansion ----
+  suppliers: Supplier[];
+  crew: CrewMember[];
+  inventory: InventoryItem[];
+  inventoryMovements: InventoryMovement[];
+  priceLog: PriceLogEntry[];
+  vendors: VendorRecord[];
+  inbox: InboxRow[];
+  todos: Todo[];
+  payments: PaymentRequest[];
+  esigns: EsignRecord[];
+  lifecycles: Lifecycle[];
+  reviews: ReviewRequest[];
+  insights: Insight[];
+  insightWeights: Record<string, number>;
+  activity: ActivityEvent[];
 }

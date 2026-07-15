@@ -19,15 +19,38 @@ const DB_PATH = join(DATA_DIR, "evolved-db.json");
 
 let db: Database | null = null;
 
+/** Databases persisted by older builds get the new collections on load. */
+function ensureShape(d: Database): Database {
+  const fresh = buildSeed();
+  const arrays: (keyof Database)[] = [
+    "suppliers", "crew", "inventory", "inventoryMovements", "priceLog",
+    "vendors", "inbox", "todos", "payments", "esigns", "lifecycles",
+    "reviews", "insights", "activity",
+  ];
+  for (const k of arrays) {
+    if (!Array.isArray(d[k])) (d as unknown as Record<string, unknown>)[k] = fresh[k];
+  }
+  if (typeof d.insightWeights !== "object" || d.insightWeights === null) {
+    d.insightWeights = {};
+  }
+  return d;
+}
+
 export function loadDb(): Database {
   if (db) return db;
   if (existsSync(DB_PATH)) {
-    db = JSON.parse(readFileSync(DB_PATH, "utf8")) as Database;
+    db = ensureShape(JSON.parse(readFileSync(DB_PATH, "utf8")) as Database);
   } else {
     db = buildSeed();
     persist();
   }
   return db;
+}
+
+/** Append to the activity feed (kept to the most recent 300 events). */
+export function logActivity(d: Database, source: string, message: string): void {
+  d.activity.push({ at: nowIso(), source, message });
+  if (d.activity.length > 300) d.activity.splice(0, d.activity.length - 300);
 }
 
 export function persist(): void {

@@ -23,7 +23,13 @@
       { "name": "Field safety (FLHA)", "detail": "Hazard assessments drafted from job scope with per-hazard mitigations, standard PPE, muster points, end-of-day crew sign-off, permanent safety record." },
       { "name": "Autonomous operations", "detail": "Morning digest (one-thing-not-to-drop, money pulse, weather, quotes out), five ball-drop auto-raise rules, business snapshot, P&L and scorecard reporting." }
     ],
-    "toolCount": 27,
+    "toolCount": 65,
+    "onChain": {
+      "network": "X Layer testnet (Terigon), chainId 1952, eip155:1952",
+      "invoiceSettlement": "EIP-681 payment requests in test OKB; settlement verified with read-only RPC; Evolved never holds keys or signs transactions",
+      "paidTier": "x402 pay-per-call on POST /mcp-paid (scheme exact); free A2MCP tier on POST /mcp unchanged",
+      "testnetOnly": true
+    },
     "demo": {
       "repository": "https://github.com/kr8tiv-ai/evolved",
       "scripted": "npm run demo (full loop: lead → quote → job → safety → books → digest)",
