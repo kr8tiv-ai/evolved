@@ -256,9 +256,30 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </div>
 
 <div class="card wide">
-  <div class="eyebrow">the toolkit story</div>
+  <div class="eyebrow">the toolkit story — try it</div>
   <h2>🧰 Make it yours — any trade, one call</h2>
-  <p class="hint">Evolved is an adaptable toolkit, not a one-off. <span class="mono">franchise_spinup { tradePack: "pressure-washing" }</span> re-seeds the whole OS for another business — its rate card in the quoting engine, its hazards in every FLHA, empty books, full machinery. Three trade packs ship in the repo (pressure-washing, line-painting, mobile-detailing); adding yours is one entry in <span class="mono">src/trades.ts</span>. The server also exposes MCP <b>resources</b> (rate table, hazard library, trade packs) and <b>prompts</b> (morning-briefing, quote-a-job, run-the-lifecycle) — the whole spec, not just tools. Guide: <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/docs/ADAPT.md">docs/ADAPT.md</a> · <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/SECURITY.md">SECURITY.md</a></p>
+  <p class="hint">Evolved is an adaptable toolkit, not a one-off. Pick a trade and preview EXACTLY what <span class="mono">franchise_spinup</span> installs — its rate card in the quoting engine, its hazards in every FLHA, empty books, full machinery. Read-only and safe here; one call for real. Adding your own trade is one entry in <span class="mono">src/trades.ts</span>, then <span class="mono">brand_configure</span> makes it feel like YOUR company on every rendered quote. The server also exposes MCP <b>resources</b> and <b>prompts</b> — the whole spec, not just tools. Guide: <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/docs/ADAPT.md">docs/ADAPT.md</a> · <a style="color:var(--aurora)" href="https://github.com/kr8tiv-ai/evolved/blob/main/SECURITY.md">SECURITY.md</a></p>
+  <div>
+    <select id="fp-pack"><option value="pressure-washing">pressure washing</option><option value="line-painting">parking lot line painting</option><option value="mobile-detailing">mobile auto detailing</option></select>
+    <button onclick="packPreview()">Preview the pack</button>
+  </div>
+  <div class="out" id="fp-out"></div>
+</div>
+
+<div class="card">
+  <div class="eyebrow">your books, your sheet</div>
+  <h2>📗 The workbook spine</h2>
+  <p class="hint">The whole OS renders as a real operations workbook — every collection a tab. With a Google service account (<span class="mono">EVOLVED_GOOGLE_SA</span>) it creates and syncs an actual Google Sheets workbook; with zero credentials it exports the identical tabs as CSV. Watch it write the spine live:</p>
+  <div><button onclick="workbook()">Export the workbook</button></div>
+  <div class="out" id="wb-out"></div>
+</div>
+
+<div class="card">
+  <div class="eyebrow">done work → next work</div>
+  <h2>📊 Scorecard & reputation</h2>
+  <p class="hint">The Job P&amp;L scorecard (quoted vs actual, win rate, overall margin) plus the reputation ledger — reviews earned, response rate, and the testimonial bank ready for a website.</p>
+  <div><button onclick="scorecard()">Run the scorecard</button></div>
+  <div class="out" id="sc-out"></div>
 </div>
 
 <div class="card wide"><div class="cfg">
@@ -272,9 +293,9 @@ export const PLAYGROUND_HTML = `<!doctype html>
 } } }</pre>
   </div>
   <div>
-    <div class="eyebrow">the full 67-tool surface</div>
+    <div class="eyebrow">the full 83-tool surface</div>
     <h2>Or run it locally</h2>
-    <p class="hint">Zero credentials; 36 tests including a live testnet probe:</p>
+    <p class="hint">Zero credentials; 41 tests including a live testnet probe:</p>
 <pre class="copy mono">git clone https://github.com/kr8tiv-ai/evolved.git
 cd evolved && npm install && npm run build
 npm test && npm run demo</pre>
@@ -545,6 +566,40 @@ async function rates(){
   } catch(e){ el.innerHTML = '<div class="stepline">✖ ' + esc(e.message) + "</div>"; }
 }
 
+/* ---------- v3 cards: toolkit preview, workbook spine, scorecard ---------- */
+async function packPreview(){
+  clearOut("fp-out");
+  var key = $("fp-pack").value;
+  show("fp-out", "→ franchise_preview { tradePack: \\"" + key + "\\" } — read-only");
+  try {
+    var r = await call("franchise_preview", { tradePack: key });
+    show("fp-out", r.pack, "the pack");
+    show("fp-out", r.rateCard, "rate card → the quoting engine");
+    show("fp-out", r.tradeHazards.map(function(h){ return h.hazard + " (" + h.risk + ")"; }), "hazards → every FLHA");
+    show("fp-out", r.applyWith, "apply for real with");
+  } catch(e){ show("fp-out", "✖ " + e.message); }
+}
+async function workbook(){
+  clearOut("wb-out");
+  show("wb-out", "→ workbook_export — rendering the whole OS as tabs…");
+  try {
+    var r = await call("workbook_export", {});
+    show("wb-out", r.summary, "workbook");
+    show("wb-out", r.files, r.files.length + " tabs written (CSV; Google Sheets when credentialed)");
+  } catch(e){ show("wb-out", "✖ " + e.message); }
+}
+async function scorecard(){
+  clearOut("sc-out");
+  show("sc-out", "→ job_pnl_report + reputation_report");
+  try {
+    var p = await call("job_pnl_report", {});
+    show("sc-out", p.scorecard, "the scorecard");
+    var rep = await call("reputation_report", {});
+    show("sc-out", { averageRating: rep.averageRating, responseRate: rep.responseRate, fiveStarShare: rep.fiveStarShare }, "reputation ledger");
+    if (rep.testimonialBank && rep.testimonialBank.length) show("sc-out", "“" + rep.testimonialBank[0].quote + "”", "from the testimonial bank");
+  } catch(e){ show("sc-out", "✖ " + e.message); }
+}
+
 /* ---------- judge mode autopilot ---------- */
 var jmRunning = false;
 function jmProgress(pct, label){ $("jm-bar").style.width = pct + "%"; $("jm-step").textContent = label; }
@@ -588,20 +643,27 @@ async function judgeMode(){
     jmProgress(70, "🔒 HUMAN GATE 2 · confirming settlement…");
     await sleep(1800);
 
-    jmProgress(80, "ACT 5 · PAID ON-CHAIN, ENGINE TAUGHT");
+    jmProgress(74, "ACT 5 · PAID ON-CHAIN, ENGINE TAUGHT");
     var fin = await call("lifecycle_advance", { lifecycleId: st.lifecycle.id, simulatePayment: true });
     var tail = fin.log.slice(-3);
     for (var t=0;t<tail.length;t++){ show(out, "◆ " + tail[t].step + " — " + tail[t].detail); await sleep(300); }
     await sleep(500);
 
-    jmProgress(90, "ACT 6 · THE ASP EARNS TOO — RAW x402");
+    jmProgress(82, "ACT 6 · ANY BUSINESS, ONE CALL");
+    var pk = await call("franchise_preview", { tradePack: "pressure-washing" });
+    show(out, "🧰 " + pk.pack.trade + " — " + pk.rateCard.length + " rates, " + pk.tradeHazards.length + " trade hazards, one call to install", "franchise_preview (read-only)");
+    var wb = await call("workbook_export", {});
+    show(out, "📗 " + wb.summary, "workbook_export — the whole OS as a real workbook (Google Sheets when credentialed)");
+    await sleep(700);
+
+    jmProgress(92, "ACT 7 · THE ASP EARNS TOO — RAW x402");
     await x402(out);
     await sleep(600);
 
     jmProgress(100, "CLOSE · NOTHING DROPPED");
     var dg = await call("morning_digest", {});
     show(out, "🌅 " + dg.oneThingNotToDrop, "tomorrow's digest — the one thing not to drop");
-    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, and an agent service that itself gets paid on-chain. 67 tools. Open source. Try any card above yourself.");
+    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, any trade installable in one call, the whole OS on a workbook spine, and an agent service that itself gets paid on-chain. 83 tools. Open source. Try any card above yourself.");
     ticker();
   } catch(e){ show(out, "✖ " + e.message + " — cards above still work individually."); }
   jmRunning = false; $("jm-btn").disabled = false;

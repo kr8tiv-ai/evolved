@@ -33,7 +33,7 @@
     "dev:http": "tsx src/http.ts",
     "reset": "node dist/reset.js",
     "demo": "node dist/demo.js",
-    "test": "node --test dist/test/engines.test.js dist/test/engines2.test.js dist/test/flow.test.js dist/test/flow2.test.js dist/test/playground.test.js"
+    "test": "node --test dist/test/engines.test.js dist/test/engines2.test.js dist/test/flow.test.js dist/test/flow2.test.js dist/test/flow3.test.js dist/test/playground.test.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

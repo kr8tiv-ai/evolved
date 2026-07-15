@@ -296,11 +296,24 @@ export function buildSeed(): Database {
     payments: [],
     esigns: [],
     lifecycles: [],
-    reviews: [],
+    reviews: [
+      { id: "REV-001", jobId: "JOB-1041", customerId: "CUST-003", status: "received", rating: 5, comment: "Both trailers came back looking factory-fresh. Crew was in and out in two days and left the yard spotless.", requestedAt: isoDaysAgo(5), receivedAt: isoDaysAgo(3) },
+    ],
     insights: [],
     insightWeights: {},
     activity: [],
     usedTxHashes: [],
     customHazards: [],
+    photos: [
+      { id: "PHOTO-001", jobId: "JOB-1041", kind: "before", caption: "Trailer decks — heavy rust, failed coating", takenBy: "R. Nozzle", at: isoDaysAgo(6) },
+      { id: "PHOTO-002", jobId: "JOB-1041", kind: "after", caption: "White-metal finish, ready for primer", takenBy: "R. Nozzle", at: isoDaysAgo(5) },
+    ],
+    fieldNotes: [
+      { id: "FN-001", jobId: "JOB-1041", text: "Yard manager asked about doing their loader bucket next month", by: "R. Nozzle", source: "voice", at: isoDaysAgo(5) },
+    ],
+    timeEntries: [
+      { id: "TIME-001", crewName: "R. Nozzle", jobId: "JOB-1041", inAt: isoDaysAgo(6), outAt: isoDaysAgo(6), hours: 7, wage: 315 },
+      { id: "TIME-002", crewName: "T. Field", jobId: "JOB-1041", inAt: isoDaysAgo(6), outAt: isoDaysAgo(6), hours: 7, wage: 315 },
+    ],
   };
 }

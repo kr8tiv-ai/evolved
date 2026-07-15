@@ -1,10 +1,13 @@
 /**
  * Evolved — MCP server assembly.
  *
- * 67 tools across thirteen domains: quoting intelligence, money, pipeline,
+ * 83 tools across sixteen domains: quoting intelligence, money, pipeline,
  * safety, autonomous ops, inventory, contacts/CRM, the ops-sheet engine,
  * accounting depth, on-chain payments (X Layer testnet), the autonomous
- * lifecycle, and the frontier set (photo-to-quote, voice, CFO, franchise).
+ * lifecycle, the frontier set (photo-to-quote, voice, CFO, franchise),
+ * the workbook spine (Google Sheets / CSV), field operations (photos,
+ * notes, time clock, on-site JHA), and growth (reviews, reputation,
+ * Job P&L scorecard, dispatch board, branding).
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -27,6 +30,9 @@ import { registerVisionTools } from "./tools/vision.js";
 import { registerVoiceTools } from "./tools/voice.js";
 import { registerCfoTools } from "./tools/cfo.js";
 import { registerOpsPlusTools } from "./tools/opsplus.js";
+import { registerWorkbookTools } from "./tools/workbook.js";
+import { registerFieldTools } from "./tools/field.js";
+import { registerGrowthTools } from "./tools/growth.js";
 
 export const SERVER_INFO = {
   name: "evolved",
@@ -35,7 +41,7 @@ export const SERVER_INFO = {
 };
 
 /** Kept in lockstep with registrations below; enforced by the test suite. */
-export const TOOL_COUNT = 67;
+export const TOOL_COUNT = 83;
 
 export function createServer(): McpServer {
   const server = new McpServer(SERVER_INFO, {
@@ -49,9 +55,14 @@ export function createServer(): McpServer {
       "books, invoice, settle on-chain on OKX X Layer (TESTNET), request the",
       "review, and teach the rate engine. lifecycle_start/lifecycle_advance",
       "run the whole engagement with human gates only at money decisions.",
+      "The whole OS lives on a workbook spine: workbook_create builds a real",
+      "Google Sheets operations workbook (service account via",
+      "EVOLVED_GOOGLE_SA), workbook_export writes the same tabs as CSV with",
+      "zero credentials. Field crews log photos, notes, and time against",
+      "jobs and author the day's JHA on-site (flha_field_capture).",
       "Start with business_snapshot or morning_digest to orient. All demo",
       "data is synthetic; demo_reset restores it; franchise_spinup re-seeds",
-      "the whole OS for a brand-new trade.",
+      "the whole OS for a brand-new trade (franchise_preview to window-shop).",
     ].join(" "),
   });
 
@@ -70,6 +81,9 @@ export function createServer(): McpServer {
   registerVoiceTools(server); // 1
   registerCfoTools(server); // 2
   registerOpsPlusTools(server); // 6
+  registerWorkbookTools(server); // 5
+  registerFieldTools(server); // 5
+  registerGrowthTools(server); // 6
 
   // ---- MCP resources: the reference data an agent should be able to READ,
   // not just act on. Counted and enforced by the test suite.

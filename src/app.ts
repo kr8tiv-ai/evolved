@@ -49,6 +49,8 @@ const DEMO_TOOLS = new Set([
   "lifecycle_start", "lifecycle_advance", "lifecycle_status",
   "invoice_payment_request", "invoice_payment_check",
   "cfo_forecast", "cfo_health", "voice_command", "demo_reset",
+  "workbook_export", "workbook_status", "franchise_preview",
+  "reputation_report", "job_pnl_report", "dispatch_board",
 ]);
 
 let demoClient: Client | null = null;
@@ -168,7 +170,7 @@ export async function handleRequest(
       const tool = String(body.tool ?? "");
       if (!DEMO_TOOLS.has(tool)) {
         res.writeHead(403, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 67-tool surface.` }));
+        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 83-tool surface.` }));
         return;
       }
       const client = await getDemoClient();

@@ -198,6 +198,8 @@ export interface Flha {
   musterPoint: string;
   openedBy: string;
   openedAt: string;
+  /** JHAs are authored on-site by the crew; auto-drafts are starting points. */
+  source?: "auto-draft" | "field";
   signoff?: {
     signedBy: string[];
     incidentFree: boolean;
@@ -417,6 +419,54 @@ export interface ReviewRequest {
   receivedAt?: string;
 }
 
+// ---------- field ops (the field app made portable) ----------
+
+export interface JobPhoto {
+  id: string;
+  jobId: string;
+  kind: "before" | "after" | "progress";
+  caption: string;
+  takenBy: string;
+  at: string;
+}
+
+export interface FieldNote {
+  id: string;
+  jobId?: string;
+  text: string;
+  by: string;
+  source: "voice" | "text";
+  at: string;
+}
+
+export interface TimeEntry {
+  id: string;
+  crewName: string;
+  jobId: string;
+  inAt: string;
+  outAt?: string;
+  hours?: number;
+  wage?: number;
+  note?: string;
+}
+
+// ---------- workbook (the Google Sheets spine) ----------
+
+export interface WorkbookLink {
+  provider: "google-sheets" | "csv";
+  spreadsheetId?: string;
+  url?: string;
+  dir?: string;
+  tabs: string[];
+  lastSyncAt: string;
+}
+
+export interface BrandConfig {
+  tagline?: string;
+  motto?: string;
+  primaryColor?: string;
+}
+
 // ---------- insights / activity / backups ----------
 
 export interface Insight {
@@ -473,4 +523,11 @@ export interface Database {
   usedTxHashes: string[];
   /** Trade-pack hazards merged into the FLHA library (adaptable toolkit). */
   customHazards: HazardEntry[];
+  // ---- v3: field ops + workbook spine ----
+  photos: JobPhoto[];
+  fieldNotes: FieldNote[];
+  timeEntries: TimeEntry[];
+  /** Linked live workbook (Google Sheets when credentialed, CSV otherwise). */
+  workbook?: WorkbookLink;
+  brand?: BrandConfig;
 }
