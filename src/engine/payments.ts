@@ -146,6 +146,9 @@ export async function verifyOnChain(
   if (!/^0x[0-9a-fA-F]{64}$/.test(txHash)) {
     return { verified: false, mode: "live", detail: "Malformed transaction hash." };
   }
+  if (!/^\d+$/.test(minBaseUnits) || BigInt(minBaseUnits) <= 0n) {
+    return { verified: false, mode: "live", detail: "Refusing to verify a non-positive payment amount." };
+  }
   try {
     const [tx, receipt] = (await Promise.all([
       rpc("eth_getTransactionByHash", [txHash]),
@@ -199,6 +202,13 @@ export function buildPaymentAmounts(amountCad: number): {
   amountAsset: string;
   baseUnits: string;
 } {
+  if (!Number.isFinite(amountCad) || amountCad <= 0) {
+    throw new Error(`Payment amount must be positive — got ${amountCad} CAD.`);
+  }
   const amountAsset = cadToOkb(round2(amountCad));
-  return { amountAsset, baseUnits: toBaseUnits(amountAsset, XLAYER_TESTNET.native.decimals) };
+  const baseUnits = toBaseUnits(amountAsset, XLAYER_TESTNET.native.decimals);
+  if (BigInt(baseUnits) <= 0n) {
+    throw new Error(`Amount ${amountCad} CAD rounds to zero base units — too small to request on-chain.`);
+  }
+  return { amountAsset, baseUnits };
 }

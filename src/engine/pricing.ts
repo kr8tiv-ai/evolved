@@ -19,6 +19,20 @@ export const GST_RATE = 0.05;
 export const DEPOSIT_RATE = 0.25;
 export const QUOTE_VALID_DAYS = 30;
 
+/** Company tax rate — franchise_spinup can override it in db.meta. */
+export function gstRate(db: Database): number {
+  const r = db.meta?.gstRate;
+  return typeof r === "number" && r >= 0 && r <= 0.3 ? r : GST_RATE;
+}
+
+/** Market-floor base rates; the last line of defense if a rate card is incomplete. */
+const FALLBACK_BASE_RATES: Record<BlastDepth, number> = {
+  "very-light": 2.5,
+  light: 3.75,
+  medium: 6.9,
+  heavy: 14.5,
+};
+
 /** Access factors: how hard it is to get equipment onto the work. */
 export const ACCESS_FACTORS: Record<string, number> = {
   easy: 1.0, // open driveway, hose run < 50 ft
@@ -76,7 +90,8 @@ export function effectiveRate(
   surface?: SurfaceKind,
 ): { rate: number; source: string; samples: number } {
   const entry = db.rateTable.find((r) => r.depth === depth);
-  const base = entry?.baseRate ?? 0;
+  // Never fall back to $0/sqft: an incomplete rate card uses the market floor.
+  const base = entry?.baseRate ?? FALLBACK_BASE_RATES[depth];
   const relevant = db.pricingOutcomes.filter(
     (o) =>
       o.depth === depth &&
@@ -132,7 +147,7 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
 
   const { rate, source } = effectiveRate(db, depth, input.surface);
   const subtotal = round2(input.sqft * rate * accessFactor + mobilization);
-  const gst = round2(subtotal * GST_RATE);
+  const gst = round2(subtotal * gstRate(db));
   const total = round2(subtotal + gst);
   // Company standard: deposit is 25% of the GST-inclusive total.
   const deposit = round2(total * DEPOSIT_RATE);

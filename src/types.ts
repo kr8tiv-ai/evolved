@@ -465,4 +465,6 @@ export interface Database {
   insights: Insight[];
   insightWeights: Record<string, number>;
   activity: ActivityEvent[];
+  /** On-chain replay protection: every testnet tx hash ever accepted. */
+  usedTxHashes: string[];
 }

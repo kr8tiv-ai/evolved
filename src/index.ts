@@ -7,13 +7,13 @@
  */
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createServer } from "./server.js";
+import { createServer, TOOL_COUNT } from "./server.js";
 
 async function main(): Promise<void> {
   const server = createServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Evolved MCP server running on stdio (27 tools).");
+  console.error(`Evolved MCP server running on stdio (${TOOL_COUNT} tools).`);
 }
 
 main().catch((err) => {

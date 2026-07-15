@@ -85,8 +85,9 @@ export function runScenario(db: Database, input: ScenarioInput): CfoForecast {
     case "rate-change": {
       rateFactor = 1 + (input.ratePct ?? 10) / 100;
       demandFactor = 1 - Math.max(0, (input.ratePct ?? 10)) / 100 * 0.35;
+      const pct = input.ratePct ?? 10;
       assumptions.push(
-        `Rate change ${input.ratePct ?? 10 > 0 ? "+" : ""}${input.ratePct ?? 10}%: price elasticity assumed −0.35 (a 10% raise loses ~3.5% of jobs).`,
+        `Rate change ${pct > 0 ? "+" : ""}${pct}%: price elasticity assumed −0.35 (a 10% raise loses ~3.5% of jobs); demand upside from price cuts is not modeled.`,
       );
       break;
     }

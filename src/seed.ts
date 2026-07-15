@@ -275,7 +275,9 @@ export function buildSeed(): Database {
 
     vendors: [
       { canonical: "Prairie Abrasives Supply", aliases: ["prairie abrasives supply"], category: "Abrasive media", firstSeen: daysAgo(74), totalSpend: 2037.5, receipts: 2 },
-      { canonical: "Petro-Canada", aliases: ["petro-canada", "petro canada"], category: "Fuel", firstSeen: daysAgo(40), totalSpend: 164, receipts: 1 },
+      { canonical: "Petro-Canada", aliases: ["petro canada"], category: "Fuel", firstSeen: daysAgo(6), totalSpend: 164, receipts: 1 },
+      { canonical: "Princess Auto", aliases: ["princess auto"], category: "Equipment", firstSeen: daysAgo(4), totalSpend: 285, receipts: 1 },
+      { canonical: "Mark's Work Wearhouse", aliases: ["mark s work wearhouse"], category: "Safety gear", firstSeen: daysAgo(15), totalSpend: 140, receipts: 1 },
     ],
 
     inbox: [
@@ -298,5 +300,6 @@ export function buildSeed(): Database {
     insights: [],
     insightWeights: {},
     activity: [],
+    usedTxHashes: [],
   };
 }

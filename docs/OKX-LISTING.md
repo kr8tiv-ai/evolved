@@ -12,7 +12,7 @@ path is documented below.
 |---|---|---|
 | Shape | Standardized MCP/API service | Negotiated per-task work |
 | Payment | Pay-per-call or **free — results returned directly** | Escrow on X Layer, released on user approval |
-| Fit for Evolved | Exact match — 27 deterministic tools, instant results | Wrong shape for a tool service |
+| Fit for Evolved | Exact match — 65 deterministic tools, instant results | Wrong shape for a tool service |
 
 ## Listing flow (owner steps)
 
@@ -46,10 +46,15 @@ PORT=8788 npm run start:http
 A single small VPS (or any container platform) is sufficient; the service is
 stateless per request and holds its data spine on local disk.
 
-## Paid tier (later, optional)
+## Paid tier (implemented)
 
-The free endpoint satisfies the listing requirement. To monetize per call,
-wrap `POST /mcp` with an x402 handler using the OKX Payment SDK: respond
-`402 Payment Required` with a payment challenge, verify settlement, then
-forward to the same MCP transport. The tool layer does not change — pricing
-becomes a deployment concern, which is exactly where it belongs.
+The free endpoint at `POST /mcp` satisfies the listing requirement, and the
+x402 pay-per-call tier is already implemented at `POST /mcp-paid`: it
+responds `402 Payment Required` with an `accepts` envelope (scheme `exact`,
+network `eip155:1952`, base64 copy in the `PAYMENT-REQUIRED` header),
+accepts proof via the `X-PAYMENT` header (`{"txHash":"0x…"}` verified on
+X Layer testnet by read-only RPC with replay protection, or
+`{"simulated":true}` in demo mode), and serves the MCP response with an
+`X-PAYMENT-RESPONSE` settlement receipt. Details in
+[ONCHAIN.md](ONCHAIN.md). Remaining future work is optional: integrating
+the OKX Payment SDK facilitator for gasless settlement.

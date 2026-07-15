@@ -1,7 +1,7 @@
 /**
  * Evolved — MCP server assembly.
  *
- * 65 tools across twelve domains: quoting intelligence, money, pipeline,
+ * 65 tools across thirteen domains: quoting intelligence, money, pipeline,
  * safety, autonomous ops, inventory, contacts/CRM, the ops-sheet engine,
  * accounting depth, on-chain payments (X Layer testnet), the autonomous
  * lifecycle, and the frontier set (photo-to-quote, voice, CFO, franchise).

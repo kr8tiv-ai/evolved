@@ -59,7 +59,11 @@ export function parseVoiceCommand(utteranceRaw: string): VoiceIntent {
   if (receipt) return { intent: "log-receipt", text: receipt[1] };
 
   // "remind me to ..." / "add todo ..." / "put ... on the list"
-  const todo = u.match(/\b(?:remind me to|add (?:a )?todo[:,]?|put)\s+(.+?)(?:\s+on the list)?[.?!]?$/i);
+  // The bare "put" form requires the "on the list" tail so ordinary field
+  // notes containing "put" are not hijacked into todos.
+  const todo =
+    u.match(/\b(?:remind me to|add (?:a )?todo[:,]?)\s+(.+?)(?:\s+on the list)?[.?!]?$/i) ??
+    u.match(/\bput\s+(.+?)\s+on the list[.?!]?$/i);
   if (todo) {
     const urgent = /\b(urgent|asap|today|right away)\b/i.test(u);
     return { intent: "add-todo", task: todo[1].trim(), priority: urgent ? "high" : "normal" };

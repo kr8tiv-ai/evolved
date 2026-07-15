@@ -18,12 +18,14 @@ function matchJob(db: ReturnType<typeof loadDb>, hint?: string) {
   const active = db.jobs.filter((j) => !["Complete", "Invoiced", "Paid"].includes(j.status));
   if (!hint) return active[0];
   const h = hint.toLowerCase();
+  // A hint that matches nothing returns undefined — never silently
+  // attribute work to an arbitrary job.
   return (
     active.find((j) => j.id.toLowerCase() === h) ??
     active.find((j) => {
       const c = db.customers.find((x) => x.id === j.customerId);
       return `${c?.name ?? ""} ${j.siteAddress} ${j.scope}`.toLowerCase().includes(h);
-    }) ?? active[0]
+    })
   );
 }
 
@@ -50,6 +52,9 @@ export function registerVoiceTools(server: McpServer): void {
             const item = findItem(d.inventory, intent.item);
             if (!item) return { error: `No inventory item matching "${intent.item}".` };
             const job = matchJob(d, intent.jobHint);
+            if (intent.jobHint && !job) {
+              return { error: `No active job matching "${intent.jobHint}" — say the job id or customer name, or leave the job off to log as overhead.` };
+            }
             if (intent.qty > item.onHand) {
               return { error: `Only ${item.onHand} ${item.unit} of ${item.name} on hand.` };
             }
@@ -114,11 +119,20 @@ export function registerVoiceTools(server: McpServer): void {
         case "log-receipt": {
           const parsed = await runOcrPipeline(intent.text);
           const result = withDb((d) => {
+            // Same duplicate guard as receipt_ingest.
+            const dup = d.receipts.find(
+              (r) =>
+                r.vendor.toLowerCase() === parsed.vendor.toLowerCase() &&
+                Math.abs(r.total - parsed.total) <= 0.5 &&
+                Math.abs(new Date(r.date).getTime() - new Date(parsed.date).getTime()) <= 2 * 86_400_000,
+            );
+            if (dup) return { duplicateOf: dup.id, vendor: dup.vendor, total: dup.total };
             const receipt = {
               id: shortId("RCPT"), vendor: parsed.vendor, date: parsed.date,
               amountBeforeTax: parsed.amountBeforeTax, gst: parsed.gst, total: parsed.total,
               category: parsed.category, paymentMethod: parsed.paymentMethod,
-              jobId: matchJob(d)?.id, lineItems: parsed.lineItems,
+              // No job hint in the utterance → overhead; never guess a job.
+              jobId: undefined, lineItems: parsed.lineItems,
               ocr: { model: parsed.model, escalated: parsed.escalated, confidence: parsed.confidence, warnings: parsed.warnings },
               createdAt: nowIso(),
             };
@@ -126,7 +140,10 @@ export function registerVoiceTools(server: McpServer): void {
             logActivity(d, "voice", `${who} logged receipt: ${parsed.vendor} $${parsed.total}.`);
             return receipt;
           });
-          return ok({ intent, action: result, reply: `Receipt in the books: ${result.vendor}, $${result.total}, filed under ${result.category}.` });
+          if ("duplicateOf" in result) {
+            return ok({ intent, action: result, reply: `That looks like a duplicate of ${result.duplicateOf} (${result.vendor}, $${result.total}) — not posted twice.` });
+          }
+          return ok({ intent, action: result, reply: `Receipt in the books: ${result.vendor}, $${result.total}, filed under ${result.category} as overhead — say the job name if it belongs to one.` });
         }
 
         case "add-todo": {

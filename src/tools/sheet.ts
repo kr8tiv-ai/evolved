@@ -211,15 +211,22 @@ export function registerSheetTools(server: McpServer): void {
     },
     async () => {
       const { runOcrPipeline } = await import("../engine/ocr.js");
+      const { upsertVendor } = await import("./accounting.js");
+      const { persist } = await import("../store.js");
       const results: { id: string; filedTo?: string; status: string }[] = [];
       const db = loadDb();
-      for (const row of db.inbox.filter((r) => r.status === "NEW")) {
+      // Snapshot the NEW rows up front so rows added mid-run are untouched.
+      const queue = db.inbox.filter((r) => r.status === "NEW");
+      for (const row of queue) {
+        if (row.status !== "NEW") continue; // claimed by a concurrent run
         let filedTo: string | undefined;
         const f = row.fields;
+        // Lead and todo keywords outrank the receipt heuristic, and a
+        // receipt needs a money signal stronger than a lone "$".
         const cat = row.category === "quick"
-          ? (/\breceipt|\$|total\b/i.test(row.summary) ? "receipt"
-            : /\bcall|quote|lead|wants|asked\b/i.test(row.summary) ? "lead"
+          ? (/\bcall|quote|lead|wants|asked\b/i.test(row.summary) ? "lead"
             : /\btodo|remind|fix|order\b/i.test(row.summary) ? "todo"
+            : /\breceipt\b|\$\s?\d|\btotal\b[^a-z]*\d/i.test(row.summary) ? "receipt"
             : "review")
           : row.category;
 
@@ -248,16 +255,32 @@ export function registerSheetTools(server: McpServer): void {
         } else if (cat === "receipt") {
           const text = f.text ?? row.summary;
           const parsed = await runOcrPipeline(text);
-          const receipt = {
-            id: shortId("RCPT"), vendor: parsed.vendor, date: parsed.date,
-            amountBeforeTax: parsed.amountBeforeTax, gst: parsed.gst, total: parsed.total,
-            category: parsed.category, paymentMethod: parsed.paymentMethod,
-            jobId: f.jobId, lineItems: parsed.lineItems,
-            ocr: { model: parsed.model, escalated: parsed.escalated, confidence: parsed.confidence, warnings: parsed.warnings },
-            createdAt: nowIso(),
-          };
-          db.receipts.push(receipt);
-          filedTo = `Expenses!${receipt.id}`;
+          if (parsed.confidence < 0.8) {
+            // Low-confidence extraction never posts to the books.
+            filedTo = undefined;
+          } else {
+            const dup = db.receipts.find(
+              (r) =>
+                r.vendor.toLowerCase() === parsed.vendor.toLowerCase() &&
+                Math.abs(r.total - parsed.total) <= 0.5 &&
+                Math.abs(new Date(r.date).getTime() - new Date(parsed.date).getTime()) <= 2 * 86_400_000,
+            );
+            if (dup) {
+              filedTo = `Expenses!${dup.id} (duplicate — not re-posted)`;
+            } else {
+              const receipt = {
+                id: shortId("RCPT"), vendor: parsed.vendor, date: parsed.date,
+                amountBeforeTax: parsed.amountBeforeTax, gst: parsed.gst, total: parsed.total,
+                category: parsed.category, paymentMethod: parsed.paymentMethod,
+                jobId: f.jobId, lineItems: parsed.lineItems,
+                ocr: { model: parsed.model, escalated: parsed.escalated, confidence: parsed.confidence, warnings: parsed.warnings },
+                createdAt: nowIso(),
+              };
+              db.receipts.push(receipt);
+              upsertVendor(db, receipt);
+              filedTo = `Expenses!${receipt.id}`;
+            }
+          }
         }
 
         if (filedTo) {
@@ -269,9 +292,8 @@ export function registerSheetTools(server: McpServer): void {
           results.push({ id: row.id, status: "NEEDS REVIEW" });
         }
         logActivity(db, "filing", `Inbox ${row.id} → ${filedTo ?? "NEEDS REVIEW"}`);
+        persist(); // per-row write-through so a mid-loop failure loses nothing
       }
-      const { persist } = await import("../store.js");
-      persist();
       return ok({ processed: results, remaining: db.inbox.filter((r) => r.status === "NEW").length });
     },
   );

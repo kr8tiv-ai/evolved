@@ -6,6 +6,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { runOcrPipeline } from "../engine/ocr.js";
 import { renderInvoiceHtml, writeDocument } from "../engine/brand.js";
+import { gstRate } from "../engine/pricing.js";
 import { upsertVendor } from "./accounting.js";
 import {
   addDays, loadDb, logActivity, money, nowIso, round2, shortId, today, withDb,
@@ -72,13 +73,13 @@ export function registerMoneyTools(server: McpServer): void {
           // Price-spike detection: compare line items to the price log.
           const spikes: string[] = [];
           for (const li of receipt.lineItems) {
-            const priorEntries = db.priceLog
-              .filter((p) => li.description.toLowerCase().includes(p.product.toLowerCase().split(" ")[0]) || p.product.toLowerCase().includes(li.description.toLowerCase().split(" ")[0]))
-              .sort((a, b) => b.date.localeCompare(a.date));
-            const prior = priorEntries[0];
-            const qtyMatch = li.description.match(/x\s?(\d+)|(\d+)\s?(?:bags?|pairs?|units?)/i);
+            // Match on the full product name to avoid first-word collisions.
+            const prior = db.priceLog
+              .filter((p) => li.description.toLowerCase().includes(p.product.toLowerCase()))
+              .sort((a, b) => b.date.localeCompare(a.date))[0];
+            const qtyMatch = li.description.match(/\bx\s?(\d+)\b|\b(\d+)\s*(?:bags?|pairs?|units?)\b/i);
             const qty = qtyMatch ? Number(qtyMatch[1] ?? qtyMatch[2]) : null;
-            if (prior && qty && qty > 0) {
+            if (prior && qty && qty > 0 && prior.unitPrice > 0) {
               const unit = round2(li.amount / qty);
               const changePct = round2(((unit - prior.unitPrice) / prior.unitPrice) * 100);
               if (changePct >= 10) {
@@ -158,7 +159,7 @@ export function registerMoneyTools(server: McpServer): void {
             ...(extraLines ?? []),
           ];
           const subtotal = round2(lines.reduce((s, l) => s + l.amount, 0));
-          const gst = round2(subtotal * 0.05);
+          const gst = round2(subtotal * gstRate(db));
           const total = round2(subtotal + gst);
           const depositApplied = job.depositPaid && quote ? quote.depositRequired : 0;
           const invoice: Invoice = {

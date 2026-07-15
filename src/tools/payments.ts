@@ -95,6 +95,16 @@ export function registerPaymentTools(server: McpServer): void {
       const mode = paymentsMode();
       let result;
       if (txHash) {
+        // Replay protection: a transaction hash settles exactly one payment.
+        const alreadyUsed =
+          db.usedTxHashes.includes(txHash) ||
+          db.payments.some((p) => p.txHash === txHash && p.id !== paymentId);
+        if (alreadyUsed) {
+          return ok({
+            verified: false,
+            detail: `Transaction ${txHash} already settled a different payment — replay rejected.`,
+          });
+        }
         result = await verifyOnChain(txHash, payment.payTo, payment.amountBaseUnits);
       } else if (simulate && mode !== "live") {
         result = simulatedSettlement(paymentId);
@@ -113,6 +123,7 @@ export function registerPaymentTools(server: McpServer): void {
           if (result.verified) {
             p.status = "paid";
             p.txHash = result.txHash ?? (result.mode === "simulated" ? "simulated" : undefined);
+            if (result.txHash) d.usedTxHashes.push(result.txHash);
             p.paidAt = nowIso();
             const invoice = d.invoices.find((i) => i.id === p.invoiceId);
             if (invoice) {

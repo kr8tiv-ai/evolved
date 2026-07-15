@@ -18,7 +18,8 @@ function ok(data: unknown) {
 /** Canonicalize a vendor name and roll the receipt into its record. */
 export function upsertVendor(db: Database, receipt: Receipt): string {
   const raw = receipt.vendor.trim();
-  const norm = raw.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ");
+  // Punctuation becomes a space so "Petro-Canada" and "Petro Canada" collide.
+  const norm = raw.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   let vendor = db.vendors.find(
     (v) => v.canonical.toLowerCase() === raw.toLowerCase() || v.aliases.some((a) => a === norm),
   );

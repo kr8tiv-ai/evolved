@@ -46,6 +46,10 @@ test("ocr: comma thousands-separator regression (the production P0 bug)", () => 
   assert.equal(parseAmount("12,345.67"), 12345.67);
   assert.equal(parseAmount("1.234,56"), 1234.56); // EU-style too
   assert.equal(parseAmount("250.00"), 250);
+  // Lone decimal comma must not be 100x-inflated ("234,56" is 234.56, not 23456).
+  assert.equal(parseAmount("234,56"), 234.56);
+  assert.equal(parseAmount("3,50"), 3.5);
+  assert.equal(parseAmount("12,345"), 12345); // classic thousands, no decimals
 });
 
 test("ocr: full receipt reconciles subtotal + GST = total", async () => {

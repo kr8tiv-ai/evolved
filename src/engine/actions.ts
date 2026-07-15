@@ -1,7 +1,8 @@
 /**
  * Evolved — the ball-drop catcher.
  *
- * The five auto-raise rules from the production Action Items tab. Run on
+ * The six auto-raise rules (five from the production Action Items tab plus
+ * the stale-lead rule). Run on
  * demand or as part of the morning digest; each rule scans the books and
  * raises an action item so nothing quietly falls through.
  */

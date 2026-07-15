@@ -7,7 +7,7 @@ import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { loadDb, logActivity, nowIso, persist, round2, shortId, today, withDb } from "../store.js";
+import { DATA_DIR, loadDb, logActivity, nowIso, persist, round2, shortId, today, withDb } from "../store.js";
 import { buildSeed } from "../seed.js";
 import type { Database, RateEntry } from "../types.js";
 
@@ -26,6 +26,7 @@ function generateInsights(db: Database): { text: string; category: string; sugge
 
   const mtd = db.receipts.filter((r) => r.date.startsWith(month)).reduce((s, r) => s + r.total, 0);
   const prev = new Date();
+  prev.setDate(1); // pin to the 1st so month-end days can't roll over
   prev.setMonth(prev.getMonth() - 1);
   const prevMonth = prev.toISOString().slice(0, 7);
   const prevSamePoint = db.receipts
@@ -158,7 +159,7 @@ export function registerOpsPlusTools(server: McpServer): void {
     },
     async () => {
       const db = loadDb();
-      const dir = process.env.EVOLVED_BACKUP_DIR ?? join(process.env.EVOLVED_DATA_DIR ?? ".data", "backups");
+      const dir = process.env.EVOLVED_BACKUP_DIR ?? join(DATA_DIR, "backups");
       mkdirSync(dir, { recursive: true });
       const file = join(dir, `evolved-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
       writeFileSync(file, JSON.stringify(db, null, 2), "utf8");
@@ -175,7 +176,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       inputSchema: {},
     },
     async () => {
-      const dir = process.env.EVOLVED_BACKUP_DIR ?? join(process.env.EVOLVED_DATA_DIR ?? ".data", "backups");
+      const dir = process.env.EVOLVED_BACKUP_DIR ?? join(DATA_DIR, "backups");
       try {
         return ok({ backups: readdirSync(dir).filter((f) => f.endsWith(".json")) });
       } catch {
@@ -199,13 +200,20 @@ export function registerOpsPlusTools(server: McpServer): void {
         rates: z.array(z.object({
           depth: z.enum(["very-light", "light", "medium", "heavy"]),
           ratePerSqft: z.number().positive(),
-        })).optional().describe("Custom rate card; defaults to the blasting card"),
+        })).optional().describe("Custom rate card — must cover all four depths; defaults to the blasting card"),
         confirm: z.boolean().describe("Must be true — this replaces the current demo dataset"),
       },
     },
     async (input) => {
       if (!input.confirm) {
         return ok({ spunUp: false, error: "Set confirm:true — franchise_spinup replaces the current demo dataset (backup_create first if you want to keep it)." });
+      }
+      if (input.rates) {
+        const provided = new Set(input.rates.map((r) => r.depth));
+        const missing = (["very-light", "light", "medium", "heavy"] as const).filter((d) => !provided.has(d));
+        if (missing.length) {
+          return ok({ spunUp: false, error: `Custom rate card must cover all four depths — missing: ${missing.join(", ")}.` });
+        }
       }
       const fresh = buildSeed();
       const blank: Database = {

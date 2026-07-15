@@ -289,6 +289,61 @@ test("X Layer testnet RPC: live read-only probe (skips cleanly offline)", async 
   assert.ok(status.blockNumber! > 0);
 });
 
+test("review fixes: replay protection, declined e-sign is final, custom price break-even flag, voice job-hint strictness", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // Replay protection: a tx hash that settled one payment cannot settle another.
+  const fakeTx = "0x" + "ab".repeat(32);
+  const req1 = await call("invoice_payment_request", { invoiceId: "ECO-INV-9002" });
+  const db = loadDb();
+  const p1 = db.payments.find((p) => p.id === req1.payment.id)!;
+  p1.status = "paid";
+  p1.txHash = fakeTx; // simulate a prior live settlement
+  const req2 = await call("invoice_payment_request", { invoiceId: "ECO-INV-9001" });
+  const replay = await call("invoice_payment_check", { paymentId: req2.payment.id, txHash: fakeTx });
+  assert.equal(replay.verified, false);
+  assert.match(replay.detail, /replay/i);
+
+  // Declined e-sign is final: lifecycle closes as lost, never flips to signed.
+  const started = await call("lifecycle_start", {
+    customerName: "Decline Test Co", siteAddress: "1 No St",
+    summary: "test", surface: "driveway", sqft: 400, depth: "medium",
+  });
+  const adv1 = await call("lifecycle_advance", { lifecycleId: started.lifecycle.id, approveQuote: true });
+  assert.equal(adv1.stage, "awaiting-esign");
+  const d2 = loadDb();
+  const esign = d2.esigns.find((e) => e.id === adv1.refs.esign)!;
+  const declined = await call("quote_esign_sign", {
+    esignId: esign.id, token: esign.token, signerName: "N. Ope", decision: "decline",
+  });
+  assert.equal(declined.quoteStatus, "Declined");
+  const adv2 = await call("lifecycle_advance", { lifecycleId: started.lifecycle.id, esignSigner: "Should Not Work" });
+  assert.equal(adv2.stage, "closed-lost");
+  const d3 = loadDb();
+  assert.equal(d3.esigns.find((e) => e.id === esign.id)!.status, "declined", "decline must never be overwritten");
+  assert.equal(d3.quotes.find((q) => q.id === started.quote.id)!.status, "Declined");
+
+  // Custom (relationship) price below break-even is flagged, not silently raised.
+  const cheap = await call("quote_create", {
+    customerId: "CUST-001", siteAddress: "1 Cheap St",
+    lines: [{ description: "Relationship price — heavy blast", sqft: 1000, depth: "heavy", customAmount: 1500 }],
+  });
+  assert.equal(cheap.quote.profitability.verdict, "below-break-even");
+  assert.match(cheap.advisory, /break-even/i);
+
+  // Voice: a job hint that matches nothing must not attribute to an arbitrary job.
+  const v = await call("voice_command", { utterance: "used one bag of crushed glass on the Nonexistent Corp job" });
+  assert.match(v.reply, /No active job matching/i);
+  const d4 = loadDb();
+  assert.ok(!d4.inventoryMovements.some((m) => m.at > started.lifecycle.createdAt && m.reason === "consumed" && m.itemId === "INV-001" && m.jobId), "no movement should be attributed to a guessed job");
+
+  await client.close();
+  await server.close();
+});
+
 test("franchise spin-up re-seeds the OS for a new trade, demo_reset restores Evolve", async () => {
   resetDb();
   const { server, client } = await connect();

@@ -3,12 +3,12 @@
   "asp": {
     "name": "Evolved",
     "tagline": "Business management in a box — a real company's operations brain as an agentic service",
-    "description": "Evolved is the complete operating system of a working industrial-services company (Evolve Eco Blasting, Edmonton, Canada), packaged as an MCP service. Agents use it to run a field-services business end to end: a learning quote engine with live profitability checks, branded quote and invoice documents, a tiered-OCR receipt-to-bookkeeping pipeline with duplicate guards and job matching, lead and dispatch tracking with weather-gated scheduling, field-level hazard assessments with per-hazard mitigations and crew sign-off, an auto-raised action-item system that catches dropped balls, and a morning digest that briefs the owner in one call. 27 tools, five domains, two feedback loops - pricing that learns from job outcomes, and books that audit themselves daily.",
+    "description": "Evolved is the complete operating system of a working industrial-services company (Evolve Eco Blasting, Edmonton, Canada), packaged as an MCP service that also gets the business paid on-chain. Agents run the whole engagement autonomously with human gates only at money: lead intake (typed, voice, or photo-to-quote), a learning quote engine with live profitability checks, e-sign acceptance, weather-gated dispatch, field-level hazard assessments with crew sign-off, tiered-OCR receipts with duplicate guards and job matching, inventory burn-down with reorder suggestions priced from real COD receipts, invoicing with on-chain settlement in test OKB on X Layer (testnet, read-only RPC verification, no keys ever held), six auto-raised ball-drop rules, a CFO scenario simulator, a one-call morning digest, and franchise_spinup to re-seed the whole OS for any trade. 65 tools, 13 domains, two feedback loops - pricing that learns from job outcomes, and books that audit themselves daily. Monetized as a free A2MCP endpoint plus an implemented x402 pay-per-call tier.",
     "serviceType": "A2MCP",
     "category": "Software Utility (also fits: Finance Copilot — quoting, bookkeeping, P&L)",
     "pricing": {
-      "model": "free",
-      "note": "Free A2MCP endpoint — results returned directly, no payment challenge. x402 paid tier planned via OKX Payment SDK."
+      "model": "freemium",
+      "note": "Free A2MCP endpoint at POST /mcp (results returned directly). Implemented x402 pay-per-call tier at POST /mcp-paid: 402 challenge, scheme exact, eip155:1952, X Layer TESTNET settlement verified by read-only RPC."
     },
     "endpoint": {
       "protocol": "MCP Streamable HTTP",
@@ -21,7 +21,9 @@
       { "name": "Receipts to books", "detail": "Tiered OCR (fast model, automatic escalation when arithmetic does not reconcile), categorization, duplicate guard, job matching, reclaimable GST tracking, expense reporting." },
       { "name": "Pipeline & dispatch", "detail": "Lead funnel with enforced next actions, quote lifecycle that auto-opens jobs, dispatch board with blast-day weather verdicts, job close-out with actuals and margin verdicts." },
       { "name": "Field safety (FLHA)", "detail": "Hazard assessments drafted from job scope with per-hazard mitigations, standard PPE, muster points, end-of-day crew sign-off, permanent safety record." },
-      { "name": "Autonomous operations", "detail": "Morning digest (one-thing-not-to-drop, money pulse, weather, quotes out), five ball-drop auto-raise rules, business snapshot, P&L and scorecard reporting." }
+      { "name": "Autonomous operations", "detail": "Morning digest (one-thing-not-to-drop, money pulse, weather, quotes out), six ball-drop auto-raise rules, business snapshot, P&L and scorecard reporting." },
+      { "name": "On-chain settlement & x402 (X Layer testnet)", "detail": "Invoices settle in test OKB via EIP-681 payment requests on chainId 1952, verified with read-only RPC (no keys ever held); Evolved itself monetizes per-call through an x402 402-challenge tier at POST /mcp-paid." },
+      { "name": "Autonomous lifecycle & frontier", "detail": "lifecycle_start/advance run lead to paid with human gates only at money; photo-to-quote, crew voice commands, CFO scenario simulator, and franchise_spinup (re-seed the whole OS for any trade)." }
     ],
     "toolCount": 65,
     "onChain": {

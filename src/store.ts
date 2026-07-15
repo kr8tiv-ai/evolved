@@ -14,7 +14,7 @@ import type { Database } from "./types.js";
 import { buildSeed } from "./seed.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = process.env.EVOLVED_DATA_DIR ?? join(here, "..", ".data");
+export const DATA_DIR = process.env.EVOLVED_DATA_DIR ?? join(here, "..", ".data");
 const DB_PATH = join(DATA_DIR, "evolved-db.json");
 
 let db: Database | null = null;
@@ -33,6 +33,7 @@ function ensureShape(d: Database): Database {
   if (typeof d.insightWeights !== "object" || d.insightWeights === null) {
     d.insightWeights = {};
   }
+  if (!Array.isArray(d.usedTxHashes)) d.usedTxHashes = [];
   return d;
 }
 

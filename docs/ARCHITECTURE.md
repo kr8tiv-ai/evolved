@@ -14,20 +14,19 @@ flowchart TB
         A[stdio — src/index.ts]
         B[Streamable HTTP — src/http.ts<br>POST /mcp, stateless, free A2MCP endpoint]
     end
-    subgraph surface [Tool surface — src/tools/*]
-        Q[quoting.ts — 7 tools]
-        M[money.ts — 5 tools]
-        P[pipeline.ts — 6 tools]
-        S[safety.ts — 3 tools]
-        O[ops.ts — 6 tools]
+    subgraph surface [Tool surface — src/tools/* — 65 tools]
+        Q[quoting 7 · money 5 · pipeline 6<br>safety 3 · ops 6]
+        R[inventory 5 · contacts 5 · sheet 6<br>accounting 3 · payments 4]
+        S2[lifecycle 5 · vision 1 · voice 1<br>cfo 2 · opsplus 6]
     end
     subgraph engines [Engines — src/engine/*]
         E1[pricing.ts<br>rate table · access factors ·<br>profitability · learning loop]
         E2[ocr.ts<br>tiered extraction ·<br>reconciliation · categorization]
         E3[safety.ts<br>hazard library ·<br>per-hazard mitigations]
-        E4[digest.ts + actions.ts<br>morning digest ·<br>five ball-drop rules]
+        E4[digest.ts + actions.ts<br>morning digest ·<br>six ball-drop rules]
         E5[weather.ts<br>blast-day verdicts]
         E6[brand.ts<br>dark-brand HTML documents]
+        E7[payments.ts · nlu.ts ·<br>vision.ts · cfo.ts<br>X Layer + x402 · voice ·<br>photo estimates · forecasts]
     end
     D[(store.ts — the data spine<br>workbook-shaped JSON,<br>seeded synthetic, write-through)]
     transports --> surface --> engines --> D
@@ -38,9 +37,11 @@ clients and over Streamable HTTP for hosted use. The HTTP entry point is
 deliberately **stateless** — a fresh server and transport per request — so the
 free A2MCP endpoint scales horizontally and holds no session state.
 
-**Tool surface.** 27 tools in five domains. Tools validate input with zod,
-call engines, and return JSON. They never reach around the engines to touch
-the store directly for business logic.
+**Tool surface.** 65 tools in 13 domains (the five originals plus inventory,
+contacts/CRM, the ops-sheet engine, accounting depth, on-chain payments,
+the autonomous lifecycle, the frontier set, and business-in-a-box). Tools
+validate input with zod, call engines, and return JSON. They never reach
+around the engines to touch the store directly for business logic.
 
 **Engines.** Pure logic, no MCP awareness. This is where the company's real
 math and policy live: the rate table, the 5% GST and 25%-of-total deposit,

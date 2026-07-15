@@ -11,7 +11,7 @@
 import { createHmac, randomBytes } from "node:crypto";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { priceQuote, QUOTE_VALID_DAYS } from "../engine/pricing.js";
+import { gstRate, priceQuote, QUOTE_VALID_DAYS } from "../engine/pricing.js";
 import { getForecast } from "../engine/weather.js";
 import { hazardsForScope, STANDARD_PPE } from "../engine/safety.js";
 import { buildPaymentAmounts, DEMO_PAYTO, paymentUri, paymentsMode, XLAYER_TESTNET } from "../engine/payments.js";
@@ -77,28 +77,51 @@ async function advance(
       continue;
     }
 
-    // Stage: awaiting-esign → signer provided?
+    // Stage: awaiting-esign → consume a signature, never overwrite a decline.
     if (lc.stage === "awaiting-esign") {
-      if (!opts.esignSigner) return;
       const esign = db.esigns.find((e) => e.id === lc.esignId)!;
-      esign.status = "signed";
-      esign.signerName = opts.esignSigner;
-      esign.signedAt = nowIso();
       const quote = db.quotes.find((q) => q.id === lc.quoteId)!;
+
+      if (esign.status === "declined") {
+        // A decline on record is final — never flipped by a later advance.
+        quote.status = "Declined";
+        quote.updatedAt = nowIso();
+        const lostLead = db.leads.find((l) => l.id === lc.leadId);
+        if (lostLead) { lostLead.stage = "Lost"; lostLead.updatedAt = nowIso(); }
+        lc.stage = "closed-lost";
+        log(lc, "declined", `${esign.signerName ?? "Client"} declined ${quote.id} — lifecycle closed as lost.`);
+        return;
+      }
+
+      if (esign.status === "signed") {
+        log(lc, "esign-consumed", `Using ${esign.signerName}'s existing signature on ${quote.id}.`);
+      } else if (opts.esignSigner) {
+        esign.status = "signed";
+        esign.signerName = opts.esignSigner;
+        esign.signedAt = nowIso();
+      } else {
+        return; // still waiting on the client
+      }
+
       quote.status = "Accepted";
       quote.updatedAt = nowIso();
-      const job = {
-        id: shortId("JOB"), quoteId: quote.id, customerId: quote.customerId,
-        siteAddress: quote.siteAddress, scope: quote.lines.map((l) => l.description).join("; "),
-        status: "Booked" as const, crew: db.crew.filter((c) => c.active).map((c) => c.name).slice(0, 2),
-        depositPaid: true, createdAt: nowIso(), updatedAt: nowIso(),
-      };
-      db.jobs.push(job);
+      // Guard against duplicate jobs for the same quote (e.g. e-signed
+      // through quote_esign_sign and then advanced here).
+      let job = db.jobs.find((j) => j.quoteId === quote.id);
+      if (!job) {
+        job = {
+          id: shortId("JOB"), quoteId: quote.id, customerId: quote.customerId,
+          siteAddress: quote.siteAddress, scope: quote.lines.map((l) => l.description).join("; "),
+          status: "Booked" as const, crew: db.crew.filter((c) => c.active).map((c) => c.name).slice(0, 2),
+          depositPaid: true, createdAt: nowIso(), updatedAt: nowIso(),
+        };
+        db.jobs.push(job);
+      }
       lc.jobId = job.id;
       const lead = db.leads.find((l) => l.id === lc.leadId);
       if (lead) { lead.stage = "Won"; lead.updatedAt = nowIso(); }
       lc.stage = "scheduling";
-      log(lc, "esigned", `${opts.esignSigner} accepted ${quote.id} — job ${job.id} opened, deposit recorded.`);
+      log(lc, "esigned", `${esign.signerName} accepted ${quote.id} — job ${job.id} opened, deposit recorded.`);
       progressed = true;
       continue;
     }
@@ -181,7 +204,7 @@ async function advance(
       const job = db.jobs.find((j) => j.id === lc.jobId)!;
       const quote = db.quotes.find((q) => q.id === lc.quoteId)!;
       const subtotal = quote.subtotal;
-      const gst = round2(subtotal * 0.05);
+      const gst = round2(subtotal * gstRate(db));
       const total = round2(subtotal + gst);
       const invoice = {
         id: shortId("ECO-INV"), jobId: job.id, customerId: job.customerId,
@@ -216,10 +239,19 @@ async function advance(
       if (!opts.simulatePayment && !opts.txHash) return;
       const payment = db.payments.find((p) => p.id === lc.paymentId)!;
       if (opts.txHash) {
+        // Replay protection: one on-chain transaction settles exactly one thing.
+        const alreadyUsed =
+          db.usedTxHashes.includes(opts.txHash) ||
+          db.payments.some((p) => p.txHash === opts.txHash && p.id !== payment.id);
+        if (alreadyUsed) {
+          log(lc, "payment-rejected", `Transaction ${opts.txHash} was already used to settle another payment — replay rejected.`);
+          return;
+        }
         const { verifyOnChain } = await import("../engine/payments.js");
         const v = await verifyOnChain(opts.txHash, payment.payTo, payment.amountBaseUnits);
         if (!v.verified) { log(lc, "payment-failed", v.detail); return; }
         payment.txHash = opts.txHash;
+        db.usedTxHashes.push(opts.txHash);
       } else if (paymentsMode() === "live") {
         log(lc, "payment-blocked", "Live mode requires a real X Layer testnet txHash.");
         return;
@@ -393,7 +425,7 @@ export function registerLifecycleTools(server: McpServer): void {
     {
       title: "E-sign a quote",
       description:
-        "Record a client's e-signature on a sent quote using its HMAC acceptance token. Signature is verified against the token, timestamped, and becomes part of the permanent record; accepting opens the job.",
+        "Record a client's e-signature on a sent quote using its HMAC acceptance token. Signature is verified against the token, timestamped, and becomes part of the permanent record. Accepting opens the job (or, when the quote belongs to a lifecycle, the lifecycle consumes the signature on its next advance).",
       inputSchema: {
         esignId: z.string(),
         token: z.string(),
@@ -417,7 +449,32 @@ export function registerLifecycleTools(server: McpServer): void {
           quote.status = input.decision === "accept" ? "Accepted" : "Declined";
           quote.updatedAt = nowIso();
           logActivity(db, "esign", `${input.signerName} ${esign.status} quote ${quote.id}.`);
-          return { signed: true, esign, quoteStatus: quote.status };
+
+          const lifecycle = db.lifecycles.find((l) => l.esignId === esign.id);
+          let openedJobId: string | undefined;
+          if (input.decision === "accept" && !lifecycle) {
+            // Standalone e-sign: open the job here (once per quote).
+            const existing = db.jobs.find((j) => j.quoteId === quote.id);
+            if (!existing) {
+              const job = {
+                id: shortId("JOB"), quoteId: quote.id, customerId: quote.customerId,
+                siteAddress: quote.siteAddress,
+                scope: quote.lines.map((l) => l.description).join("; "),
+                status: "Awaiting acceptance" as const, crew: [],
+                depositPaid: false, createdAt: nowIso(), updatedAt: nowIso(),
+              };
+              db.jobs.push(job);
+              openedJobId = job.id;
+            } else {
+              openedJobId = existing.id;
+            }
+          }
+          return {
+            signed: true, esign, quoteStatus: quote.status, openedJobId,
+            note: lifecycle
+              ? `Quote belongs to lifecycle ${lifecycle.id} — call lifecycle_advance to consume the ${esign.status === "signed" ? "signature" : "decline"}.`
+              : undefined,
+          };
         }),
       );
     },

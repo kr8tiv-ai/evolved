@@ -8,7 +8,9 @@ import {
   ACCESS_FACTORS,
   DEPTH_LABELS,
   effectiveRate,
+  gstRate,
   priceQuote,
+  profitabilityCheck,
   QUOTE_VALID_DAYS,
 } from "../engine/pricing.js";
 import { renderQuoteHtml, writeDocument } from "../engine/brand.js";
@@ -93,7 +95,8 @@ export function registerQuotingTools(server: McpServer): void {
 
           let sqftTotal = 0;
           let subtotal = 0;
-          const lines = input.lines.map((l, idx) => {
+          let mobilizationApplied = false;
+          const lines = input.lines.map((l) => {
             let amount: number;
             if (l.customAmount != null) {
               amount = l.customAmount;
@@ -103,8 +106,11 @@ export function registerQuotingTools(server: McpServer): void {
                 depth: l.depth as BlastDepth,
                 surface: l.surface as SurfaceKind | undefined,
                 access: l.access,
-                mobilization: idx === 0, // one mobilization per site
+                // One mobilization per site — on the first sqft-priced line,
+                // wherever it sits in the list.
+                mobilization: !mobilizationApplied,
               });
+              mobilizationApplied = true;
               amount = priced.subtotal;
             } else {
               throw new Error(
@@ -123,15 +129,17 @@ export function registerQuotingTools(server: McpServer): void {
           });
 
           subtotal = round2(subtotal);
-          const gst = round2(subtotal * 0.05);
+          const gst = round2(subtotal * gstRate(db));
           const total = round2(subtotal + gst);
           const primary = input.lines.find((l) => l.sqft && l.depth);
+          // Check the ACTUAL quoted subtotal (custom prices included) against
+          // the cost model — this is what makes "honoured but flagged" true.
           const profitability = primary
-            ? priceQuote(db, {
-                sqft: sqftTotal || primary.sqft!,
-                depth: primary.depth as BlastDepth,
-                surface: primary.surface as SurfaceKind | undefined,
-              }).profitability
+            ? profitabilityCheck(
+                sqftTotal || primary.sqft!,
+                primary.depth as BlastDepth,
+                subtotal,
+              )
             : undefined;
 
           const quote: Quote = {

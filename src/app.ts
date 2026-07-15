@@ -67,11 +67,22 @@ export async function handleRequest(
       res.end(JSON.stringify({ ok: false, error: "Malformed payment proof header — expected JSON (raw or base64)." }));
       return;
     }
-    const result = proof.txHash
-      ? await verifyOnChain(proof.txHash, DEMO_PAYTO, price.baseUnits)
-      : proof.simulated && paymentsMode() !== "live"
-        ? simulatedSettlement("/mcp-paid call")
-        : { verified: false, mode: paymentsMode(), detail: "Payment proof required: txHash (live) or simulated:true (demo mode)." };
+    let result;
+    if (proof.txHash) {
+      // Replay protection: a tx hash buys exactly one paid call.
+      const { loadDb, withDb } = await import("./store.js");
+      const db = loadDb();
+      if (db.usedTxHashes.includes(proof.txHash) || db.payments.some((p) => p.txHash === proof.txHash)) {
+        result = { verified: false, mode: paymentsMode(), detail: "Transaction already spent on a previous call or payment — replay rejected." };
+      } else {
+        result = await verifyOnChain(proof.txHash, DEMO_PAYTO, price.baseUnits);
+        if (result.verified) withDb((d) => d.usedTxHashes.push(proof.txHash!));
+      }
+    } else if (proof.simulated && paymentsMode() !== "live") {
+      result = simulatedSettlement("/mcp-paid call");
+    } else {
+      result = { verified: false, mode: paymentsMode(), detail: "Payment proof required: txHash (live) or simulated:true (demo mode)." };
+    }
     if (!result.verified) {
       res.writeHead(402, {
         "content-type": "application/json",

@@ -37,11 +37,15 @@ export interface OcrResult {
 /** Currency parser that survives thousands separators and stray symbols. */
 export function parseAmount(raw: string): number {
   const cleaned = raw.replace(/[^0-9.,-]/g, "");
-  // "1,234.56" -> strip commas; "1.234,56" (EU style) -> normalize.
   let normalized = cleaned;
   if (/,\d{2}$/.test(cleaned) && cleaned.includes(".")) {
+    // "1.234,56" (EU style) -> 1234.56
     normalized = cleaned.replace(/\./g, "").replace(",", ".");
+  } else if (/^-?\d+,\d{2}$/.test(cleaned)) {
+    // "234,56" — a lone comma with exactly two decimals is a decimal comma.
+    normalized = cleaned.replace(",", ".");
   } else {
+    // "1,234.56" / "12,345" -> strip thousands commas.
     normalized = cleaned.replace(/,/g, "");
   }
   const n = Number.parseFloat(normalized);
@@ -85,10 +89,38 @@ function extractOffline(text: string): Omit<OcrResult, "model" | "escalated"> {
     /(\d{4}-\d{2}-\d{2})|(\d{1,2}\/\d{1,2}\/\d{2,4})|((jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4})/i,
   );
   let date = new Date().toISOString().slice(0, 10);
+  let dateUncertain = !dateMatch;
   if (dateMatch) {
-    const parsed = new Date(dateMatch[0]);
-    if (!Number.isNaN(parsed.getTime()))
-      date = parsed.toISOString().slice(0, 10);
+    const slash = dateMatch[0].match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (slash) {
+      // Slash dates are ambiguous (DD/MM vs MM/DD). First component > 12
+      // forces day-first; otherwise assume month-first but flag it.
+      let [, a, b, y] = slash;
+      if (Number(a) > 12) [a, b] = [b, a];
+      const year = y.length === 2 ? `20${y}` : y;
+      const parsed = new Date(Number(year), Number(a) - 1, Number(b));
+      if (!Number.isNaN(parsed.getTime()) && Number(a) <= 12 && Number(b) <= 31) {
+        date = `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}-${String(parsed.getDate()).padStart(2, "0")}`;
+        if (Number(slash[1]) <= 12 && Number(slash[2]) <= 12 && slash[1] !== slash[2]) {
+          warnings.push(`Ambiguous slash date "${dateMatch[0]}" — assumed month/day/year; verify against the paper receipt.`);
+          dateUncertain = true;
+        }
+      } else {
+        warnings.push(`Unparseable date "${dateMatch[0]}" — defaulted to today.`);
+        dateUncertain = true;
+      }
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateMatch[0])) {
+      // Already ISO — take it verbatim (new Date() would shift it via UTC).
+      date = dateMatch[0];
+    } else {
+      const parsed = new Date(dateMatch[0]);
+      if (!Number.isNaN(parsed.getTime())) {
+        date = `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}-${String(parsed.getDate()).padStart(2, "0")}`;
+      } else {
+        warnings.push(`Unparseable date "${dateMatch[0]}" — defaulted to today.`);
+        dateUncertain = true;
+      }
+    }
   } else {
     warnings.push("No date found — defaulted to today.");
   }
@@ -134,7 +166,7 @@ function extractOffline(text: string): Omit<OcrResult, "model" | "escalated"> {
       );
     }
   }
-  if (!dateMatch) confidence = Math.min(confidence, 0.75);
+  if (dateUncertain) confidence = Math.min(confidence, 0.75);
 
   const payment = text.match(/\b(visa|mastercard|debit|interac|cash|amex|e-?transfer)\b/i)?.[1];
 

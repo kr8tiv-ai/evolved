@@ -507,7 +507,7 @@ Every lifecycle with stage, open gates, and full step log — the audit trail of
 
 ### `quote_esign_sign`
 
-Record a client's e-signature on a sent quote using its HMAC acceptance token. Signature is verified against the token, timestamped, and becomes part of the permanent record; accepting opens the job.
+Record a client's e-signature on a sent quote using its HMAC acceptance token. Signature is verified against the token, timestamped, and becomes part of the permanent record. Accepting opens the job (or, when the quote belongs to a lifecycle, the lifecycle consumes the signature on its next advance).
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -619,5 +619,5 @@ The productization story in one call: re-seed the entire operations brain for a 
 | `region` | string | no |  |
 | `currency` | string | no |  |
 | `gstRate` | number | no |  |
-| `rates` | array of objects | no | Custom rate card; defaults to the blasting card |
+| `rates` | array of objects | no | Custom rate card — must cover all four depths; defaults to the blasting card |
 | `confirm` | boolean | yes | Must be true — this replaces the current demo dataset |
