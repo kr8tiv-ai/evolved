@@ -32,21 +32,24 @@ quote, the lifecycle audit log, the FLHA hazards, and the x402 402→proof→rec
 headers were all recorded from real MCP calls. Synthetic/testnet data only; no
 real secrets and no real funds.
 
-## Music — royalty-free / CC0
+## Music — royalty-free (Pixabay Content License)
 
-The soundtrack is an **original lofi hip-hop track composed and synthesized
-specifically for this video** (`build_music.py`, numpy + scipy — no third-party
-samples, no external audio).
+The soundtrack is **"Joyful Rhythm Walk (Funk)" by lightbeatsmusic**, licensed
+under the [Pixabay Content License](https://pixabay.com/service/license-summary/)
+(free for commercial use, no attribution required; the track is embedded in the
+video, not redistributed standalone). Faded in/out and level-matched with
+ffmpeg (`-af volume,afade`), AAC 192k.
 
-- **Source:** original composition, generated in-repo.
-- **License:** **CC0 1.0 Universal (public domain dedication).** Free to reuse.
-- No copyrighted material is used anywhere in the video.
+An earlier cut used an original CC0 lofi track generated in-repo
+(`build_music.py`, numpy + scipy) — kept for reproducibility if anyone wants a
+fully CC0 build.
 
 ## How it was built
 
 - `render.py` — deterministic Pillow frame renderer (title, premise, photo-quote,
   lifecycle, FLHA, x402, end card) with animated captions, composited to 1080p30.
-- `build_music.py` — the CC0 lofi track.
+- `build_music.py` — the original CC0 lofi track (superseded by the licensed
+  funk soundtrack in the current cut).
 - `ffmpeg` — encodes the PNG frame sequence + audio to H.264/AAC MP4.
 
 Brand: Boreal Void `#0a0a0a`, Aurora Neon `#4ade80`, Cyber Lime `#39ff14`,

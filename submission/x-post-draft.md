@@ -1,8 +1,14 @@
 # X post draft — #OKXAI (DO NOT POST AUTOMATICALLY — Matt posts this)
 
 > ORDER MATTERS: post only AFTER the OKX.AI listing is registered (the post
-> says the service is on OKX.AI — make it true first). Attach the ≤90-second
-> demo video (cut plan in docs/DEMO.md).
+> says the service is on OKX.AI — make it true first).
+>
+> **Media plan (X allows one video OR up to four images per post, not both):**
+> - **Main post** → attach the demo video `submission/evolved-demo.mp4`
+>   (86s, funk soundtrack, also streaming at
+>   https://powderblue-leopard-801168.hostingersite.com/demo.mp4).
+> - **Reply 1** → attach the branded card `assets/x-post-card.png`
+>   (1600×900, also staged at `Desktop\HACKQUEST-IMAGES\x-post-card.png`).
 
 ---
 
@@ -31,7 +37,7 @@ github.com/kr8tiv-ai/evolved
 
 ---
 
-**Reply 1 (thread, optional):**
+**Reply 1 (thread — attach assets/x-post-card.png):**
 
 Why it is different: two feedback loops.
 
