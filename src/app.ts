@@ -123,7 +123,7 @@ export async function handleRequest(
       const tool = String(body.tool ?? "");
       if (!DEMO_TOOLS.has(tool)) {
         res.writeHead(403, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 65-tool surface.` }));
+        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 67-tool surface.` }));
         return;
       }
       const client = await getDemoClient();

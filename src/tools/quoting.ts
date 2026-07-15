@@ -9,6 +9,8 @@ import {
   DEPTH_LABELS,
   effectiveRate,
   gstRate,
+  marketBand,
+  marketBenchmark,
   priceQuote,
   profitabilityCheck,
   QUOTE_VALID_DAYS,
@@ -284,6 +286,9 @@ export function registerQuotingTools(server: McpServer): void {
           label: DEPTH_LABELS[r.depth],
           baseRate: r.baseRate,
           effectiveRate: eff.rate,
+          suggestedRange: eff.range,
+          confidence: eff.confidence,
+          market: { typical: eff.market.band.typ, position: eff.market.position },
           learnedFrom: eff.source,
         };
       });
@@ -342,10 +347,83 @@ export function registerQuotingTools(server: McpServer): void {
           return {
             recorded: outcome,
             newEffectiveRate: eff.rate,
+            confidence: eff.confidence,
+            suggestedRange: eff.range,
+            market: eff.market,
             basis: eff.source,
+            learning: `Confidence ${(eff.confidence * 100).toFixed(0)}% from ${eff.samples} winning job${eff.samples === 1 ? "" : "s"} — every logged job tightens the next quote.`,
           };
         }),
       );
+    },
+  );
+
+  server.registerTool(
+    "market_benchmark",
+    {
+      title: "Benchmark a rate against the market",
+      description:
+        "Reference a $/sqft rate against the going market band for a blast depth (and surface): below, within, or above market, with a percentile and plain-English guidance. Omit price to benchmark the engine's current learned rate. Bands derive from the active trade's rate card, so this works for any business a trade pack defines.",
+      inputSchema: {
+        depth: depthEnum,
+        surface: surfaceEnum.optional(),
+        price: z
+          .number()
+          .positive()
+          .optional()
+          .describe("$/sqft to benchmark; defaults to the current learned rate"),
+      },
+    },
+    async ({ depth, surface, price }) => {
+      const db = loadDb();
+      const eff = effectiveRate(db, depth as BlastDepth, surface as SurfaceKind | undefined);
+      const rate = price ?? eff.rate;
+      const band = marketBand(db, depth as BlastDepth);
+      return ok({
+        depth,
+        surface: surface ?? "(all surfaces)",
+        rate,
+        learnedRate: eff.rate,
+        market: marketBenchmark(rate, band),
+      });
+    },
+  );
+
+  server.registerTool(
+    "pricing_learning_status",
+    {
+      title: "How much the engine has learned",
+      description:
+        "Show the pricing engine's learning state: winning-job samples, confidence (rises with data, falls with volatility), the suggested quote range (tightens as confidence grows), and where the learned rate sits against the market. The always-learning loop, made visible.",
+      inputSchema: {
+        depth: depthEnum.optional().describe("Limit to one blast depth"),
+        surface: surfaceEnum.optional().describe("Learned status for a specific surface"),
+      },
+    },
+    async ({ depth, surface }) => {
+      const db = loadDb();
+      const depths = (depth ? [depth] : ["very-light", "light", "medium", "heavy"]) as BlastDepth[];
+      const learning = depths.map((d) => {
+        const eff = effectiveRate(db, d, surface as SurfaceKind | undefined);
+        return {
+          depth: d,
+          samples: eff.samples,
+          confidence: eff.confidence,
+          effectiveRate: eff.rate,
+          suggestedRange: eff.range,
+          market: {
+            typical: eff.market.band.typ,
+            position: eff.market.position,
+            percentile: eff.market.percentile,
+          },
+          basis: eff.source,
+        };
+      });
+      return ok({
+        surface: surface ?? "(all surfaces)",
+        note: "Confidence and range are recomputed from every logged outcome — the loop never stops learning.",
+        learning,
+      });
     },
   );
 }

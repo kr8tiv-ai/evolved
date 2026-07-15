@@ -1,7 +1,7 @@
 /**
  * Evolved — MCP server assembly.
  *
- * 65 tools across thirteen domains: quoting intelligence, money, pipeline,
+ * 67 tools across thirteen domains: quoting intelligence, money, pipeline,
  * safety, autonomous ops, inventory, contacts/CRM, the ops-sheet engine,
  * accounting depth, on-chain payments (X Layer testnet), the autonomous
  * lifecycle, and the frontier set (photo-to-quote, voice, CFO, franchise).
@@ -35,7 +35,7 @@ export const SERVER_INFO = {
 };
 
 /** Kept in lockstep with registrations below; enforced by the test suite. */
-export const TOOL_COUNT = 65;
+export const TOOL_COUNT = 67;
 
 export function createServer(): McpServer {
   const server = new McpServer(SERVER_INFO, {
@@ -55,7 +55,7 @@ export function createServer(): McpServer {
     ].join(" "),
   });
 
-  registerQuotingTools(server); // 7
+  registerQuotingTools(server); // 9
   registerMoneyTools(server); // 5
   registerPipelineTools(server); // 6
   registerSafetyTools(server); // 3

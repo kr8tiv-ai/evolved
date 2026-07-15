@@ -6,15 +6,17 @@
 
 **▶ [TRY IT LIVE — the browser playground](https://powderblue-leopard-801168.hostingersite.com/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
 
+**🎬 [Watch the 90-second demo](submission/evolved-demo.mp4)** — branded, captioned, two-act cut ([notes + license](submission/DEMO-VIDEO.md)).
+
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://powderblue-leopard-801168.hostingersite.com/health)
-[![Tools](https://img.shields.io/badge/tools-65-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
+[![Tools](https://img.shields.io/badge/tools-67-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
 [![Tests](https://img.shields.io/badge/tests-31_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
-[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [65 tools](#the-tool-surface--65-tools-13-domains) · [Docs](docs/)
+[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [67 tools](#the-tool-surface--67-tools-13-domains) · [Docs](docs/)
 
 </div>
 
@@ -59,7 +61,7 @@ npm run demo    # the business loop, narrated in your terminal
 
 - **Real-world ASP, both OKX rails.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC, and Evolved itself is monetized per-call through x402. An SMB earning on-chain *and* an agent service billing on-chain, in one submission.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
-- **It learns.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history); the books re-audit themselves daily; insight rankings train on the owner's feedback.
+- **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
 - **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). 31 tests pass, one of them live against X Layer testnet.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call. Business management in a box is the product, not the tagline.
 
@@ -115,11 +117,11 @@ The company is swappable. `franchise_spinup { tradePack: "pressure-washing", con
 
 Everything the live field app does, as first-class tools: **inventory control** (par levels, reorder suggestions priced from real COD receipts, per-job burn-down, supplier price-spike watch), **contacts/CRM** (customers with balances, suppliers with pricebooks, crew with certifications), **the ops-sheet engine** (the data spine rendered as the operations workbook — 14 tabs, append-only discipline, and the field App Inbox with a deterministic filing engine), and **accounting depth** (tiered-OCR receipts with vendor canonicalization and duplicate guards, discrepancy reports, escalating receivables reminders, P&L with reclaimable GST).
 
-## The tool surface — 65 tools, 13 domains
+## The tool surface — 67 tools, 13 domains
 
 | Domain | Tools |
 |---|---|
-| **Quoting intelligence** | `quote_price` · `quote_create` · `quote_render` · `quote_update_status` · `quote_list` · `pricing_rates` · `pricing_record_outcome` |
+| **Quoting intelligence** | `quote_price` · `quote_create` · `quote_render` · `quote_update_status` · `quote_list` · `pricing_rates` · `pricing_record_outcome` · `market_benchmark` · `pricing_learning_status` |
 | **Money** | `receipt_ingest` · `expense_report` · `invoice_create` · `invoice_render` · `pnl_report` |
 | **Pipeline** | `lead_capture` · `lead_update` · `pipeline_view` · `job_schedule` · `job_complete` · `customer_list` |
 | **Safety (FLHA)** | `flha_open` · `flha_signoff` · `safety_log` |
@@ -175,6 +177,7 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |
+| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 86s, 1080p, on-brand, captioned, CC0 soundtrack ([notes](submission/DEMO-VIDEO.md)) |
 | Categories | Best Product · Revenue Rocket · Software Utility · Finance Copilot |
 
 MIT licensed. Synthetic data only; testnet only; no secrets anywhere in this repository. Evolved never holds keys and cannot move funds — by construction.

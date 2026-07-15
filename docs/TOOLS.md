@@ -1,6 +1,6 @@
 # Tool catalog
 
-Generated from the live server — 65 tools. Every tool returns JSON.
+Generated from the live server — 67 tools. Every tool returns JSON.
 
 ## Quoting intelligence
 
@@ -74,6 +74,25 @@ Record a job outcome (won/lost, quoted rate, actual cost per sqft, margin) into 
 | `quotedRate` | number | yes | $/sqft quoted |
 | `actualCostPerSqft` | number | yes |  |
 | `won` | boolean | yes |  |
+
+### `market_benchmark`
+
+Reference a $/sqft rate against the going market band for a blast depth (and surface): below, within, or above market, with a percentile and plain-English guidance. Omit price to benchmark the engine's current learned rate. Bands derive from the active trade's rate card, so this works for any business a trade pack defines.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `depth` | `very-light` · `light` · `medium` · `heavy` | yes |  |
+| `surface` | `driveway` · `sidewalk` · `patio` · `garage-pad` · `exposed-aggregate` · `trailer` · `equipment` · `fence` · `brick` · `other` | no |  |
+| `price` | number | no | $/sqft to benchmark; defaults to the current learned rate |
+
+### `pricing_learning_status`
+
+Show the pricing engine's learning state: winning-job samples, confidence (rises with data, falls with volatility), the suggested quote range (tightens as confidence grows), and where the learned rate sits against the market. The always-learning loop, made visible.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `depth` | `very-light` · `light` · `medium` · `heavy` | no | Limit to one blast depth |
+| `surface` | `driveway` · `sidewalk` · `patio` · `garage-pad` · `exposed-aggregate` · `trailer` · `equipment` · `fence` · `brick` · `other` | no | Learned status for a specific surface |
 
 ## Money
 
@@ -598,7 +617,7 @@ The audit trail: every capture, filing, receipt, payment, and voice command in r
 
 ### `backup_create`
 
-Full snapshot of the data spine to a timestamped backup file — the never-pruned safety net.
+Full snapshot of the data spine to a timestamped backup file. Keeps the most recent 25 snapshots (rotation guards shared demo hosts against disk-fill).
 
 _No parameters._
 
@@ -610,12 +629,13 @@ _No parameters._
 
 ### `franchise_spinup`
 
-The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library, digest, learning loop, on-chain invoicing). This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.
+The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library with trade-specific hazards, digest, learning loop, on-chain invoicing). Pass tradePack for a ready-made pack (pressure-washing, line-painting, mobile-detailing) or supply your own rates. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `companyName` | string | yes |  |
-| `trade` | string | yes | e.g. pressure washing, line painting, mobile detailing |
+| `tradePack` | string | no | Ready-made pack: pressure-washing \| line-painting \| mobile-detailing |
+| `trade` | string | no | Freeform trade name (defaults from tradePack) |
 | `region` | string | no |  |
 | `currency` | string | no |  |
 | `gstRate` | number | no |  |

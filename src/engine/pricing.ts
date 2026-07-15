@@ -79,16 +79,77 @@ export function normalizeDepth(
   return depth;
 }
 
+export interface MarketBand {
+  low: number;
+  typ: number;
+  high: number;
+}
+
+export interface MarketPosition {
+  position: "below-market" | "within-market" | "above-market";
+  percentile: number;
+  note: string;
+  band: MarketBand;
+}
+
+/**
+ * Market band for a depth, derived from THIS trade's own rate card so it
+ * generalizes to any service business a trade pack defines: the base rate is
+ * the market floor, ~1.3x is typical, ~1.85x is the busy-season / premium end.
+ * A company can pin its own bands via db.meta.marketRates[depth].
+ */
+export function marketBand(db: Database, depth: BlastDepth): MarketBand {
+  const override = (db.meta as unknown as {
+    marketRates?: Record<string, MarketBand>;
+  }).marketRates?.[depth];
+  if (override && typeof override.typ === "number") return override;
+  const entry = db.rateTable.find((r) => r.depth === depth);
+  const base = entry?.baseRate ?? FALLBACK_BASE_RATES[depth];
+  return { low: round2(base), typ: round2(base * 1.3), high: round2(base * 1.85) };
+}
+
+/** Reference a $/sqft rate against the market band: below / within / above, with guidance. */
+export function marketBenchmark(rate: number, band: MarketBand): MarketPosition {
+  const position: MarketPosition["position"] =
+    rate < band.low ? "below-market" : rate > band.high ? "above-market" : "within-market";
+  const span = band.high - band.low;
+  const percentile =
+    span > 0 ? Math.max(0, Math.min(100, Math.round(((rate - band.low) / span) * 100))) : 0;
+  const note =
+    position === "below-market"
+      ? "Under the going rate; likely leaving money on the table."
+      : position === "above-market"
+        ? "Above the going rate; expect a lower win-rate unless the scope justifies it."
+        : percentile < 40
+          ? "Competitive."
+          : percentile > 70
+            ? "Premium end of the market."
+            : "Right in the market.";
+  return { position, percentile, note, band };
+}
+
 /**
  * Learning loop: blend the base rate with the outcome history for this
  * surface+depth. Only wins at >= 20% margin teach the engine; the blend
  * weight grows with sample count (capped at 80% learned).
  */
+export interface EffectiveRate {
+  rate: number;
+  source: string;
+  samples: number;
+  /** 0..0.98 — rises with winning data, falls with volatility. */
+  confidence: number;
+  /** Suggested quote range; tightens as confidence grows. */
+  range: [number, number];
+  /** Where this rate sits against the market band. */
+  market: MarketPosition;
+}
+
 export function effectiveRate(
   db: Database,
   depth: BlastDepth,
   surface?: SurfaceKind,
-): { rate: number; source: string; samples: number } {
+): EffectiveRate {
   const entry = db.rateTable.find((r) => r.depth === depth);
   // Never fall back to $0/sqft: an incomplete rate card uses the market floor.
   const base = entry?.baseRate ?? FALLBACK_BASE_RATES[depth];
@@ -99,20 +160,45 @@ export function effectiveRate(
       o.won &&
       o.marginPct >= 20,
   );
+  const finish = (
+    rate: number,
+    source: string,
+    samples: number,
+    confidence: number,
+  ): EffectiveRate => {
+    const band = marketBand(db, depth);
+    // Range tightens as confidence grows: sparse data quotes wide, proven data quotes tight.
+    const halfWidth = round2(rate * Math.max(0.03, 0.18 * (1 - confidence)));
+    return {
+      rate,
+      source,
+      samples,
+      confidence: round2(confidence),
+      range: [round2(rate - halfWidth), round2(rate + halfWidth)],
+      market: marketBenchmark(rate, band),
+    };
+  };
   if (relevant.length === 0) {
-    return { rate: base, source: "base rate (no outcome history yet)", samples: 0 };
+    return finish(base, "base rate (no outcome history yet)", 0, 0);
   }
-  const avgWinning =
-    relevant.reduce((s, o) => s + o.quotedRate, 0) / relevant.length;
+  const rates = relevant.map((o) => o.quotedRate);
+  const avgWinning = rates.reduce((s, v) => s + v, 0) / rates.length;
   const weight = Math.min(0.8, relevant.length * 0.2);
   const blended = round2(base * (1 - weight) + avgWinning * weight);
   // Never learn our way below the market floor.
   const rate = Math.max(blended, base);
-  return {
+  // Confidence: more winning jobs and a tighter spread => more confident.
+  const n = relevant.length;
+  const variance =
+    n > 1 ? rates.reduce((s, v) => s + (v - avgWinning) ** 2, 0) / (n - 1) : 0;
+  const cv = avgWinning > 0 ? Math.sqrt(variance) / avgWinning : 0;
+  const confidence = Math.min(0.98, (n / (n + 4)) * (1 - Math.min(cv, 0.6)));
+  return finish(
     rate,
-    source: `learned from ${relevant.length} winning job${relevant.length === 1 ? "" : "s"} at healthy margin`,
-    samples: relevant.length,
-  };
+    `learned from ${n} winning job${n === 1 ? "" : "s"} at healthy margin`,
+    n,
+    confidence,
+  );
 }
 
 export interface PriceQuoteInput {

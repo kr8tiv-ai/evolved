@@ -11,7 +11,7 @@ await client.connect(ct);
 const { tools } = await client.listTools();
 
 const DOMAINS = [
-  ["Quoting intelligence", ["quote_price","quote_create","quote_render","quote_update_status","quote_list","pricing_rates","pricing_record_outcome"]],
+  ["Quoting intelligence", ["quote_price","quote_create","quote_render","quote_update_status","quote_list","pricing_rates","pricing_record_outcome","market_benchmark","pricing_learning_status"]],
   ["Money", ["receipt_ingest","expense_report","invoice_create","invoice_render","pnl_report"]],
   ["Pipeline", ["lead_capture","lead_update","pipeline_view","job_schedule","job_complete","customer_list"]],
   ["Safety", ["flha_open","flha_signoff","safety_log"]],

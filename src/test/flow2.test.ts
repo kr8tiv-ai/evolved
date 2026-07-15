@@ -228,7 +228,7 @@ test("x402 over real HTTP: 402 challenge, then simulated proof unlocks the MCP s
     // Health advertises both endpoints.
     const health = (await (await fetch(`${base}/health`)).json()) as { endpoints: Record<string, string>; tools: number };
     assert.ok(health.endpoints["/mcp-paid"]);
-    assert.equal(health.tools, 65);
+    assert.equal(health.tools, 67);
 
     // No payment → 402 with spec-shaped envelope + base64 header.
     const challenge = await fetch(`${base}/mcp-paid`, {

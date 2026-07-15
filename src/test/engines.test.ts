@@ -4,7 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { priceQuote, profitabilityCheck, normalizeDepth } from "../engine/pricing.js";
+import { priceQuote, profitabilityCheck, normalizeDepth, effectiveRate, marketBand, marketBenchmark } from "../engine/pricing.js";
 import { parseAmount, categorize, runOcrPipeline } from "../engine/ocr.js";
 import { verdictFor } from "../engine/weather.js";
 import { hazardsForScope } from "../engine/safety.js";
@@ -32,6 +32,21 @@ test("pricing: learning loop pulls driveway medium toward ~$9/sqft, never below 
   assert.ok(r.rate >= 6.9, `rate ${r.rate} must be >= base 6.90`);
   assert.ok(r.rate > 8 && r.rate < 9.5, `learned driveway rate ${r.rate} should be near $9`);
   assert.match(r.rateSource, /learned from/);
+});
+
+test("pricing: confidence rises with data, range tightens, market benchmark flags position", () => {
+  const db = buildSeed();
+  const eff = effectiveRate(db, "medium", "driveway");
+  assert.ok(eff.samples > 0, "seed has winning driveway history");
+  assert.ok(eff.confidence > 0 && eff.confidence <= 0.98, `confidence ${eff.confidence}`);
+  assert.ok(eff.range[0] < eff.rate && eff.range[1] > eff.rate, "range brackets the rate");
+  const band = marketBand(db, "medium");
+  assert.equal(marketBenchmark(band.low - 0.01, band).position, "below-market");
+  assert.equal(marketBenchmark(band.high + 0.01, band).position, "above-market");
+  assert.equal(marketBenchmark(band.typ, band).position, "within-market");
+  const fresh = buildSeed();
+  fresh.pricingOutcomes = [];
+  assert.equal(effectiveRate(fresh, "medium", "driveway").confidence, 0);
 });
 
 test("pricing: below-break-even work is flagged, not silently raised", () => {

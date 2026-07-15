@@ -21,7 +21,7 @@ franchise_spinup {
 ```
 
 Done. Empty books, your trade's rate card, your trade's hazards in every
-FLHA the system drafts, and the full 65-tool surface live for the new
+FLHA the system drafts, and the full 67-tool surface live for the new
 company. Three packs ship today — `pressure-washing`, `line-painting`,
 `mobile-detailing` — and the `evolved://trade-packs` MCP resource lists
 them with full contents.

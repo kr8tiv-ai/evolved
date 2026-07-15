@@ -272,7 +272,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
 } } }</pre>
   </div>
   <div>
-    <div class="eyebrow">the full 65-tool surface</div>
+    <div class="eyebrow">the full 67-tool surface</div>
     <h2>Or run it locally</h2>
     <p class="hint">Zero credentials; 34 tests including a live testnet probe:</p>
 <pre class="copy mono">git clone https://github.com/kr8tiv-ai/evolved.git
