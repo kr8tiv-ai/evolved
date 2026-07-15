@@ -113,6 +113,50 @@ export async function handleRequest(
     return;
   }
 
+  // The demo video, served from our own origin with a real video/mp4 type —
+  // GitHub raw sends X-Content-Type-Options: nosniff, which blocks <video>
+  // playback, so submission platforms embed this URL instead.
+  if (url.pathname === "/demo.mp4" && (req.method === "GET" || req.method === "HEAD")) {
+    const { createReadStream, statSync, existsSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const file = [
+      join(process.cwd(), "demo.mp4"),
+      join(process.cwd(), "submission", "evolved-demo.mp4"),
+    ].find((p) => existsSync(p));
+    if (!file) {
+      res.writeHead(404, { "content-type": "application/json" });
+      res.end(JSON.stringify({ ok: false, error: "Demo video not bundled on this deployment." }));
+      return;
+    }
+    const size = statSync(file).size;
+    const range = /^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range ?? ""));
+    const headers: Record<string, string> = {
+      "content-type": "video/mp4",
+      "accept-ranges": "bytes",
+      "cache-control": "public, max-age=3600",
+    };
+    if (range && (range[1] || range[2])) {
+      const start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
+      const end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      if (start >= size || start > end) {
+        res.writeHead(416, { "content-range": `bytes */${size}` });
+        res.end();
+        return;
+      }
+      headers["content-range"] = `bytes ${start}-${end}/${size}`;
+      headers["content-length"] = String(end - start + 1);
+      res.writeHead(206, headers);
+      if (req.method === "HEAD") { res.end(); return; }
+      createReadStream(file, { start, end }).pipe(res);
+    } else {
+      headers["content-length"] = String(size);
+      res.writeHead(200, headers);
+      if (req.method === "HEAD") { res.end(); return; }
+      createReadStream(file).pipe(res);
+    }
+    return;
+  }
+
   if (url.pathname === "/demo/call" && req.method === "POST") {
     if (rateLimited(req)) {
       res.writeHead(429, { "content-type": "application/json", "retry-after": "60" });
