@@ -26,6 +26,12 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Self-hosted brand media route `/media/*` (hero video, scene imagery)
 - [ ] **www.evolvedmcp.cloud** apex/www wiring — verify www resolves + SSL (root works; confirm www redirect)
 
+## B2. Live-site social preview (DONE ✅)
+- [x] Open Graph (og:title/description/url/image 1200×630) + Twitter `summary_large_image` in the playground head; canonical + theme-color
+- [x] Branded link-preview card `assets/og.png` served at **/og.png** — "Business-in-a-box, run by an AI. Paid on-chain." over the boreal aurora
+- [x] Deployed to both domains; tags + image verified reachable
+- [x] Short X announcement (link-preview pull-through) saved to `submission/x-post-draft.md`
+
 ## C. Repo presentation (IN PROGRESS)
 - [x] README: hero, badges, 60-sec judge tour, why-this-wins, lifecycle mermaid, 83-tool table, scaffolding, tests
 - [x] docs/ up to date (TOOLS.md autogen 83, ARCHITECTURE workbook section, ADAPT, OKX-LISTING, DEPLOY, DEMO, GALLERY)

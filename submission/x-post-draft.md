@@ -18,6 +18,23 @@
 
 ---
 
+**SHORT ANNOUNCEMENT (≤280, link-preview pull-through — no media; let the
+evolvedmcp.cloud card render).** Use this as a standalone announcement tweet
+or the lead of the thread when you want the link preview (not the video) to
+be the hero. The site now serves an Open Graph / Twitter summary_large_image
+card, so this renders a full-width branded preview straight to the playground:
+
+Evolved: a business-in-a-box, run by an AI, paid on-chain. #OKXAI
+
+A real Alberta company's ops brain, live as an MCP service — 83 tools, x402 + on-chain settlement on @okx X Layer testnet. Any service business, one call. Run it in your browser:
+
+https://www.evolvedmcp.cloud
+
+_(X-weighted ≈ 233 chars incl. the 23-char t.co link — fits any tier. Do NOT
+attach media to this one; the link card IS the visual.)_
+
+---
+
 **Main post (Premium long-form, video attached):**
 
 Most AI business tools are chatbots wearing a suit. #OKXAI
