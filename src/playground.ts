@@ -45,10 +45,13 @@ export const PLAYGROUND_HTML = `<!doctype html>
   :root { --void:#080a08; --deep:#040504; --panel:#0e100e; --panel2:#0b0d0b; --line:#1c2620;
           --silver:#f3f4f6; --dim:#9aa39a; --dim2:#6b746b; --aurora:#4ade80; --lime:#39ff14; --ice:#22d3ee; }
   * { box-sizing:border-box; margin:0; }
-  html { scroll-behavior:smooth; }
+  html { scroll-behavior:smooth; overflow-x:hidden; max-width:100%; }
   body { background:#000; color:var(--silver); font-family:"Archivo",system-ui,sans-serif;
-         font-size:15px; line-height:1.55; min-height:100vh; overflow-x:hidden;
+         font-size:15px; line-height:1.55; min-height:100vh;
+         width:100%; max-width:100%; overflow-x:hidden; position:relative;
          -webkit-font-smoothing:antialiased; }
+  /* nothing may exceed the viewport width — hard cap on every structural block */
+  main, .section, .hero, .hero-inner, .tickerwrap, footer, nav { max-width:100%; }
   .mono { font-family:"JetBrains Mono",Consolas,monospace; }
   a { color:var(--aurora); }
 
@@ -93,11 +96,14 @@ export const PLAYGROUND_HTML = `<!doctype html>
   .rv-d1 { transition-delay:.08s } .rv-d2 { transition-delay:.16s } .rv-d3 { transition-delay:.24s } .rv-d4 { transition-delay:.32s }
   @media (prefers-reduced-motion: reduce){ .rv{ opacity:1; transform:none; transition:none } }
 
-  /* giant outlined ghost word behind section heads */
+  /* giant outlined ghost word behind section heads (desktop flourish only) */
   .section-head { position:relative; }
   .bg-word { position:absolute; top:-58px; left:-10px; z-index:-1; font-weight:900; white-space:nowrap;
              font-size:clamp(90px, 15vw, 200px); letter-spacing:-.02em; text-transform:uppercase; line-height:1;
-             color:transparent; -webkit-text-stroke:1px rgba(74,222,128,.13); pointer-events:none; user-select:none; }
+             color:transparent; -webkit-text-stroke:1px rgba(74,222,128,.13); pointer-events:none; user-select:none;
+             max-width:100vw; }
+  /* on phones these oversized words overflow the viewport — retire them */
+  @media (max-width:680px){ .bg-word{ display:none } }
   .hero .eyebrow-h { display:flex; align-items:center; gap:14px; color:var(--aurora);
                      font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.34em;
                      text-transform:uppercase; margin-bottom:22px; }
@@ -272,8 +278,18 @@ export const PLAYGROUND_HTML = `<!doctype html>
   pre.copy { background:#070808; border:1px solid var(--line); border-radius:10px; padding:12px;
              font-size:12px; overflow:auto; color:#cbd5e1; }
   footer { text-align:center; color:var(--dim); font-size:11.5px; letter-spacing:.14em;
-           padding:26px 16px 40px; text-transform:uppercase; }
+           padding:26px 16px 40px; text-transform:uppercase; word-break:break-word; }
   footer a { color:var(--aurora); text-decoration:none; }
+
+  /* phone layout: tighter gutters, inputs never exceed the column, no drag */
+  @media (max-width:560px){
+    .section { padding:48px 18px 0; }
+    main { padding:18px 18px 34px; }
+    .card { padding:20px; }
+    select, input[type=number], input[type=text] { max-width:100%; }
+    pre.copy { font-size:11px; }
+    .htitle { font-size:clamp(40px, 12vw, 66px); }
+  }
 </style></head><body>
 <canvas id="aurora"></canvas><div class="vign"></div><div class="grain"></div>
 
@@ -989,8 +1005,9 @@ function initReveal(){
     });
   }, { rootMargin:"0px 0px -8% 0px", threshold:0.08 });
   els.forEach(function(el){ io.observe(el); });
-  // ghost words drift horizontally with scroll — quiet depth
-  var words=[].slice.call(document.querySelectorAll(".bg-word"));
+  // ghost words drift horizontally with scroll — quiet depth (desktop only;
+  // they are display:none on phones, and we must never add horizontal drift there)
+  var words = window.innerWidth > 680 ? [].slice.call(document.querySelectorAll(".bg-word")) : [];
   if (words.length){
     var raf2=false;
     window.addEventListener("scroll", function(){
