@@ -12,7 +12,7 @@ One agent takes a service business from a texted photo to a paid, on-chain invoi
 
 [![Watch the 90-second film](assets/og.png)](https://www.evolvedmcp.cloud/demo.mp4)
 
-<sub>▶ Click to play the hosted cut · or [download the file](submission/evolved-demo.mp4) committed in this repo.</sub>
+<sub>▶ Click the poster to stream the cut · [play it inline on GitHub](https://github.com/kr8tiv-ai/evolved/blob/main/submission/evolved-demo-web.mp4) (native player, no leaving the repo) · [download](submission/evolved-demo-web.mp4)</sub>
 
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
@@ -214,6 +214,18 @@ npm test
 ```
 
 The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Who built this
+
+**[Matt Haynes](https://www.linkedin.com/in/matthaynes88)** — Operations & Marketing Manager at [Evolve Eco Blasting](https://www.evolveecoblasting.com) and founder of **KR8TIV AI** (Edmonton, Alberta). Not a lab researcher — a real-world operator who runs the back office of a mobile abrasive-blasting crew *and* builds the AI that runs it. Evolved is the portable, open-source form of that system: after a live field app ([kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app)), an ops workbook, and a full rebrand, reimagined as an MCP service any trade can install in one call.
+
+> *"You give to get. You work something out, and you leave the gate open for the next person."*
+
+That conviction is why Evolved is MIT and free. On the roadmap: stronger back-office systems, robotics to make the hardest jobsite work safer, and manufacturing beyond.
+
+**With Todd** — owner-operator of Evolve Eco Blasting — whose real company, real rates, real safety practice, and real ball-drop rules are the production truth the entire demo runs on. Evolved isn't a hypothetical; it's the software a working crew uses, made portable for everyone.
+
+<sub>[github.com/Matt-Aurora-Ventures](https://github.com/Matt-Aurora-Ventures) · [linkedin.com/in/matthaynes88](https://www.linkedin.com/in/matthaynes88) · [kr8tiv.io](https://www.kr8tiv.io) · Edmonton, Alberta 🇨🇦</sub>
 
 ## The submission
 
