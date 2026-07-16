@@ -12,7 +12,7 @@ One agent takes a service business from a texted photo to a paid, on-chain invoi
 
 https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 
-<sub>▶ Plays inline right here · also streaming at [evolvedmcp.cloud/demo.mp4](https://www.evolvedmcp.cloud/demo.mp4) · [full-quality file](submission/evolved-demo.mp4)</sub>
+<sub>▶ Plays inline right here · also streaming at [www.evolvedmcp.cloud/demo.mp4](https://www.evolvedmcp.cloud/demo.mp4) · [full-quality file](submission/evolved-demo.mp4)</sub>
 
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
