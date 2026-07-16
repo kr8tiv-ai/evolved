@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/hero.png" alt="Evolved — Evolve Eco Blasting's operations brain as an autonomous agentic service" width="100%">
+<img src="assets/hero.png" alt="EVOLVED — the company-in-a-box for the agent economy, over a boreal aurora" width="100%">
 
 ### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company, settling its invoices in OKB on X Layer testnet, verified on-chain.
 
