@@ -8,6 +8,12 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 ---
 
+## 0a. TEAM INTRO + VIDEO-EMBED PASS (2026-07-16 — DONE ✅)
+- [x] **HackQuest Team Intro filled + SAVED (live):** "A real Alberta service company, not a lab. Matt Haynes (KR8TIV AI) builds the AI; Todd runs the blasting crew Evolved is modeled on. Operator + builder, shipping open source in public." (184/200). Public project page now scores **100 / Info Complete** (was 90). Member card = Matt Haynes, Edmonton, founder bio, TS/React/Next.
+- [x] **README founder section** — new "Who built this": Matt Haynes (KR8TIV AI, Ops+Marketing @ Evolve) + Todd, verified LinkedIn (matthaynes88) + GitHub (Matt-Aurora-Ventures) links, open-source "leave the gate open" ethos, robotics/manufacturing roadmap. Pushed + verified rendering on GitHub.
+- [x] **Website video works (live-verified):** `#film` section present on www.evolvedmcp.cloud (video + poster + `/demo.mp4?v=7` + controls); `/demo.mp4` returns **HTTP 206 `video/mp4`** with byte ranges (13,212,280 B) — verified live. (Automated tab can't drive HTML5 playback; endpoint + markup + prior local readyState 4 confirm it.)
+- [x] **GitHub video:** clickable poster → streams hosted cut (works). Added lighter 8.2MB `evolved-demo-web.mp4`. **True inline GitHub player needs a manual drag-drop upload** (mints a user-attachments URL) — cannot be automated here (file_upload only accepts user-attached files; GitHub CSP blocks in-page fetch; blob viewer rejects 8MB). 20-sec steps in `submission/GITHUB-INLINE-VIDEO.md`.
+
 ## 0b. FILM + SUBMIT-FORM PASS (2026-07-16 — DONE ✅)
 - [x] **On-site video** — cinematic film section on the playground (poster/og.png + 84px play button, lazy-load, 16:9 glow frame, reveal); verified play interaction (poster fades, video → readyState 4). Live on both domains.
 - [x] **GitHub video** — README shows a clickable poster (assets/og.png) → hosted film; file committed at submission/evolved-demo.mp4.
