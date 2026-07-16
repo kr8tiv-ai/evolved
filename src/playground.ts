@@ -166,15 +166,27 @@ export const PLAYGROUND_HTML = `<!doctype html>
   .filmframe::after { content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
                       box-shadow:inset 0 0 120px rgba(0,0,0,.45); border-radius:14px; }
   .filmframe video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#050605; z-index:1; }
-  .filmframe .poster { position:absolute; inset:0; z-index:2; cursor:pointer; border:0; padding:0; background:transparent;
-                       display:flex; align-items:center; justify-content:center; transition:opacity .4s; }
-  .filmframe .poster img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .filmframe .poster .play { position:relative; z-index:2; width:84px; height:84px; border-radius:50%;
-                       background:rgba(57,255,20,.92); color:#000; display:flex; align-items:center; justify-content:center;
-                       box-shadow:0 0 44px rgba(57,255,20,.5); transition:transform .2s, box-shadow .2s; }
-  .filmframe .poster:hover .play { transform:scale(1.08); box-shadow:0 0 60px rgba(57,255,20,.75); }
-  .filmframe .poster .play svg { width:32px; height:32px; margin-left:5px; }
-  .filmframe .poster.gone { opacity:0; pointer-events:none; }
+  .filmframe .soundcue { position:absolute; z-index:4; right:14px; bottom:14px; cursor:pointer;
+                       display:flex; align-items:center; gap:9px; padding:9px 15px 9px 11px; border-radius:999px;
+                       background:rgba(8,10,8,.62); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);
+                       border:1px solid rgba(74,222,128,.42); color:#eafff0;
+                       font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+                       box-shadow:0 0 26px rgba(57,255,20,.16); transition:transform .2s, box-shadow .2s, opacity .35s; }
+  .filmframe .soundcue:hover { transform:translateY(-1px); box-shadow:0 0 40px rgba(57,255,20,.42); }
+  .filmframe .soundcue .play { width:26px; height:26px; border-radius:50%; flex:0 0 26px;
+                       background:rgba(57,255,20,.95); color:#000; display:flex; align-items:center; justify-content:center;
+                       box-shadow:0 0 18px rgba(57,255,20,.5); }
+  .filmframe .soundcue .play svg { width:13px; height:13px; margin-left:1px; }
+  .filmframe .soundcue.gone { opacity:0; pointer-events:none; }
+  .filmframe .livedot { position:absolute; z-index:4; left:14px; top:14px; pointer-events:none;
+                       font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.22em; color:#bff7cf;
+                       background:rgba(8,10,8,.5); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+                       border:1px solid rgba(74,222,128,.28); border-radius:999px; padding:5px 11px;
+                       display:flex; align-items:center; gap:8px; transition:opacity .35s; }
+  .filmframe .livedot::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--lime);
+                       box-shadow:0 0 10px var(--lime); animation:filmpulse 1.8s ease-in-out infinite; }
+  .filmframe .livedot.gone { opacity:0; }
+  @keyframes filmpulse { 0%,100%{ opacity:1 } 50%{ opacity:.3 } }
   .film .cap { margin-top:14px; display:flex; gap:18px; flex-wrap:wrap; font-family:"JetBrains Mono",monospace;
                font-size:11px; letter-spacing:.1em; color:var(--dim2); text-transform:uppercase; }
   .film .cap b { color:var(--aurora); }
@@ -378,14 +390,15 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="kicker">The 90-second film</div>
   <h2>See the whole thing <span class="glow">run.</span></h2>
   <p class="sp">One agent takes a service business from a texted photo to a paid, on-chain invoice — every figure captured live from this endpoint. Then try it yourself below.</p>
-  <div class="filmframe">
-    <video id="filmvid" preload="none" playsinline controls poster="/media/hero-poster.webp">
+  <div class="filmframe" id="filmframe">
+    <video id="filmvid" playsinline preload="metadata" poster="/media/hero-poster.webp">
       <source src="/demo.mp4?v=7" type="video/mp4">
     </video>
-    <button class="poster" id="filmposter" onclick="playFilm()" aria-label="Play the 90-second film">
-      <img src="/og.png" alt="Evolved — the 90-second film">
+    <button class="soundcue" id="soundcue" onclick="filmSound()" aria-label="Watch the film with sound">
       <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+      <span id="soundtxt">Watch with sound</span>
     </button>
+    <span class="livedot" id="livedot" aria-hidden="true">PLAYING · MUTED</span>
   </div>
   <div class="cap"><span>1080p · 90s</span><span>real captured payloads</span><span>photo-quote → lifecycle → on-site JHA → workbook → <b>x402 + on-chain</b></span></div>
 </div>
@@ -1030,13 +1043,44 @@ function initAurora(){
   requestAnimationFrame(loop);
 }
 
-/* ---------- the film: poster → play ---------- */
-function playFilm(){
-  var v = $("filmvid"), p = $("filmposter");
+/* ---------- the film: a living inline player ----------
+   Desktop: autoplay a muted loop the moment it scrolls into view (paused when
+   off-screen to save cycles), with a "watch with sound" affordance. Mobile:
+   poster + tap to play with sound (no heavy double-autoplay). Either way the
+   video plays IN PAGE — never a click-through. */
+function filmSound(){
+  var v = $("filmvid"), c = $("soundcue"), d = $("livedot");
   if (!v) return;
-  v.setAttribute("preload","auto");
-  p.classList.add("gone");
+  v.dataset.sound = "1";
+  v.muted = false; v.loop = false; v.setAttribute("controls","");
+  try { v.currentTime = 0; } catch(e){}
   try { v.play(); } catch(e){}
+  if (c) c.classList.add("gone");
+  if (d) d.classList.add("gone");
+}
+function initFilm(){
+  var v = $("filmvid"), d = $("livedot"), t = $("soundtxt"), f = $("filmframe");
+  if (!v) return;
+  var big = window.innerWidth > 700;
+  if (!big){
+    // mobile: keep it light — show the poster, tap the cue to play with sound
+    if (d) d.classList.add("gone");
+    if (t) t.textContent = "Tap to play";
+    return;
+  }
+  v.muted = true; v.loop = true; v.setAttribute("muted","");
+  v.setAttribute("preload","auto");
+  var kick = function(){ if (v.dataset.sound !== "1") { var p = v.play(); if (p && p.catch) p.catch(function(){}); } };
+  kick();
+  if ("IntersectionObserver" in window && f){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (v.dataset.sound === "1") return;   // user is watching with sound — leave it be
+        if (e.isIntersecting) kick(); else v.pause();
+      });
+    }, { threshold: 0.2 });
+    io.observe(f);
+  }
 }
 
 /* ---------- nav solidify + hero parallax on scroll ---------- */
@@ -1094,7 +1138,7 @@ function initReveal(){
 
 /* ---------- boot ---------- */
 (async function(){
-  initAurora(); initNav(); initReveal();
+  initAurora(); initNav(); initReveal(); initFilm();
   try {
     var h = await (await fetch("/health")).json();
     $("c-status").textContent = "live · v" + h.version;
