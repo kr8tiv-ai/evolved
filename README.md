@@ -10,9 +10,9 @@ One agent takes a service business from a texted photo to a paid, on-chain invoi
 
 **🎬 The 90-second film** — every figure captured live from the endpoint ([notes + license](submission/DEMO-VIDEO.md)):
 
-https://github.com/kr8tiv-ai/evolved/raw/main/submission/evolved-demo.mp4
+[![Watch the 90-second film](assets/og.png)](https://www.evolvedmcp.cloud/demo.mp4)
 
-<sub>Player not showing? [Watch it hosted](https://www.evolvedmcp.cloud/demo.mp4) · or [download the file](submission/evolved-demo.mp4).</sub>
+<sub>▶ Click to play the hosted cut · or [download the file](submission/evolved-demo.mp4) committed in this repo.</sub>
 
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
