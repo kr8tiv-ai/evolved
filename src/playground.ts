@@ -14,8 +14,30 @@
 export const PLAYGROUND_HTML = `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Evolved — live playground</title>
+<title>Evolved — business-in-a-box, run by an AI, paid on-chain</title>
 <meta name="description" content="A real company's operations brain as an autonomous MCP agent — run it live: voice, photo-to-quote, the full lifecycle with human money gates, and x402 on-chain payments on X Layer testnet.">
+<link rel="canonical" href="https://www.evolvedmcp.cloud/">
+<meta name="theme-color" content="#0a0a0a">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Evolved">
+<meta property="og:title" content="Evolved — business-in-a-box, run by an AI, paid on-chain">
+<meta property="og:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 83 tools across 16 domains — quoting that learns, receipts to books, FLHA safety, dispatch, invoicing, and x402 + on-chain settlement on OKX X Layer. Any service business, spun up in one call. Try it live, zero install.">
+<meta property="og:url" content="https://www.evolvedmcp.cloud/">
+<meta property="og:image" content="https://www.evolvedmcp.cloud/og.png">
+<meta property="og:image:secure_url" content="https://www.evolvedmcp.cloud/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="EVOLVED — business-in-a-box, run by an AI, paid on-chain, over a boreal aurora">
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@aurora_ventures">
+<meta name="twitter:creator" content="@aurora_ventures">
+<meta name="twitter:title" content="Evolved — business-in-a-box, run by an AI, paid on-chain">
+<meta name="twitter:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 83 tools, x402 + on-chain settlement on OKX X Layer testnet. Any service business, one call. Try it live.">
+<meta name="twitter:image" content="https://www.evolvedmcp.cloud/og.png">
+<meta name="twitter:image:alt" content="EVOLVED — business-in-a-box, run by an AI, paid on-chain">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">

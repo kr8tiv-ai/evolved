@@ -182,3 +182,51 @@ build(1600, 600, os.path.join(ASSETS, "hero.png"),
       wordmark_px=150, sub_px=30, mono_px=19)
 build(1280, 640, os.path.join(ASSETS, "social-preview.png"),
       wordmark_px=140, sub_px=27, mono_px=17)
+
+
+def build_og(out):
+    """1200x630 link-preview card — the exact share copy, dark aurora + logo."""
+    W, H = 1200, 630
+    img = graded_base(W, H, focus_y=0.44)
+    cx = W // 2
+    scrim = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(scrim).ellipse(
+        [cx - int(W * 0.46), int(H * 0.24), cx + int(W * 0.46), int(H * 1.04)], fill=128)
+    scrim = scrim.filter(ImageFilter.GaussianBlur(int(W * 0.08)))
+    img = Image.composite(Image.new("RGB", (W, H), (6, 8, 6)).convert("RGBA"), img, scrim)
+    dr = ImageDraw.Draw(img)
+
+    logo = Image.open(os.path.join(ASSETS, "evolve-logo.png")).convert("RGBA")
+    lh = 92
+    lw = int(logo.width * lh / logo.height)
+    logo = logo.resize((lw, lh), Image.LANCZOS)
+    img.alpha_composite(logo, (cx - lw // 2, 74))
+    dr = ImageDraw.Draw(img)
+
+    wf = font("NeueMontreal-Bold.otf", 128)
+    chrome, total = chrome_wordmark((W, 180), "EVOLVED", wf, 13)
+    wlayer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    wlayer.alpha_composite(chrome, (0, 232))
+    img = Image.alpha_composite(img, wlayer)
+    dr = ImageDraw.Draw(img)
+    uy = 232 + 132
+    dr.rectangle([cx - int(total * 0.5), uy, cx + int(total * 0.5), uy + 6], fill=(57, 255, 20, 255))
+
+    sf = font("NeueMontreal-Medium.otf", 34, fallback="arial.ttf")
+    tracked(dr, (cx, uy + 34), "Business-in-a-box, run by an AI. Paid on-chain.", sf, (236, 240, 236, 255), 0, anchor="ma")
+    mf = font("JetBrainsMono-Regular.ttf", 20, fallback="consola.ttf")
+    tracked(dr, (cx, uy + 92), "83 MCP TOOLS · x402 + X LAYER TESTNET · LIVE PLAYGROUND · EVOLVEDMCP.CLOUD",
+            mf, (120, 205, 150, 255), 3, anchor="ma")
+
+    band = Image.new("RGBA", (W, 5), (0, 0, 0, 0))
+    bd = ImageDraw.Draw(band)
+    for xx in range(W):
+        t = xx / W
+        a = int(215 * (1 - abs(t - 0.5) * 2) ** 1.4)
+        bd.line([(xx, 0), (xx, 5)], fill=((57, 255, 20, a) if t < 0.5 else (34, 211, 238, a)))
+    img.alpha_composite(band, (0, H - 5))
+    img.convert("RGB").save(out, optimize=True)
+    print("wrote", out, (W, H))
+
+
+build_og(os.path.join(ASSETS, "og.png"))

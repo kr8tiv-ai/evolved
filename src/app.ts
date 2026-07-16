@@ -162,13 +162,15 @@ export async function handleRequest(
   // Self-hosted brand media (the real Evolve site's optimized assets) — the
   // playground's hero video and card imagery, served same-origin so the CSP
   // stays closed to external hosts.
-  if (url.pathname.startsWith("/media/") && (req.method === "GET" || req.method === "HEAD")) {
+  if ((url.pathname.startsWith("/media/") || url.pathname === "/og.png") && (req.method === "GET" || req.method === "HEAD")) {
     const MEDIA_TYPES: Record<string, string> = {
       "hero.webm": "video/webm", "hero-poster.webp": "image/webp",
       "decks.webp": "image/webp", "cornerlog.webp": "image/webp",
       "motors.webp": "image/webp", "industrial.webp": "image/webp",
+      "og.png": "image/png",
     };
-    const name = url.pathname.slice("/media/".length);
+    // /og.png is a friendly alias for the link-preview card in media/.
+    const name = url.pathname === "/og.png" ? "og.png" : url.pathname.slice("/media/".length);
     const type = MEDIA_TYPES[name];
     const { existsSync, statSync, createReadStream } = await import("node:fs");
     const { join } = await import("node:path");

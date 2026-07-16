@@ -34,6 +34,12 @@ test("playground: page serves on / and /playground, health lists it", async () =
       assert.match(html, /media\/hero\.webm/);
       assert.match(html, /x402/i);
       assert.match(html, /lifecycle_start/);
+      // Social-preview meta: OG + Twitter summary_large_image, absolute image URL.
+      assert.match(html, /property="og:image" content="https:\/\/www\.evolvedmcp\.cloud\/og\.png"/);
+      assert.match(html, /property="og:title"/);
+      assert.match(html, /property="og:url" content="https:\/\/www\.evolvedmcp\.cloud\//);
+      assert.match(html, /name="twitter:card" content="summary_large_image"/);
+      assert.match(html, /name="twitter:image" content="https:\/\/www\.evolvedmcp\.cloud\/og\.png"/);
     }
     const h = (await (await fetch(base + "/health")).json()) as { endpoints: Record<string, string> };
     assert.ok(h.endpoints["/"]);
