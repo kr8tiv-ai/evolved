@@ -2,8 +2,8 @@
 
 **The endpoint is LIVE:**
 
-- `https://evolvedmcp.cloud/mcp` — MCP Streamable HTTP (the free A2MCP endpoint)
-- `https://evolvedmcp.cloud/health` — service metadata for reviewers
+- `https://www.evolvedmcp.cloud/mcp` — MCP Streamable HTTP (the free A2MCP endpoint)
+- `https://www.evolvedmcp.cloud/health` — service metadata for reviewers
 
 Deployed on Hostinger managed hosting as a Node.js application on its own
 free subdomain site — fully isolated from every other site on the account,
@@ -39,17 +39,17 @@ media and demo assets are tracked, so they ride along.
 Then upload via the Hostinger API's JS-deployment endpoint (or hPanel →
 Websites → the subdomain site → Node.js deploy). The platform runs
 `npm ci`, `npm run build`, and restarts the app. **Deploy to both live sites
-separately** — `evolvedmcp.cloud` and the `powderblue-…hostingersite.com`
+separately** — `www.evolvedmcp.cloud` and the `powderblue-…hostingersite.com`
 fallback. Verify with:
 
 ```bash
-curl https://evolvedmcp.cloud/health
+curl https://www.evolvedmcp.cloud/health
 ```
 
 And a real MCP handshake:
 
 ```bash
-curl -s -X POST https://evolvedmcp.cloud/mcp \
+curl -s -X POST https://www.evolvedmcp.cloud/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}'

@@ -12,8 +12,8 @@
     },
     "endpoint": {
       "protocol": "MCP Streamable HTTP",
-      "url": "https://evolvedmcp.cloud/mcp",
-      "health": "https://evolvedmcp.cloud/health",
+      "url": "https://www.evolvedmcp.cloud/mcp",
+      "health": "https://www.evolvedmcp.cloud/health",
       "auth": "none (free tier)"
     },
     "services": [

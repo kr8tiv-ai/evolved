@@ -6,7 +6,7 @@
 > **Media plan (X allows one video OR up to four images per post, not both):**
 > - **Main post** → attach the demo video `submission/evolved-demo.mp4`
 >   (90s — under the 140s free-tier video cap; funk soundtrack; also streaming
->   at https://evolvedmcp.cloud/demo.mp4).
+>   at https://www.evolvedmcp.cloud/demo.mp4).
 > - **Reply 1** → attach the branded card `assets/x-post-card.png`
 >   (1600×900, also staged at `Desktop\HACKQUEST-IMAGES\x-post-card.png`).
 >
@@ -19,7 +19,7 @@
 ---
 
 **SHORT ANNOUNCEMENT (≤280, link-preview pull-through — no media; let the
-evolvedmcp.cloud card render).** Use this as a standalone announcement tweet
+www.evolvedmcp.cloud card render).** Use this as a standalone announcement tweet
 or the lead of the thread when you want the link preview (not the video) to
 be the hero. The site now serves an Open Graph / Twitter summary_large_image
 card, so this renders a full-width branded preview straight to the playground:
@@ -54,7 +54,7 @@ One agent runs the whole engagement, humans approve only the money:
 83 tools. 41 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 Try it in your browser, zero install:
-evolvedmcp.cloud
+www.evolvedmcp.cloud
 
 github.com/kr8tiv-ai/evolved
 
@@ -68,7 +68,7 @@ Most AI business tools are chatbots wearing a suit. #OKXAI
 
 Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 83 tools, open source.
 
-evolvedmcp.cloud
+www.evolvedmcp.cloud
 
 github.com/kr8tiv-ai/evolved
 

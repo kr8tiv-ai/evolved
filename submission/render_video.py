@@ -250,7 +250,7 @@ def s_premise(t, dur):
         T((250,by), '{ "ok": true, "service": "evolved", "protocol": "MCP Streamable HTTP", "tools": 83 }',
           F('mono',26), DIM, int(255*ap))
         draw_tracked((70,by+44), "LIVE", F('bahn',20), GREEN, tracking=3, alpha=int(255*ap))
-        T((146,by+44), "evolvedmcp.cloud", F('mono',24), DIM2, int(255*ap))
+        T((146,by+44), "www.evolvedmcp.cloud", F('mono',24), DIM2, int(255*ap))
     caption(["Evolve Eco Blasting's real ops brain — reimplemented, extended,",
              "and running live as an agent-callable service."], t, 1.0)
     return flatten(img)
@@ -554,7 +554,7 @@ def s_end(t, dur):
     if ulp>0:
         uw=int(360*ulp); rrect([cx-uw//2,432,cx+uw//2,440],radius=4,fill=rgba(LIME,255))
     ctas=[("GITHUB","github.com/kr8tiv-ai/evolved",GREEN),
-          ("LIVE ENDPOINT","evolvedmcp.cloud",CYAN),
+          ("LIVE ENDPOINT","www.evolvedmcp.cloud",CYAN),
           ("PLAYGROUND","zero install · /mcp · /mcp-paid · /health",SILVER)]
     for i,(k,v,c) in enumerate(ctas):
         ca=smooth((t-1.3-i*0.22)/0.5)

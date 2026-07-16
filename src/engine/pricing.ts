@@ -209,14 +209,56 @@ export interface PriceQuoteInput {
   mobilization?: boolean;
 }
 
+/** Comparable closed/quoted work for the same surface+depth — grounds an estimate in real history. */
+export interface Comparables {
+  wonJobs: number;
+  quotesOut: number;
+  ratePerSqft: MarketBand | null; // low / typ(median) / high across comparable $/sqft
+  note: string;
+}
+
+export function comparableRates(
+  db: Database,
+  depth: BlastDepth,
+  surface?: SurfaceKind,
+): Comparables {
+  const won = db.pricingOutcomes.filter(
+    (o) => o.depth === depth && (surface ? o.surface === surface : true) && o.won,
+  );
+  const quotes = db.quotes.filter((q) => {
+    const l = q.lines.find((x) => x.depth === depth && (surface ? x.surface === surface : true) && x.sqft);
+    return !!l && (q.status === "Sent" || q.status === "Accepted");
+  });
+  const rates: number[] = [
+    ...won.map((o) => o.quotedRate),
+    ...quotes.flatMap((q) => {
+      const l = q.lines.find((x) => x.depth === depth && x.sqft);
+      return l?.sqft ? [round2(q.subtotal / l.sqft)] : [];
+    }),
+  ].filter((r) => r > 0).sort((a, b) => a - b);
+  const band: MarketBand | null = rates.length
+    ? { low: rates[0], typ: rates[Math.floor(rates.length / 2)], high: rates[rates.length - 1] }
+    : null;
+  const note = rates.length
+    ? `${rates.length} comparable ${surface ?? ""} ${depth}-blast job${rates.length === 1 ? "" : "s"} in the books priced $${band!.low.toFixed(2)}–$${band!.high.toFixed(2)}/sqft (median $${band!.typ.toFixed(2)}).`
+    : "No comparable jobs in the books yet — priced off the market-floor rate card.";
+  return { wonJobs: won.length, quotesOut: quotes.length, ratePerSqft: band, note };
+}
+
 export interface PriceQuoteResult {
   depth: BlastDepth;
   surface?: SurfaceKind;
   rate: number;
   rateSource: string;
+  /** Confidence (0..0.98) and suggested $/sqft range from the learning loop. */
+  confidence: number;
+  rateRange: [number, number];
+  market: MarketPosition;
   accessFactor: number;
   mobilization: number;
   subtotal: number;
+  /** Subtotal low/high from the rate range — what to quote as a not-to-exceed band. */
+  subtotalRange: [number, number];
   gst: number;
   total: number;
   deposit: number;
@@ -231,12 +273,16 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
   const accessFactor = ACCESS_FACTORS[access] ?? 1.0;
   const mobilization = input.mobilization === false ? 0 : MOBILIZATION_FEE;
 
-  const { rate, source } = effectiveRate(db, depth, input.surface);
+  const eff = effectiveRate(db, depth, input.surface);
+  const { rate, source } = eff;
   const subtotal = round2(input.sqft * rate * accessFactor + mobilization);
   const gst = round2(subtotal * gstRate(db));
   const total = round2(subtotal + gst);
   // Company standard: deposit is 25% of the GST-inclusive total.
   const deposit = round2(total * DEPOSIT_RATE);
+
+  const subLo = round2(input.sqft * eff.range[0] * accessFactor + mobilization);
+  const subHi = round2(input.sqft * eff.range[1] * accessFactor + mobilization);
 
   const profitability = profitabilityCheck(input.sqft, depth, subtotal);
 
@@ -261,9 +307,13 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
     surface: input.surface,
     rate,
     rateSource: source,
+    confidence: eff.confidence,
+    rateRange: eff.range,
+    market: eff.market,
     accessFactor,
     mobilization,
     subtotal,
+    subtotalRange: [subLo, subHi],
     gst,
     total,
     deposit,

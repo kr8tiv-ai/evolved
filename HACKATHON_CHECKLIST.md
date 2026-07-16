@@ -2,7 +2,7 @@
 
 _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing review ~24h → treat **July 16** as the real cutoff._
 
-**Live:** https://evolvedmcp.cloud (custom domain, SSL) · mirror https://powderblue-leopard-801168.hostingersite.com
+**Live:** https://www.evolvedmcp.cloud (custom domain, SSL) · mirror https://powderblue-leopard-801168.hostingersite.com
 **Repo:** https://github.com/kr8tiv-ai/evolved (public, MIT) · **HackQuest project:** "Evolved - Business in a box MCP" (score 90, Meets Entry Standard)
 **Numbers of record:** 83 tools · 16 domains · 41 tests · v3.0.0
 
@@ -20,7 +20,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Security: per-IP rate limit, 256KB body cap, demo-tool whitelist, security headers, SECURITY.md threat model
 
 ## B. Deploy / hosting (DONE ✅)
-- [x] **Custom domain evolvedmcp.cloud** live (Hostinger addon, SSL) — serving v3.0.0 / 83 tools
+- [x] **Custom domain www.evolvedmcp.cloud** live (Hostinger addon, SSL) — serving v3.0.0 / 83 tools
 - [x] Mirror on powderblue-leopard subdomain kept as fallback
 - [x] Demo video self-hosted at `/demo.mp4` (video/mp4 + byte ranges) on both domains
 - [x] Self-hosted brand media route `/media/*` (hero video, scene imagery)
@@ -46,7 +46,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [ ] Optional polish: branded preloader + counter, SCROLL cue (apparel-site cues) — nice-to-have
 
 ## E. Demo video (DONE ✅)
-- [x] 90.0s cut, 1080p, Neue Montreal + JetBrains Mono typography, evolvedmcp.cloud baked in
+- [x] 90.0s cut, 1080p, Neue Montreal + JetBrains Mono typography, www.evolvedmcp.cloud baked in
 - [x] Soundtrack: "Background No Copyright Music" by absolutesound (Pixabay license)
 - [x] Scenes: title → premise (83/16/41) → trade packs → intake → lifecycle → on-site JHA → workbook spine → x402 → end card
 - [x] Committed to repo + deployed to both domains
@@ -55,13 +55,13 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Project filled: intro, description (83/16/41 + workbook/field/growth), Sector AI, tech tags, deployment details, progress, fundraising
 - [x] 4 gallery images + square logo tile uploaded; entry standard met (score 90)
 - [x] Submit form pre-filled: prize tracks ×4, ASP name, ASP description (299/300), X handle @aurora_ventures, Telegram @matthaynes88
-- [x] **Video link → https://evolvedmcp.cloud/demo.mp4?v=5** — DONE, persisted (90s cut)
+- [x] **Video link → https://www.evolvedmcp.cloud/demo.mp4?v=5** — DONE, persisted (90s cut)
 - [ ] Public profile enriched (bio/location/GitHub/X) — score 86, keep
 - [ ] **Final Submit** — needs Agent ID + X post link (Matt), then click Submit
 
 ## G. OKX ASP listing (OWNED BY A PARALLEL SESSION — not in this queue)
 - [~] Register + list A2MCP ASP via Onchain OS (wallet email OTP + on-chain ERC-8004 registration) → **Agent ID**
-- Answer sheet ready: `submission/OKX-LISTING-STEPS.md`, `submission/asp-manifest.json` (all evolvedmcp.cloud, 83/16)
+- Answer sheet ready: `submission/OKX-LISTING-STEPS.md`, `submission/asp-manifest.json` (all www.evolvedmcp.cloud, 83/16)
 
 ## H. Matt-only manual steps
 - [ ] OKX listing → capture **Agent ID** (parallel session assisting)

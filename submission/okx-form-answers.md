@@ -22,13 +22,13 @@ Evolved packages the live operating system of Evolve Eco Blasting (an abrasive-b
 
 **ASP type:** A2MCP — free endpoint at POST /mcp (results returned directly) plus an IMPLEMENTED x402 pay-per-call tier at POST /mcp-paid (402 Payment Required challenge, scheme "exact", network eip155:1952, X Layer testnet settlement verified by read-only RPC).
 
-**Service / endpoint URL:** https://evolvedmcp.cloud/mcp (LIVE — health check at /health)
+**Service / endpoint URL:** https://www.evolvedmcp.cloud/mcp (LIVE — health check at /health)
 
 **Agent ID:** 6043 (registered on OKX.AI / X Layer, chainIndex 196, tx 0x2236b9aaf6ec57aa211c9eec284bcd6a824924de11a55e67fab5167691a448be; listing submitted for review July 15, 2026 — "AI quality review suggested pass"; reachable via Agent ID while pending)
 
 **Repository:** https://github.com/kr8tiv-ai/evolved
 
-**Demo:** LIVE browser playground, zero install: https://evolvedmcp.cloud/ (voice commands, photo-to-quote, the autonomous lifecycle with human money gates, and the raw x402 402 → proof → receipt flow). Locally, `npm run demo` runs the full loop with zero credentials; demo video attached to the X post.
+**Demo:** LIVE browser playground, zero install: https://www.evolvedmcp.cloud/ (voice commands, photo-to-quote, the autonomous lifecycle with human money gates, and the raw x402 402 → proof → receipt flow). Locally, `npm run demo` runs the full loop with zero credentials; demo video attached to the X post.
 
 **X post link (#OKXAI):** ← fill after posting
 
@@ -42,7 +42,7 @@ Every rate, rule, and workflow in Evolved is production truth from a company tha
 
 ## Pre-submission checklist (Matt)
 
-1. [x] Deploy to a public host — DONE: https://evolvedmcp.cloud/mcp (Hostinger managed hosting; see docs/DEPLOY-HOSTINGER.md).
+1. [x] Deploy to a public host — DONE: https://www.evolvedmcp.cloud/mcp (Hostinger managed hosting; see docs/DEPLOY-HOSTINGER.md).
 2. [ ] Onchain OS: install skill, log in to Agentic Wallet (your email), register A2MCP ASP, list it (prompts in docs/OKX-LISTING.md; answers in submission/asp-manifest.json).
 3. [x] Demo video DONE — submission/evolved-demo.mp4, hosted at /demo.mp4 (see submission/DEMO-VIDEO.md).
 4. [ ] Post on X with #OKXAI (draft in submission/x-post-draft.md) + video.

@@ -321,7 +321,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="hero-inner" id="heroInner">
   <div class="eyebrow-h">BUSINESS MANAGEMENT IN A BOX · MODEL CONTEXT PROTOCOL</div>
   <h1 class="htitle">Run the whole<br>business with<br><span class="glow">one agent.</span></h1>
-  <p class="hlead">Evolved is the operating system that lets an AI run a service business end to end — quotes that price themselves, safety, receipts, dispatch, invoicing, and settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>.</p>
+  <p class="hlead"><b style="color:#e8ebe8">Most AI talks about business. Evolved runs one</b> — end to end: quotes that price themselves, safety, receipts, dispatch, invoicing, and on-chain settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>.</p>
   <div class="hcta">
     <a class="btn-pill" href="#run" onclick="setTimeout(judgeMode,450)">▶ Watch it run itself</a>
     <a class="btn-pill outline" href="#adapt">Make it your business</a>
@@ -380,7 +380,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <div class="card">
   <div class="eyebrow">seconds, not site visits</div>
   <h2>📸 Photo-to-quote</h2>
-  <p class="hint">A customer texts a driveway photo. The estimator sizes it, the learning rate engine prices it, and a branded draft quote lands in the books with a measure-to-confirm clause.</p>
+  <p class="hint">A customer texts a driveway photo. The estimator sizes it and reads condition; the learning engine prices it as a <b>confidence band</b> — not a wild guess — grounded in <b>comparable jobs already in the books</b>, benchmarked to the market, with the exact site factors that could move the number. A branded draft lands in the ledger with a measure-to-confirm clause.</p>
   <select id="pq-surface"><option>driveway</option><option>sidewalk</option><option>patio</option><option>garage-pad</option><option>exposed-aggregate</option></select>
   <input type="number" id="pq-w" value="20" min="4" max="200" style="width:88px"> ×
   <input type="number" id="pq-l" value="30" min="4" max="400" style="width:88px"> ft
@@ -401,11 +401,11 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </div>
 
 <div class="card" id="onchain">
-  <div class="eyebrow">real invoices, real rail</div>
-  <h2>Invoice → <span class="g">X Layer testnet</span></h2>
-  <p class="hint">A real invoice balance becomes an EIP-681 payment request in test OKB on chainId 1952. Evolved never holds keys — it only verifies settlement by read-only RPC.</p>
+  <div class="eyebrow">why on-chain, not a bolt-on</div>
+  <h2>Programmable deposit → <span class="g">X Layer testnet</span></h2>
+  <p class="hint">A blasting crew buys media and fuel before the first grain hits the driveway. The <b>25% deposit</b> is enforced in code and encoded into an EIP-681 request — it clears in seconds (not a 3-day e-transfer), it's <b>final</b> (no chargeback after the abrasive is spent), and the agent <b>verifies settlement itself</b> by read-only RPC before it books the crew. Evolved never holds keys.</p>
   <div>
-    <button onclick="payRequest()">Create payment request</button>
+    <button onclick="payRequest()">Request the deposit on-chain</button>
     <button class="ghost" onclick="payCheck()" id="pay-check" disabled>Verify settlement (simulated)</button>
   </div>
   <div class="out" id="pay-out"></div>
@@ -521,7 +521,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <p class="hint">Claude Desktop / Claude Code / any MCP client — the live Streamable HTTP endpoint:</p>
 <pre class="copy mono">{ "mcpServers": { "evolved": {
     "type": "http",
-    "url": "https://evolvedmcp.cloud/mcp"
+    "url": "https://www.evolvedmcp.cloud/mcp"
 } } }</pre>
   </div>
   <div>
@@ -618,7 +618,15 @@ async function photoQuote(){
   show("pq-out", "→ quote_from_photo (" + args.surface + ", " + args.approxWidthFt + "×" + args.approxLengthFt + " ft)");
   try {
     var r = await call("quote_from_photo", args);
-    show("pq-out", r.estimate, "estimate");
+    show("pq-out", { surface: r.estimate.surface, sqft: r.estimate.sqft, depth: r.estimate.depth,
+      condition: r.estimate.condition, confidence: r.estimate.confidence, source: r.estimate.source }, "estimate");
+    if (r.quoteBand){
+      show("pq-out", { pointTotal: r.quoteBand.pointTotal, notToExceedRange: r.quoteBand.rangeSubtotal,
+        ratePerSqft: r.quoteBand.rangeRate, basis: r.quoteBand.basis }, "priced as a confidence band, not a guess");
+      show("pq-out", r.quoteBand.comparables, "grounded in comparable jobs");
+      show("pq-out", r.quoteBand.market, "vs the market");
+      show("pq-out", r.quoteBand.priceDrivers, "what a site measure could change");
+    }
     show("pq-out", { id: r.quote.id, subtotal: r.quote.subtotal, gst: r.quote.gst,
       total: r.quote.total, deposit: r.quote.depositRequired, validUntil: r.quote.validUntil }, "quote (in the books)");
     show("pq-out", r.advisory || "", "margin verdict");
@@ -666,13 +674,14 @@ async function lcSettle(outId){
 var PAY = null;
 async function payRequest(){
   clearOut("pay-out");
-  show("pay-out", "→ invoice_payment_request { invoiceId: 'ECO-INV-9002' }");
+  show("pay-out", "→ invoice_payment_request { invoiceId: 'ECO-INV-9002', split: 'deposit' }");
   try {
-    var r = await call("invoice_payment_request", { invoiceId: "ECO-INV-9002" });
+    var r = await call("invoice_payment_request", { invoiceId: "ECO-INV-9002", split: "deposit" });
     PAY = r.payment.id; $("pay-check").disabled = false;
-    show("pay-out", { network: r.payment.network, chainId: r.payment.chainId,
-      amount: r.payment.amountAsset + " " + r.payment.asset.symbol + " (= $" + r.payment.amountCad + " CAD)",
-      payTo: r.payment.payTo, uri: r.payment.uri }, "payment request (EIP-681)");
+    show("pay-out", { split: r.split.kind, amount: r.payment.amountAsset + " " + r.payment.asset.symbol + " (= $" + r.payment.amountCad + " CAD)",
+      of: "$" + r.split.invoiceTotal + " invoice · deposit $" + r.split.depositDue + " · balance $" + r.split.balanceDue }, "programmable deposit (25% of GST-inclusive total)");
+    show("pay-out", { network: r.payment.network, chainId: r.payment.chainId, payTo: r.payment.payTo, uri: r.payment.uri }, "on-chain request (EIP-681)");
+    if (r.whyOnChain){ show("pay-out", r.whyOnChain.headline, "why on-chain here"); show("pay-out", r.whyOnChain.reasons, "not a bolt-on — essential for a cash-tight trade"); }
   } catch(e){
     show("pay-out", "✖ " + e.message + " — the seeded invoice may already be settled; hit Judge Mode's reset or wait for the hourly restore.");
   }

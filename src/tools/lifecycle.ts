@@ -352,10 +352,18 @@ export function registerLifecycleTools(server: McpServer): void {
             profitability: priced.profitability, createdAt: nowIso(), updatedAt: nowIso(),
           };
           db.quotes.push(quote);
+          // Margin-aware money gate: the gate reason tells the owner WHY to look.
+          const pf = priced.profitability;
+          const gateReason =
+            pf.verdict === "below-break-even"
+              ? `⚠ MONEY GATE — quote ${quote.id} ($${quote.total} CAD) is BELOW break-even ($${pf.breakEvenRate.toFixed(2)}/sqft). Approving sends a job that loses money. Raise the rate or decline; never send silently.`
+              : pf.verdict === "thin"
+                ? `MONEY GATE — quote ${quote.id} ($${quote.total} CAD) is a THIN ${pf.marginPct.toFixed(1)}% margin. Fine as a relationship price; approve only if that's intentional.`
+                : `Money gate — quote ${quote.id} ($${quote.total} CAD, healthy ${pf.marginPct.toFixed(1)}% margin${priced.market ? `, ${priced.market.position}` : ""}) needs owner approval before it goes out.`;
           const lc: Lifecycle = {
             id: shortId("LC"), stage: "quoted",
             leadId: lead.id, customerId: customer.id, quoteId: quote.id,
-            gates: [{ gate: "approve-quote", reason: `Money gate: quote ${quote.id} (${quote.total} CAD, ${priced.profitability.verdict}) needs owner approval before it goes out.`, raisedAt: nowIso() }],
+            gates: [{ gate: "approve-quote", reason: gateReason, raisedAt: nowIso() }],
             log: [], createdAt: nowIso(), updatedAt: nowIso(),
           };
           log(lc, "start", `Lifecycle opened for ${customer.name}: ${input.sqft} sqft ${input.surface}, ${input.depth} blast → ${quote.id} at ${quote.total} CAD (${priced.rateSource}).`);

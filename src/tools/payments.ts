@@ -12,10 +12,10 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   buildPaymentAmounts, chainStatus, DEMO_PAYTO, demoOkbPricePerCall,
-  paymentsMode, paymentUri, simulatedSettlement, verifyOnChain,
+  paymentsMode, paymentUri, simulatedSettlement, verifyOnChain, whyOnChain,
   x402Envelope, XLAYER_TESTNET, CAD_PER_OKB_DEMO,
 } from "../engine/payments.js";
-import { addDays, loadDb, logActivity, nowIso, shortId, today, withDb } from "../store.js";
+import { addDays, loadDb, logActivity, nowIso, round2, shortId, today, withDb } from "../store.js";
 
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
@@ -27,20 +27,32 @@ export function registerPaymentTools(server: McpServer): void {
     {
       title: "Create on-chain payment request (X Layer testnet)",
       description:
-        "Turn an invoice's balance due into an on-chain payment request on OKX X Layer TESTNET: EIP-681 payment URI, recipient, amount in test OKB (fixed synthetic FX rate), chain details, and explorer link. Testnet and demo funds only — Evolved never signs or moves assets.",
+        "Turn an invoice into an on-chain payment request on OKX X Layer TESTNET: EIP-681 payment URI, recipient, amount in test OKB (fixed synthetic FX rate), chain details, and explorer link. `split` chooses the deposit (25% of the GST-inclusive total, programmable — funds the job before the crew mobilizes), the remaining balance, or the full amount. Testnet and demo funds only — Evolved never signs or moves assets.",
       inputSchema: {
         invoiceId: z.string(),
+        split: z.enum(["deposit", "balance", "full"]).optional().describe("deposit = 25% up front (default when nothing is paid yet); balance = the rest; full = the whole invoice"),
         payTo: z.string().optional().describe("Override recipient address (0x…); default is the documented demo address"),
       },
     },
-    async ({ invoiceId, payTo }) => {
+    async ({ invoiceId, split, payTo }) => {
       return ok(
         withDb((db) => {
           const invoice = db.invoices.find((i) => i.id === invoiceId);
           if (!invoice) throw new Error(`Unknown invoice ${invoiceId}`);
           const recipient = payTo ?? DEMO_PAYTO;
           if (!/^0x[0-9a-fA-F]{40}$/.test(recipient)) throw new Error("payTo must be a 0x-prefixed 20-byte address");
-          const { amountAsset, baseUnits } = buildPaymentAmounts(invoice.balanceDue);
+
+          // Programmable deposit: 25% of the GST-inclusive total, enforced here.
+          const depositDue = round2(invoice.total * 0.25);
+          const kind: "deposit" | "balance" | "full" =
+            split ?? (invoice.depositApplied > 0 ? "balance" : "deposit");
+          const amountCad =
+            kind === "deposit" ? depositDue
+            : kind === "balance" ? invoice.balanceDue
+            : invoice.total;
+          if (amountCad <= 0) throw new Error(`Nothing to request for ${invoiceId} on the '${kind}' split (amount is $${amountCad}).`);
+
+          const { amountAsset, baseUnits } = buildPaymentAmounts(amountCad);
           const payment = {
             id: shortId("PAY"),
             invoiceId,
@@ -48,7 +60,7 @@ export function registerPaymentTools(server: McpServer): void {
             chainId: XLAYER_TESTNET.chainId,
             payTo: recipient,
             asset: { symbol: XLAYER_TESTNET.native.symbol, address: null, decimals: XLAYER_TESTNET.native.decimals },
-            amountCad: invoice.balanceDue,
+            amountCad,
             amountAsset,
             amountBaseUnits: baseUnits,
             uri: paymentUri(recipient, baseUnits, XLAYER_TESTNET.chainId),
@@ -58,11 +70,13 @@ export function registerPaymentTools(server: McpServer): void {
             expiresAt: addDays(today(), 7),
           };
           db.payments.push(payment);
-          logActivity(db, "payments", `On-chain payment request ${payment.id} for ${invoiceId}: ${amountAsset} OKB on X Layer testnet.`);
+          logActivity(db, "payments", `On-chain ${kind} request ${payment.id} for ${invoiceId}: ${amountAsset} OKB on X Layer testnet.`);
           return {
             payment,
+            split: { kind, amountCad, depositDue, balanceDue: invoice.balanceDue, invoiceTotal: invoice.total },
+            whyOnChain: whyOnChain(amountCad, kind),
             instructions: [
-              `Pay ${amountAsset} test OKB on ${XLAYER_TESTNET.name} (chainId ${XLAYER_TESTNET.chainId}) to ${recipient}.`,
+              `Pay ${amountAsset} test OKB (${kind}) on ${XLAYER_TESTNET.name} (chainId ${XLAYER_TESTNET.chainId}) to ${recipient}.`,
               `Wallet URI: ${payment.uri}`,
               `Explorer: ${XLAYER_TESTNET.explorer}`,
               `Demo FX: $${CAD_PER_OKB_DEMO} CAD = 1 OKB (synthetic rate, testnet only).`,

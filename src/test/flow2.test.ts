@@ -45,6 +45,9 @@ test("autonomous lifecycle: lead → e-sign → weather booking → FLHA → inv
   const lcId = started.lifecycle.id;
   assert.equal(started.lifecycle.stage, "quoted");
   assert.equal(started.lifecycle.gates[0].gate, "approve-quote");
+  // Depth: the money gate is margin-aware — its reason states the verdict/margin.
+  assert.match(started.lifecycle.gates[0].reason, /money gate/i);
+  assert.match(started.lifecycle.gates[0].reason, /margin|break-even/i);
 
   // Advancing WITHOUT approval must hold at the money gate.
   const held = await call("lifecycle_advance", { lifecycleId: lcId });
@@ -133,6 +136,14 @@ test("new domains: inventory, voice, inbox filing, photo quote, sheet, cfo, insi
   assert.equal(photo.estimate.sqft, 600);
   assert.match(photo.quote.id, /^ECO-Q-/);
   assert.match(photo.quote.notes, /measure(-| )to(-| )confirm/i);
+  // Depth: a photo quote is a confidence-banded range with comparables + drivers.
+  assert.ok(photo.quoteBand, "photo quote carries a confidence band");
+  assert.match(photo.quoteBand.rangeRate, /\$[\d.]+ . \$[\d.]+\/sqft/);
+  assert.ok(Array.isArray(photo.quoteBand.priceDrivers) && photo.quoteBand.priceDrivers.length >= 2);
+  assert.equal(typeof photo.quoteBand.comparables, "string");
+  // Edge: an absurd area is clamped, not passed through.
+  const huge = await call("quote_from_photo", { surface: "driveway", approxWidthFt: 900, approxLengthFt: 900 });
+  assert.ok(huge.estimate.sqft <= 20000, "absurd area is capped");
 
   // Sheet engine: tabs + read + append.
   const tabs = await call("sheet_tabs", {});
@@ -194,6 +205,14 @@ test("payments tools: request → check (simulated) marks invoice and job paid; 
   assert.match(req.payment.uri, /^ethereum:0x[0-9a-fA-F]{40}@1952\?value=\d+$/);
   assert.equal(req.payment.amountCad, 1827);
   assert.equal(req.payment.amountAsset, "18.270000");
+  // Depth: deposit already applied → default split is the balance; why-on-chain is trade-specific.
+  assert.equal(req.split.kind, "balance");
+  assert.ok(req.whyOnChain.reasons.some((r: string) => /chargeback/i.test(r)));
+  // Programmable deposit split: exactly 25% of the GST-inclusive total.
+  const dep = await call("invoice_payment_request", { invoiceId: "ECO-INV-9002", split: "deposit" });
+  assert.equal(dep.split.kind, "deposit");
+  assert.equal(dep.payment.amountCad, 609); // 25% of 2436
+  assert.match(dep.whyOnChain.headline, /deposit/i);
 
   const unpaid = await call("invoice_payment_check", { paymentId: req.payment.id });
   assert.equal(unpaid.verified, false);

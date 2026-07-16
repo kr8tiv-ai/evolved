@@ -2,16 +2,18 @@
 
 <img src="assets/hero.png" alt="EVOLVED — the company-in-a-box for the agent economy, over a boreal aurora" width="100%">
 
-### The company-in-a-box for the agent economy: any service business, spun up in one call — proven on a real Alberta blasting company, settling its invoices in OKB on X Layer testnet, verified on-chain.
+### Most AI talks about business. Evolved runs one.
 
-**▶ [TRY IT LIVE — the browser playground](https://evolvedmcp.cloud/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
+One agent takes a service business from a texted photo to a paid, on-chain invoice — proven on a real Alberta blasting company, adaptable to any trade in one call. **83 tools, live as an MCP service, settling in OKB on OKX X Layer testnet.**
+
+**▶ [TRY IT LIVE — the browser playground](https://www.evolvedmcp.cloud/)** — no install, no keys: run voice commands, photo-quote a driveway, drive the autonomous lifecycle through its two human money gates, and watch the x402 402 → proof → receipt flow, all against the real endpoint.
 
 **🎬 [Watch the 90-second demo](submission/evolved-demo.mp4)** — branded, captioned, two-act cut ([notes + license](submission/DEMO-VIDEO.md)).
 
 [![MCP](https://img.shields.io/badge/protocol-MCP-4ade80?style=flat-square&labelColor=0a0a0a)](https://modelcontextprotocol.io)
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
-[![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://evolvedmcp.cloud/health)
+[![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.evolvedmcp.cloud/health)
 [![Tools](https://img.shields.io/badge/tools-83-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
 [![Tests](https://img.shields.io/badge/tests-41_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
@@ -28,22 +30,22 @@ The service is live. You can verify every headline claim from your terminal befo
 
 ```bash
 # 1 · It exists, and it is an MCP service (10 seconds)
-curl https://evolvedmcp.cloud/health
+curl https://www.evolvedmcp.cloud/health
 
 # 2 · It monetizes as an ASP — x402 pay-per-call (the 402 challenge, scheme "exact", eip155:1952)
-curl -i -X POST https://evolvedmcp.cloud/mcp-paid \
+curl -i -X POST https://www.evolvedmcp.cloud/mcp-paid \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
 
 # 3 · Pay the challenge, get the service (settlement receipt in the X-PAYMENT-RESPONSE header)
 #     (header is base64 of {"simulated":true} — quote-safe on every shell, incl. PowerShell)
-curl -i -X POST https://evolvedmcp.cloud/mcp-paid \
+curl -i -X POST https://www.evolvedmcp.cloud/mcp-paid \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -H 'X-PAYMENT: eyJzaW11bGF0ZWQiOnRydWV9' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"judge","version":"1"}}}'
 
 # 4 · The revenue scoreboard (paid calls + settlements, survives demo resets)
-curl https://evolvedmcp.cloud/stats
+curl https://www.evolvedmcp.cloud/stats
 ```
 
 Then run the whole company locally — no keys, no accounts, no funds:
@@ -92,6 +94,17 @@ Every step lands in an audit log. Try it through any MCP client: `lifecycle_star
 
 ## Paid on-chain (OKX X Layer)
 
+### Why on-chain matters *here* — not as a bolt-on
+
+A blasting crew buys media and fuel **before the first grain hits the driveway**. A trades business lives or dies on cash flow and finality, and that is exactly what on-chain settlement fixes:
+
+- **Instant.** The deposit clears in seconds — not a 3-day e-transfer hold or a 30-day net invoice. The abrasive and fuel get funded *today*, so the agent can book the crew now.
+- **Final.** No chargebacks. A card can reverse weeks later, after the media is already blasted onto someone's concrete and the cost is sunk. On-chain, paid is paid.
+- **Programmable.** The 25% deposit is enforced in code and encoded into the EIP-681 request (`invoice_payment_request { split: "deposit" }`) — not a number a human has to remember to collect.
+- **Self-verifying.** The agent confirms the money landed itself via read-only RPC before it commits the crew — no waiting on a person to check the bank.
+
+For a cash-tight trade, that is not a feature. It is the difference between taking the job and turning it down.
+
 **TESTNET ONLY — and Evolved never holds keys, never signs, never broadcasts.** It issues payment requests and verifies settlement with read-only RPC; funds can only move from the payer's own wallet, and replay protection guarantees one transaction settles exactly one thing.
 
 | Rail | What happens |
@@ -105,7 +118,7 @@ Simulated mode is the default so judges can run everything offline, and every si
 
 | | |
 |---|---|
-| **📸 Photo-to-quote** | A customer texts a photo; `quote_from_photo` estimates surface, area, condition, and blast depth (Claude vision with a key, or a deterministic offline estimator that parses real JPEG/PNG headers), prices it through the learning engine, and books a branded draft quote with a measure-to-confirm clause. Seconds, not site visits. |
+| **📸 Photo-to-quote** | A customer texts a photo; `quote_from_photo` estimates surface, area, condition, and blast depth (Claude vision with a key, or a deterministic offline estimator that parses real JPEG/PNG headers), then hands back what a seasoned estimator would — a **confidence-banded price range** (not a blind number), the **comparable jobs already in the books** it's grounded in, a market benchmark, and the exact site factors that could move it — before booking a branded draft with a measure-to-confirm clause. Absurd dimensions are clamped, not passed through. Seconds, not site visits. |
 | **🎙️ Voice field commands** | "Used four bags of crushed glass on the Kowalczyk job" burns down inventory against that job's P&L. "Open the FLHA" drafts the day's hazard assessment. "Next stop?" reads the dispatch board. Unmatched job hints refuse rather than guess, and unrecognized speech is captured to the inbox — nothing is lost, nothing is misfiled. |
 | **📈 Agentic CFO** | `cfo_forecast` answers add-a-truck (capex, utilization ramp, break-even month), rate changes (with price elasticity), and demand shocks with a 12-month cash table grounded in the books, weather-gated seasonality, and every assumption stated. `cfo_health` is the one-pager an owner actually needs. |
 | **📦 Franchise spin-up** | `franchise_spinup` re-seeds the entire OS for a new company in a different trade — name, rate card, region — empty books, full machinery: quoting, receipts, FLHA, digest, learning loop, on-chain invoicing. One company's operating system becomes anyone's. |
@@ -204,11 +217,11 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 
 | | |
 |---|---|
-| **Try it live** | [evolvedmcp.cloud](https://evolvedmcp.cloud/) — browser playground, zero install |
+| **Try it live** | [www.evolvedmcp.cloud](https://www.evolvedmcp.cloud/) — browser playground, zero install |
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |
-| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 90s, 1080p, on-brand, captioned, royalty-free funk soundtrack ([notes](submission/DEMO-VIDEO.md)) — streams from the live deployment at [/demo.mp4](https://evolvedmcp.cloud/demo.mp4) |
+| **Demo video** | [submission/evolved-demo.mp4](submission/evolved-demo.mp4) — 90s, 1080p, on-brand, captioned, royalty-free funk soundtrack ([notes](submission/DEMO-VIDEO.md)) — streams from the live deployment at [/demo.mp4](https://www.evolvedmcp.cloud/demo.mp4) |
 | Categories | Best Product · Revenue Rocket · Software Utility · Finance Copilot |
 
 MIT licensed. Synthetic data only; testnet only; no secrets anywhere in this repository. Evolved never holds keys and cannot move funds — by construction.

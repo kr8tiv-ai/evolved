@@ -5,8 +5,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { estimateFromPhoto } from "../engine/vision.js";
-import { priceQuote, QUOTE_VALID_DAYS } from "../engine/pricing.js";
-import { addDays, loadDb, logActivity, nextQuoteNumber, nowIso, shortId, today, withDb } from "../store.js";
+import { comparableRates, priceQuote, QUOTE_VALID_DAYS } from "../engine/pricing.js";
+import { addDays, loadDb, logActivity, money, nextQuoteNumber, nowIso, shortId, today, withDb } from "../store.js";
 
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
@@ -43,11 +43,30 @@ export function registerVisionTools(server: McpServer): void {
         depth: estimate.depth,
         surface: estimate.surface,
       });
+      const comps = comparableRates(db, estimate.depth, estimate.surface);
+
+      // A seasoned estimator doesn't hand over a single number sight-unseen —
+      // it hands over a confidence-banded range, the comparables behind it,
+      // and what a site measure could change.
+      const quoteBand = {
+        pointTotal: money(priced.total),
+        confidence: estimate.confidence,
+        rangeSubtotal: `${money(priced.subtotalRange[0])} – ${money(priced.subtotalRange[1])}`,
+        rangeRate: `$${priced.rateRange[0].toFixed(2)} – $${priced.rateRange[1].toFixed(2)}/sqft`,
+        basis: priced.rateSource,
+        market: priced.market.note,
+        comparables: comps.note,
+        priceDrivers: estimate.priceDrivers,
+        note: estimate.confidence < 0.55
+          ? "Lower-confidence read — send as a ballpark range, confirm on a site measure before booking."
+          : "Solid read — safe to send as a draft; the measure-to-confirm clause protects the final number.",
+      };
 
       if (!input.customerName) {
         return ok({
           estimate,
           pricing: priced,
+          quoteBand,
           note: "Estimate only — pass customerName (and siteAddress) to book a draft quote into the ledger.",
         });
       }
@@ -78,7 +97,7 @@ export function registerVisionTools(server: McpServer): void {
           };
           d.quotes.push(quote);
           logActivity(d, "vision", `Photo quote ${quote.id}: ${estimate.sqft} sqft ${estimate.surface} @ ${priced.ratePerSqftEffective}/sqft.`);
-          return { estimate, quote, advisory: priced.profitability.advisory };
+          return { estimate, quote, quoteBand, advisory: priced.profitability.advisory };
         }),
       );
     },

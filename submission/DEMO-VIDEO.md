@@ -2,7 +2,7 @@
 
 **File:** [`evolved-demo.mp4`](evolved-demo.mp4) · 1920×1080 · 30 fps · 90 seconds · H.264/AAC
 **Hosted:** streams from the live deployment at
-<https://evolvedmcp.cloud/demo.mp4> (served with a
+<https://www.evolvedmcp.cloud/demo.mp4> (served with a
 real `video/mp4` content type and byte-range support, so submission platforms
 can embed it directly — GitHub raw sends `nosniff`, which blocks playback).
 
@@ -38,7 +38,7 @@ hackathon. Plays fully with the sound off (animated captions throughout).
 9. **End card** — GitHub repo, live endpoint, "Try it live."
 
 Every figure and payload in the video is **real data captured from the live
-endpoint** (`https://evolvedmcp.cloud`) — the photo
+endpoint** (`https://www.evolvedmcp.cloud`) — the photo
 quote, the lifecycle audit log, the FLHA hazards, and the x402 402→proof→receipt
 headers were all recorded from real MCP calls. Synthetic/testnet data only; no
 real secrets and no real funds.

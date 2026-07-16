@@ -19,7 +19,33 @@ export interface VisionEstimate {
   confidence: number;
   source: "claude-vision" | "offline-heuristic";
   imagePixels?: { width: number; height: number };
+  /** What would move the price up or down on a real site measure. */
+  priceDrivers: string[];
   notes: string[];
+}
+
+/** A blasting job is 20 sqft (a bench) to ~20,000 sqft (a parkade level). Clamp absurd reads. */
+const SQFT_MIN = 20;
+const SQFT_MAX = 20000;
+function clampSqft(sqft: number): { sqft: number; flag?: string } {
+  if (!Number.isFinite(sqft) || sqft <= 0) return { sqft: 300, flag: "Unreadable area — fell back to a 300 sqft baseline; measure on site." };
+  if (sqft < SQFT_MIN) return { sqft: SQFT_MIN, flag: `Area read implausibly small — floored at ${SQFT_MIN} sqft.` };
+  if (sqft > SQFT_MAX) return { sqft: SQFT_MAX, flag: `Area read implausibly large (>${SQFT_MAX} sqft) — capped; this looks like a multi-visit job, quote per phase.` };
+  return { sqft: Math.round(sqft) };
+}
+
+/** Condition-driven read on what a site measure could change. */
+function driversFor(surface: SurfaceKind, depth: BlastDepth, condition: string): string[] {
+  const d: string[] = [];
+  const c = condition.toLowerCase();
+  if (/oil|grease|stain/.test(c)) d.push("Oil/grease staining may need a hotter pass or a degrade step (+depth).");
+  if (/seal|coat|paint|epoxy/.test(c)) d.push("Existing coating thickness sets the real blast depth — thicker than it looks pushes toward heavy.");
+  if (/crack|spall|pit/.test(c)) d.push("Cracking/spalling means slower coverage and more media per sqft.");
+  if (surface === "exposed-aggregate") d.push("Exposed-aggregate always prices as a medium blast (company policy).");
+  if (depth === "heavy") d.push("Heavy work halves coverage vs light — labour hours, not media, drive the cost.");
+  d.push("Tight access, gates, or a long hose run adds a 15–30% access factor.");
+  d.push("A second coat or a required profile spec (CSP) changes the depth and the rate.");
+  return d;
 }
 
 /** Parse pixel dimensions from JPEG (SOF0/2) or PNG (IHDR) headers. */
@@ -90,27 +116,31 @@ function offlineEstimate(imageBase64: string | undefined, hints: VisionHints): V
   const surface = hints.surface ?? "driveway";
   const defaults = SURFACE_DEFAULT_SQFT[surface] ?? SURFACE_DEFAULT_SQFT.other;
 
-  let sqft = defaults.sqft;
+  let rawSqft = defaults.sqft;
   if (hints.approxWidthFt && hints.approxLengthFt) {
-    sqft = Math.round(hints.approxWidthFt * hints.approxLengthFt);
+    rawSqft = hints.approxWidthFt * hints.approxLengthFt;
     notes.push(`Area from caller dimensions: ${hints.approxWidthFt} × ${hints.approxLengthFt} ft.`);
   } else if (pixels) {
     // Aspect-ratio-informed nudge on the surface default.
     const aspect = pixels.width / Math.max(1, pixels.height);
-    sqft = Math.round(defaults.sqft * Math.min(1.4, Math.max(0.7, aspect / 1.33)));
+    rawSqft = defaults.sqft * Math.min(1.4, Math.max(0.7, aspect / 1.33));
     notes.push("Area nudged by image aspect ratio around the surface-type baseline.");
   } else {
     notes.push(`No dimensions available — using the ${surface} baseline.`);
   }
+  const { sqft, flag } = clampSqft(rawSqft);
+  if (flag) notes.push(flag);
 
+  const condition = hints.conditionNote ?? "assumed weathered sealer / moderate soiling";
   return {
     surface,
     sqft,
     depth: defaults.depth,
-    condition: hints.conditionNote ?? "assumed weathered sealer / moderate soiling",
+    condition,
     confidence: hints.approxWidthFt ? 0.7 : 0.45,
     source: "offline-heuristic",
     imagePixels: pixels,
+    priceDrivers: driversFor(surface, defaults.depth, condition),
     notes: [...notes, "Site measure before work is mandatory — photo quotes carry a measure-to-confirm clause."],
   };
 }
@@ -154,14 +184,19 @@ export async function estimateFromPhoto(
     const body = (await res.json()) as { content: { type: string; text?: string }[] };
     const raw = body.content.find((c) => c.type === "text")?.text ?? "";
     const json = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
+    const surface = (json.surface ?? hints.surface ?? "driveway") as SurfaceKind;
+    const depth = (json.depth ?? "medium") as BlastDepth;
+    const condition = String(json.condition ?? "unknown");
+    const { sqft, flag } = clampSqft(Number(json.sqft));
     return {
-      surface: (json.surface ?? hints.surface ?? "driveway") as SurfaceKind,
-      sqft: Math.round(Number(json.sqft) || 300),
-      depth: (json.depth ?? "medium") as BlastDepth,
-      condition: String(json.condition ?? "unknown"),
+      surface,
+      sqft,
+      depth,
+      condition,
       confidence: Math.min(1, Math.max(0, Number(json.confidence) || 0.75)),
       source: "claude-vision",
-      notes: ["Claude vision estimate.", "Site measure before work is mandatory — photo quotes carry a measure-to-confirm clause."],
+      priceDrivers: driversFor(surface, depth, condition),
+      notes: ["Claude vision estimate.", ...(flag ? [flag] : []), "Site measure before work is mandatory — photo quotes carry a measure-to-confirm clause."],
     };
   } catch {
     return offlineEstimate(imageBase64, hints);

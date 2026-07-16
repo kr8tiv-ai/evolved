@@ -212,3 +212,28 @@ export function buildPaymentAmounts(amountCad: number): {
   }
   return { amountAsset, baseUnits };
 }
+
+/**
+ * Why on-chain settlement is essential for THIS business — not a bolt-on.
+ * A blasting crew buys media and fuel before the first grain hits the
+ * driveway; the trade lives or dies on cash flow and finality.
+ */
+export function whyOnChain(amountCad: number, kind: "deposit" | "balance" | "full"): {
+  headline: string;
+  reasons: string[];
+} {
+  const okb = cadToOkb(round2(amountCad));
+  return {
+    headline: kind === "deposit"
+      ? `Programmable deposit: ${okb} test OKB clears the moment the client signs — the crew mobilizes funded, not on faith.`
+      : kind === "balance"
+        ? `Balance on completion: ${okb} test OKB, final and irreversible the second it confirms.`
+        : `Full settlement: ${okb} test OKB, verified on-chain before the job is marked paid.`,
+    reasons: [
+      "INSTANT: settles in seconds, not a 3-day e-transfer hold or a 30-day net invoice — the deposit funds the abrasive and fuel today.",
+      "FINAL: no chargebacks. A card payment can reverse weeks later, after the media is already blasted onto someone's concrete and the cost is sunk. On-chain, paid is paid.",
+      "PROGRAMMABLE: the deposit is 25% of the GST-inclusive total, enforced in code and encoded in the EIP-681 request — not a number a human has to remember to collect.",
+      "SELF-VERIFYING: the agent confirms the money landed itself via read-only RPC, so it can book the crew without waiting on a person to check the bank. Evolved never holds keys — funds move only from the payer's wallet.",
+    ],
+  };
+}

@@ -42,9 +42,9 @@ prompted.
 
 - **Name:** Evolved
 - **Service type:** A2MCP (Agent-to-MCP)
-- **Free endpoint:** `https://evolvedmcp.cloud/mcp`
-- **Paid endpoint (x402):** `https://evolvedmcp.cloud/mcp-paid`
-- **Health / metadata:** `https://evolvedmcp.cloud/health`
+- **Free endpoint:** `https://www.evolvedmcp.cloud/mcp`
+- **Paid endpoint (x402):** `https://www.evolvedmcp.cloud/mcp-paid`
+- **Health / metadata:** `https://www.evolvedmcp.cloud/health`
 - **Pricing:** free tier returns results directly; paid tier is x402
   pay-per-call (scheme `exact`, network `eip155:1952`, X Layer testnet)
 - **Category:** Software Utility (also Finance Copilot)
