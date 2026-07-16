@@ -162,15 +162,23 @@ export async function handleRequest(
   // Self-hosted brand media (the real Evolve site's optimized assets) — the
   // playground's hero video and card imagery, served same-origin so the CSP
   // stays closed to external hosts.
-  if ((url.pathname.startsWith("/media/") || url.pathname === "/og.png") && (req.method === "GET" || req.method === "HEAD")) {
+  // Friendly root aliases (favicons, share card, manifest) that must live at
+  // the site root, all served from media/.
+  const ROOT_ALIAS = new Set([
+    "/og.png", "/favicon.ico", "/icon-16.png", "/icon-32.png", "/icon-192.png",
+    "/icon-512.png", "/apple-touch-icon.png", "/site.webmanifest",
+  ]);
+  if ((url.pathname.startsWith("/media/") || ROOT_ALIAS.has(url.pathname)) && (req.method === "GET" || req.method === "HEAD")) {
     const MEDIA_TYPES: Record<string, string> = {
       "hero.webm": "video/webm", "hero-poster.webp": "image/webp",
       "decks.webp": "image/webp", "cornerlog.webp": "image/webp",
       "motors.webp": "image/webp", "industrial.webp": "image/webp",
       "og.png": "image/png",
+      "favicon.ico": "image/x-icon", "icon-16.png": "image/png", "icon-32.png": "image/png",
+      "icon-192.png": "image/png", "icon-512.png": "image/png",
+      "apple-touch-icon.png": "image/png", "site.webmanifest": "application/manifest+json",
     };
-    // /og.png is a friendly alias for the link-preview card in media/.
-    const name = url.pathname === "/og.png" ? "og.png" : url.pathname.slice("/media/".length);
+    const name = ROOT_ALIAS.has(url.pathname) ? url.pathname.slice(1) : url.pathname.slice("/media/".length);
     const type = MEDIA_TYPES[name];
     const { existsSync, statSync, createReadStream } = await import("node:fs");
     const { join } = await import("node:path");
@@ -187,6 +195,67 @@ export async function handleRequest(
     });
     if (req.method === "HEAD") { res.end(); return; }
     createReadStream(file).pipe(res);
+    return;
+  }
+
+  // SEO + AI-SEO: robots (search + AI crawlers welcome), sitemap, and an
+  // llms.txt manifest so LLM crawlers get a clean, accurate description.
+  if (url.pathname === "/robots.txt" && (req.method === "GET" || req.method === "HEAD")) {
+    const aiBots = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-Web",
+      "anthropic-ai", "PerplexityBot", "Google-Extended", "Applebot-Extended", "CCBot", "Bytespider"];
+    const body = [
+      "# Evolved — https://www.evolvedmcp.cloud (open source, MIT)",
+      "User-agent: *", "Allow: /", "",
+      "# AI crawlers are welcome — this is an open reference Agentic Service Provider.",
+      ...aiBots.flatMap((b) => [`User-agent: ${b}`, "Allow: /"]), "",
+      "Sitemap: https://www.evolvedmcp.cloud/sitemap.xml", "",
+    ].join("\n");
+    res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=86400" });
+    res.end(req.method === "HEAD" ? undefined : body);
+    return;
+  }
+
+  if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD")) {
+    const base = "https://www.evolvedmcp.cloud";
+    const pages: Array<[string, string]> = [[`${base}/`, "1.0"], [`${base}/playground`, "0.7"]];
+    const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
+      + pages.map(([loc, pr]) => `  <url><loc>${loc}</loc><changefreq>weekly</changefreq><priority>${pr}</priority></url>`).join("\n")
+      + `\n</urlset>\n`;
+    res.writeHead(200, { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=86400" });
+    res.end(req.method === "HEAD" ? undefined : body);
+    return;
+  }
+
+  if (url.pathname === "/llms.txt" && (req.method === "GET" || req.method === "HEAD")) {
+    const body = [
+      "# Evolved",
+      "",
+      "> Evolved is a business-in-a-box for the agent economy: a real Alberta service company's operations brain, published as an open-source MCP (Model Context Protocol) Agentic Service Provider. One agent runs a service business end to end — photo-to-quote, e-sign, weather-gated scheduling, FLHA safety, receipts-to-books, invoicing, and on-chain settlement — and any trade can spin up its own copy in one call.",
+      "",
+      "Evolved is live and free to try. It exposes 83 tools across 16 domains over MCP, monetizes itself per-call via the x402 payment protocol, and settles invoices in OKB on the OKX X Layer testnet (chainId 1952). It never holds keys and cannot move funds; humans approve only the two money gates. Demo data is synthetic; the math and the trade are real.",
+      "",
+      "## Links",
+      "- [Live playground (zero install)](https://www.evolvedmcp.cloud/)",
+      "- [Free MCP endpoint (Streamable HTTP)](https://www.evolvedmcp.cloud/mcp)",
+      "- [Paid MCP endpoint (x402: 402 → proof → receipt)](https://www.evolvedmcp.cloud/mcp-paid)",
+      "- [Health / status JSON](https://www.evolvedmcp.cloud/health)",
+      "- [Revenue scoreboard JSON](https://www.evolvedmcp.cloud/stats)",
+      "- [Source (MIT)](https://github.com/kr8tiv-ai/evolved)",
+      "- [90-second film](https://www.evolvedmcp.cloud/demo.mp4)",
+      "",
+      "## What it does",
+      "- Learning quote engine: prices a photo as a confidence-banded range grounded in comparable jobs already in the books, with a profitability check on every price.",
+      "- Autonomous lifecycle: lead → priced quote → e-sign → weather-gated booking → FLHA safety → work + receipts → invoice → on-chain settlement → review, holding at two human money gates.",
+      "- On-chain: EIP-681 payment requests verified by read-only RPC on X Layer testnet, replay-protected; plus an x402 pay-per-call tier so other agents pay Evolved per call.",
+      "- Back office: tiered-OCR receipts, inventory burn-down, dispatch, CRM, a live Google Sheets workbook spine (20 tabs), a CFO forecaster, and a Job P&L scorecard.",
+      "- Adaptable: franchise_spinup installs a trade pack (pressure-washing, line-painting, mobile-detailing ship today) to re-seed the whole operating system for any service business.",
+      "",
+      "## Built by",
+      "Matt Haynes (KR8TIV AI), from the live operations system of Evolve Eco Blasting — a real Alberta abrasive-blasting company. Built for the OKX AI Genesis Hackathon, 2026.",
+      "",
+    ].join("\n");
+    res.writeHead(200, { "content-type": "text/markdown; charset=utf-8", "cache-control": "public, max-age=86400" });
+    res.end(req.method === "HEAD" ? undefined : body);
     return;
   }
 

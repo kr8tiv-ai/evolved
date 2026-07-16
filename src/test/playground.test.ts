@@ -40,9 +40,33 @@ test("playground: page serves on / and /playground, health lists it", async () =
       assert.match(html, /property="og:url" content="https:\/\/www\.evolvedmcp\.cloud\//);
       assert.match(html, /name="twitter:card" content="summary_large_image"/);
       assert.match(html, /name="twitter:image" content="https:\/\/www\.evolvedmcp\.cloud\/og\.png"/);
+      // Favicon + SEO + AI-SEO discoverability in the head.
+      assert.match(html, /rel="icon"[^>]*href="\/icon-32\.png"/);
+      assert.match(html, /rel="manifest" href="\/site\.webmanifest"/);
+      assert.match(html, /name="robots"/);
+      assert.match(html, /application\/ld\+json/);
+      assert.match(html, /"@type":"SoftwareApplication"/);
     }
     const h = (await (await fetch(base + "/health")).json()) as { endpoints: Record<string, string> };
     assert.ok(h.endpoints["/"]);
+
+    // SEO + AI-SEO routes + favicon assets resolve.
+    const robots = await fetch(base + "/robots.txt");
+    assert.equal(robots.status, 200);
+    assert.match(await robots.text(), /Sitemap:.*sitemap\.xml/);
+    const sitemap = await fetch(base + "/sitemap.xml");
+    assert.equal(sitemap.status, 200);
+    assert.match(sitemap.headers.get("content-type") ?? "", /xml/);
+    assert.match(await sitemap.text(), /evolvedmcp\.cloud/);
+    const llms = await fetch(base + "/llms.txt");
+    assert.equal(llms.status, 200);
+    assert.match(await llms.text(), /Model Context Protocol/);
+    const fav = await fetch(base + "/favicon.ico");
+    assert.equal(fav.status, 200);
+    assert.match(fav.headers.get("content-type") ?? "", /icon/);
+    const man = await fetch(base + "/site.webmanifest");
+    assert.equal(man.status, 200);
+    assert.match(man.headers.get("content-type") ?? "", /manifest\+json/);
 
     // Security headers ride on every response.
     const r = await fetch(base + "/");

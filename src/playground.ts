@@ -18,8 +18,19 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <meta name="description" content="A real company's operations brain as an autonomous MCP agent — run it live: voice, photo-to-quote, the full lifecycle with human money gates, and x402 on-chain payments on X Layer testnet.">
 <link rel="canonical" href="https://www.evolvedmcp.cloud/">
 <meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Matt Haynes · KR8TIV AI">
+<meta name="application-name" content="Evolved">
+<meta name="keywords" content="MCP, Model Context Protocol, Agentic Service Provider, ASP, x402, OKX X Layer, on-chain payments, AI agent, business automation, service business software, autonomous agent, OKB, EIP-681, franchise, quoting, invoicing">
+<!-- Favicon / browser tab + home-screen icons -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Evolved">
 <meta property="og:title" content="Evolved — business-in-a-box, run by an AI, paid on-chain">
 <meta property="og:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 83 tools across 16 domains — quoting that learns, receipts to books, FLHA safety, dispatch, invoicing, and x402 + on-chain settlement on OKX X Layer. Any service business, spun up in one call. Try it live, zero install.">
@@ -38,6 +49,8 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <meta name="twitter:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 83 tools, x402 + on-chain settlement on OKX X Layer testnet. Any service business, one call. Try it live.">
 <meta name="twitter:image" content="https://www.evolvedmcp.cloud/og.png">
 <meta name="twitter:image:alt" content="EVOLVED — business-in-a-box, run by an AI, paid on-chain">
+<!-- Structured data for search + AI understanding -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Evolved","applicationCategory":"BusinessApplication","operatingSystem":"Any (Model Context Protocol client)","description":"A real service company's operations brain as an open-source MCP Agentic Service Provider — 83 tools across 16 domains, an x402 pay-per-call tier, and on-chain invoice settlement on OKX X Layer testnet. Any service business spins up its own copy in one call.","url":"https://www.evolvedmcp.cloud/","image":"https://www.evolvedmcp.cloud/og.png","softwareVersion":"3.0.0","license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"sameAs":["https://github.com/kr8tiv-ai/evolved","https://x.com/aurora_ventures"],"author":{"@type":"Organization","name":"KR8TIV AI","url":"https://www.kr8tiv.io"},"keywords":"MCP, Agentic Service Provider, x402, OKX X Layer, on-chain payments, AI agent, business automation"},{"@type":"WebSite","name":"Evolved","url":"https://www.evolvedmcp.cloud/","publisher":{"@type":"Person","name":"Matt Haynes","url":"https://www.linkedin.com/in/matthaynes88"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
