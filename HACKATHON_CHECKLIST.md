@@ -8,6 +8,12 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 ---
 
+## 0. ELEVATION PASS (2026-07-16 — DONE ✅)
+- [x] **Pitch:** one-liner "Most AI talks about business. Evolved runs one." in README hero + playground hero + HackQuest Intro; a trade-specific "Why on-chain matters here" section (instant/final/programmable/self-verifying).
+- [x] **Depth (no new tools → stays 83; assertions added → stays 41 tests):** photo-quote returns a confidence-banded price range + comparable-jobs grounding + market benchmark + site price-drivers, absurd dims clamped; `invoice_payment_request` gains a programmable deposit split (25% enforced) + a `whyOnChain` cash-flow block; lifecycle money gate is margin-aware. Playground surfaces all of it.
+- [x] **Accuracy:** standardized **www.evolvedmcp.cloud** across code/docs/submission/cards + HackQuest; 4-agent audit workflow returned ZERO findings. Live www re-verified (v3.0.0, 83 tools, depth in outputs, one-liner + why-on-chain cards).
+- [x] **Video:** re-rendered 90.0s with www baked in; deployed both domains; HackQuest link → https://www.evolvedmcp.cloud/demo.mp4?v=7.
+
 ## A. Product / code (DONE ✅)
 - [x] MCP server, 83 tools / 16 domains, stdio + Streamable HTTP (`/mcp` free, `/mcp-paid` x402)
 - [x] x402 pay-per-call (402 challenge, scheme `exact`, `eip155:1952`) — live, verified
@@ -51,13 +57,14 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Scenes: title → premise (83/16/41) → trade packs → intake → lifecycle → on-site JHA → workbook spine → x402 → end card
 - [x] Committed to repo + deployed to both domains
 
-## F. HackQuest submission (NEARLY DONE)
-- [x] Project filled: intro, description (83/16/41 + workbook/field/growth), Sector AI, tech tags, deployment details, progress, fundraising
-- [x] 4 gallery images + square logo tile uploaded; entry standard met (score 90)
-- [x] Submit form pre-filled: prize tracks ×4, ASP name, ASP description (299/300), X handle @aurora_ventures, Telegram @matthaynes88
-- [x] **Video link → https://www.evolvedmcp.cloud/demo.mp4?v=5** — DONE, persisted (90s cut)
-- [ ] Public profile enriched (bio/location/GitHub/X) — score 86, keep
-- [ ] **Final Submit** — needs Agent ID + X post link (Matt), then click Submit
+## F. HackQuest submission (SAVED — Matt does final Submit)
+- [x] Project SAVED & accurate: Intro = the one-liner (190 chars); Description 3661 chars (83/16/41 + workbook/field/growth + NEW depth: confidence-banded photo-quote + programmable deposits), 0 apex URLs / all www; Sector AI; tech tags Node/Web3/TypeScript/MCP/x402; Deployment Details all www (mcp/mcp-paid/playground/stats + explorer + repo); Progress + Fundraising; wallet 0x0c53…5f39 attached (Matt)
+- [x] MVP Link https://www.evolvedmcp.cloud/ · Project Link github.com/kr8tiv-ai/evolved · X aurora_ventures
+- [x] 4 gallery images + square logo tile (5 CDN images); entry standard met (score 90)
+- [x] **Demo video link → https://www.evolvedmcp.cloud/demo.mp4?v=7** (final www 90s cut) — persisted
+- [x] Interactive demo = live playground Judge Mode at www.evolvedmcp.cloud (MVP link)
+- [x] Public profile complete: Matt Haynes · founder bio · Edmonton · skills · GitHub @Matt-Aurora-Ventures (2791 commits) · X/LinkedIn/Telegram/WeChat linked. (Avatar photo + gamified "500 coins" score need Matt — cosmetic, quizzes not faked.)
+- [ ] Submit form (separate flow): ASP Name/Description/tracks/X ready, but needs **Agent ID** (OKX listing, parallel session) + **X post link** → then Matt clicks Submit
 
 ## G. OKX ASP listing (OWNED BY A PARALLEL SESSION — not in this queue)
 - [~] Register + list A2MCP ASP via Onchain OS (wallet email OTP + on-chain ERC-8004 registration) → **Agent ID**
