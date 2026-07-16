@@ -8,6 +8,14 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 ---
 
+## 0. FINAL POLISH — INLINE VIDEO (BOTH) + HARD AUDIT (2026-07-16 — DONE ✅)
+- [x] **README TRUE INLINE PLAYER (verified live):** `github.com/user-attachments/assets/ca858ecb-…` embedded at the top of the README; rendered README shows a native `<video controls>` (src = signed `private-user-images.githubusercontent.com/…mp4`). Uploaded in-page (fetch committed file → `File` → `file-attachment.attach()` → captured URL from the upload-policy response) — no click-through.
+- [x] **Website LIVING INLINE PLAYER (deployed both domains):** film section is now a muted-autoplay loop that plays in-view (paused off-screen) with a "Watch with sound" pill (unmute + restart + native controls) and a pulsing "PLAYING · MUTED" badge; mobile falls back to poster + "Tap to play" (no heavy autoplay). Verified: muted/loop set, sound affordance flips muted→false + adds controls, `/demo.mp4` 206 video/mp4. Never a click-through.
+- [x] **AUDIT — endpoints:** `/health` 200 (tools=83, v3.0.0, lists /mcp + /mcp-paid) · `/mcp` free 200 (MCP init) · `/mcp-paid` **402** (scheme `exact`, network `eip155:1952`, PAYMENT-REQUIRED header) → with proof **200 + X-PAYMENT-RESPONSE receipt** (`settled:true, mode:simulated`) · `/stats` 200 JSON. **PASS.**
+- [x] **AUDIT — Judge Mode:** autopilot runs against the live endpoint — 11 live `/demo/call` requests, overlay + act text advancing. **PASS.**
+- [x] **AUDIT — mobile:** at a real 375px viewport `docScrollWidth == clientWidth`, `overflowX false`, `canScrollX false`; new film section within viewport. **Zero horizontal overflow. PASS.**
+- [x] **AUDIT — consistency (15-agent verify workflow):** numbers uniform 83/16/41/v3.0.0 everywhere (README tool table totals exactly 83 across 16 rows); no stale 27/65/67/84 or 30/34/35/36; links resolve; live README carries the inline video. **ONE** low/cosmetic finding (README demo-link display text was bare-apex) → fixed to `www.evolvedmcp.cloud/demo.mp4`. Commits e5e36bd…4784475.
+
 ## 0a. TEAM INTRO + VIDEO-EMBED PASS (2026-07-16 — DONE ✅)
 - [x] **HackQuest Team Intro filled + SAVED (live):** "A real Alberta service company, not a lab. Matt Haynes (KR8TIV AI) builds the AI; Todd runs the blasting crew Evolved is modeled on. Operator + builder, shipping open source in public." (184/200). Public project page now scores **100 / Info Complete** (was 90). Member card = Matt Haynes, Edmonton, founder bio, TS/React/Next.
 - [x] **README founder section** — new "Who built this": Matt Haynes (KR8TIV AI, Ops+Marketing @ Evolve) + Todd, verified LinkedIn (matthaynes88) + GitHub (Matt-Aurora-Ventures) links, open-source "leave the gate open" ethos, robotics/manufacturing roadmap. Pushed + verified rendering on GitHub.
