@@ -42,6 +42,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 ## D. Playground / design (DONE ✅, polish optional)
 - [x] Cinematic hero with real Evolve jobsite footage, WebGL mouse-reactive aurora, squared UI, reveals, marquee, Judge Mode
 - [x] Interactive cards hit the live service (voice, photo-quote, lifecycle, x402, workbook, scorecard, pack preview)
+- [x] **Mobile: no horizontal drag** — page locked to viewport (html/body overflow-x hidden + max-width 100%, structural blocks capped, oversized ghost words hidden <680px + drift JS gated). Verified live at 390px: docScrollWidth==clientWidth, canPageScrollX false, forced horizontal drag snaps back to 0, zero overflow across all sections (hero/Judge Mode/on-chain/tools/footer).
 - [ ] Optional polish: branded preloader + counter, SCROLL cue (apparel-site cues) — nice-to-have
 
 ## E. Demo video (DONE ✅)
