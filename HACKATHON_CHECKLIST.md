@@ -8,6 +8,11 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 ---
 
+## 0b. FILM + SUBMIT-FORM PASS (2026-07-16 — DONE ✅)
+- [x] **On-site video** — cinematic film section on the playground (poster/og.png + 84px play button, lazy-load, 16:9 glow frame, reveal); verified play interaction (poster fades, video → readyState 4). Live on both domains.
+- [x] **GitHub video** — README shows a clickable poster (assets/og.png) → hosted film; file committed at submission/evolved-demo.mp4.
+- [x] **Submit form FILLED (staged at Submit — NOT clicked, per standing instruction):** project=Evolved - Business in a box MCP; tracks=Best Product+Revenue Rocket+Software Utility+Finance Copilot; ASP Name=Evolved; **Agent ID=6043**; ASP Description 298/300; X=@aurora_ventures; **X post=https://x.com/aurora_ventures/status/2077606191715475557**; Telegram=@matthaynes88. Tab left open at Submit. NO draft-save — Matt reviews + clicks Submit in the open tab.
+
 ## 0. ELEVATION PASS (2026-07-16 — DONE ✅)
 - [x] **Pitch:** one-liner "Most AI talks about business. Evolved runs one." in README hero + playground hero + HackQuest Intro; a trade-specific "Why on-chain matters here" section (instant/final/programmable/self-verifying).
 - [x] **Depth (no new tools → stays 83; assertions added → stays 41 tests):** photo-quote returns a confidence-banded price range + comparable-jobs grounding + market benchmark + site price-drivers, absurd dims clamped; `invoice_payment_request` gains a programmable deposit split (25% enforced) + a `whyOnChain` cash-flow block; lifecycle money gate is margin-aware. Playground surfaces all of it.
