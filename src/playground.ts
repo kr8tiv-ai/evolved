@@ -152,6 +152,33 @@ export const PLAYGROUND_HTML = `<!doctype html>
   .ticker span::after { content:"✦"; color:rgba(74,222,128,.6); font-size:.6em; margin-left:68px; vertical-align:middle; }
   @keyframes tick { from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
 
+  /* the film — a cinematic video showcase */
+  .film { max-width:1120px; margin:0 auto; padding:72px 26px 8px; }
+  .film .kicker { display:flex; align-items:center; gap:12px; color:var(--aurora);
+                  font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; margin-bottom:14px; }
+  .film .kicker::before { content:""; height:1px; width:34px; background:rgba(74,222,128,.5); }
+  .film h2 { font-weight:900; font-size:clamp(28px,4.4vw,52px); line-height:1; text-transform:uppercase; color:#fbfdfb; letter-spacing:-.02em; margin-bottom:10px; }
+  .film h2 .glow { color:var(--lime); text-shadow:0 0 26px rgba(57,255,20,.6); }
+  .film p.sp { color:var(--dim); font-size:15px; max-width:640px; margin-bottom:26px; line-height:1.55; }
+  .filmframe { position:relative; border-radius:14px; overflow:hidden; border:1px solid rgba(74,222,128,.28);
+               box-shadow:0 30px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(74,222,128,.08), 0 0 60px rgba(57,255,20,.06);
+               background:#050605; aspect-ratio:16/9; }
+  .filmframe::after { content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
+                      box-shadow:inset 0 0 120px rgba(0,0,0,.45); border-radius:14px; }
+  .filmframe video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; background:#050605; z-index:1; }
+  .filmframe .poster { position:absolute; inset:0; z-index:2; cursor:pointer; border:0; padding:0; background:transparent;
+                       display:flex; align-items:center; justify-content:center; transition:opacity .4s; }
+  .filmframe .poster img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .filmframe .poster .play { position:relative; z-index:2; width:84px; height:84px; border-radius:50%;
+                       background:rgba(57,255,20,.92); color:#000; display:flex; align-items:center; justify-content:center;
+                       box-shadow:0 0 44px rgba(57,255,20,.5); transition:transform .2s, box-shadow .2s; }
+  .filmframe .poster:hover .play { transform:scale(1.08); box-shadow:0 0 60px rgba(57,255,20,.75); }
+  .filmframe .poster .play svg { width:32px; height:32px; margin-left:5px; }
+  .filmframe .poster.gone { opacity:0; pointer-events:none; }
+  .film .cap { margin-top:14px; display:flex; gap:18px; flex-wrap:wrap; font-family:"JetBrains Mono",monospace;
+               font-size:11px; letter-spacing:.1em; color:var(--dim2); text-transform:uppercase; }
+  .film .cap b { color:var(--aurora); }
+
   /* section headers */
   .section { max-width:1180px; margin:0 auto; padding:64px 26px 0; }
   .section-head { margin-bottom:26px; }
@@ -346,6 +373,22 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </section>
 
 <div class="tickerwrap"><div class="ticker" id="ticker"><span>booting the books…</span></div></div>
+
+<div class="film rv" id="film">
+  <div class="kicker">The 90-second film</div>
+  <h2>See the whole thing <span class="glow">run.</span></h2>
+  <p class="sp">One agent takes a service business from a texted photo to a paid, on-chain invoice — every figure captured live from this endpoint. Then try it yourself below.</p>
+  <div class="filmframe">
+    <video id="filmvid" preload="none" playsinline controls poster="/media/hero-poster.webp">
+      <source src="/demo.mp4?v=7" type="video/mp4">
+    </video>
+    <button class="poster" id="filmposter" onclick="playFilm()" aria-label="Play the 90-second film">
+      <img src="/og.png" alt="Evolved — the 90-second film">
+      <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+    </button>
+  </div>
+  <div class="cap"><span>1080p · 90s</span><span>real captured payloads</span><span>photo-quote → lifecycle → on-site JHA → workbook → <b>x402 + on-chain</b></span></div>
+</div>
 
 <div class="section" id="run">
   <div class="section-head rv">
@@ -987,6 +1030,15 @@ function initAurora(){
   requestAnimationFrame(loop);
 }
 
+/* ---------- the film: poster → play ---------- */
+function playFilm(){
+  var v = $("filmvid"), p = $("filmposter");
+  if (!v) return;
+  v.setAttribute("preload","auto");
+  p.classList.add("gone");
+  try { v.play(); } catch(e){}
+}
+
 /* ---------- nav solidify + hero parallax on scroll ---------- */
 function initNav(){
   var nav=document.getElementById("nav");
@@ -1006,7 +1058,7 @@ function initNav(){
 
 /* ---------- reveal on scroll (auto-tags cards; alternating directions) ---------- */
 function initReveal(){
-  var els=document.querySelectorAll(".card, .section-head, .trade");
+  var els=document.querySelectorAll(".card, .section-head, .trade, .film");
   var k=0;
   els.forEach(function(el){
     if(!el.classList.contains("rv")) el.classList.add("rv");
