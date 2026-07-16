@@ -29,7 +29,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 ## C. Repo presentation (IN PROGRESS)
 - [x] README: hero, badges, 60-sec judge tour, why-this-wins, lifecycle mermaid, 83-tool table, scaffolding, tests
 - [x] docs/ up to date (TOOLS.md autogen 83, ARCHITECTURE workbook section, ADAPT, OKX-LISTING, DEPLOY, DEMO, GALLERY)
-- [ ] **GitHub hero / social-preview image** — clean premium composite from real Evolve aurora/scene backgrounds (backgrounds ONLY, no equipment). Fold into README hero + `assets/social-preview.png`. _(in progress)_
+- [x] **GitHub hero / social-preview image** — DONE: premium composite from the real Evolve aurora boreal-treeline scene (backgrounds only, no equipment), chrome wordmark + keynote scrim; feeds README hero + `assets/social-preview.png` (`scripts/make-hero-photo.py`)
 - [ ] GitHub repo **Settings → Social preview** upload (Matt — no API; `assets/social-preview.png` ready)
 - [ ] CI workflow: `gh auth refresh -s workflow` then move `ci/github-actions-ci.yml` → `.github/workflows/` (Matt)
 
@@ -48,7 +48,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Project filled: intro, description (83/16/41 + workbook/field/growth), Sector AI, tech tags, deployment details, progress, fundraising
 - [x] 4 gallery images + square logo tile uploaded; entry standard met (score 90)
 - [x] Submit form pre-filled: prize tracks ×4, ASP name, ASP description (299/300), X handle @aurora_ventures, Telegram @matthaynes88
-- [ ] **Video link → https://evolvedmcp.cloud/demo.mp4?v=5** (was classifier-blocked; retry) 
+- [x] **Video link → https://evolvedmcp.cloud/demo.mp4?v=5** — DONE, persisted (90s cut)
 - [ ] Public profile enriched (bio/location/GitHub/X) — score 86, keep
 - [ ] **Final Submit** — needs Agent ID + X post link (Matt), then click Submit
 
