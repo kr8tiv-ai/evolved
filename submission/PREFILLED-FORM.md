@@ -14,7 +14,7 @@ takes ~24h and a live listing is an eligibility requirement, so treat
 
 | Field | Where the value comes from |
 |---|---|
-| **Agent ID** | From the Onchain OS listing flow (docs/OKX-LISTING.md): install the skill, log in to Agentic Wallet with your email, register the A2MCP ASP, list it. The Agent ID is issued at registration and works even while review is pending. |
+| **Agent ID** | **6043** — DONE July 15, 2026. Registered on OKX.AI / X Layer (chainIndex 196), tx 0x2236b9aaf6ec57aa211c9eec284bcd6a824924de11a55e67fab5167691a448be. Listing under review ("AI quality review suggested pass"); works even while review is pending. Wallet: lucidbloks@gmail.com / 0x8bb476c02b5a3547624882c005e9433747efb294. |
 | **X Account Handle** | Your X handle (e.g. @…). |
 | **X Participation Post (Link)** | Post the draft in submission/x-post-draft.md WITH the <=90s video (cut plan in docs/DEMO.md) and #OKXAI — AFTER the listing is registered. Paste the post URL here. |
 | **Telegram Handle** | Your Telegram @handle (OKX uses it for winner contact). |

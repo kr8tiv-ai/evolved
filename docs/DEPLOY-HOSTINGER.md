@@ -21,15 +21,26 @@ TLS handled by the platform, zero secrets.
 
 ## Redeploying (after code changes)
 
-One command from the repo root (zip source only — no `node_modules`, no `dist`):
+Build the archive from the **committed tree** so nothing the app serves at
+runtime is left out. Beyond the obvious source, the app streams `media/`
+(the hero `hero.webm` + poster, the trade-tile `*.webp` images, and the
+`og.png` link-preview card) and `submission/evolved-demo.mp4` (served at
+`/demo.mp4`) — a hand-picked file list drops these and silently breaks the
+hero video and the demo player. `git archive` avoids that:
 
 ```powershell
-Compress-Archive -Force -Path package.json, package-lock.json, tsconfig.json, server.cjs, src -DestinationPath evolved-src.zip
+git archive HEAD -o evolved-src.zip
 ```
+
+`git archive` emits only tracked files, so `node_modules/` and `dist/` (both
+git-ignored) are excluded automatically and the platform rebuilds them; the
+media and demo assets are tracked, so they ride along.
 
 Then upload via the Hostinger API's JS-deployment endpoint (or hPanel →
 Websites → the subdomain site → Node.js deploy). The platform runs
-`npm ci`, `npm run build`, and restarts the app. Verify with:
+`npm ci`, `npm run build`, and restarts the app. **Deploy to both live sites
+separately** — `evolvedmcp.cloud` and the `powderblue-…hostingersite.com`
+fallback. Verify with:
 
 ```bash
 curl https://evolvedmcp.cloud/health

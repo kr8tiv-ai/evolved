@@ -24,7 +24,7 @@ Evolved packages the live operating system of Evolve Eco Blasting (an abrasive-b
 
 **Service / endpoint URL:** https://evolvedmcp.cloud/mcp (LIVE — health check at /health)
 
-**Agent ID:** ← fill after Onchain OS registration
+**Agent ID:** 6043 (registered on OKX.AI / X Layer, chainIndex 196, tx 0x2236b9aaf6ec57aa211c9eec284bcd6a824924de11a55e67fab5167691a448be; listing submitted for review July 15, 2026 — "AI quality review suggested pass"; reachable via Agent ID while pending)
 
 **Repository:** https://github.com/kr8tiv-ai/evolved
 
