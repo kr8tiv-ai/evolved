@@ -462,6 +462,42 @@ test("franchise: an inline customPack adapts to a brand-new trade in one call (n
   await server.close();
 });
 
+test("genericization: adapted trade gets its own tax label, no blasting boilerplate, and flat pricing", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // A US mobile service: 8% Sales Tax, priced per hour, its own policy note.
+  await call("franchise_spinup", {
+    companyName: "Cascade Mobile Services", tradePack: "pressure-washing",
+    unit: "hour", currency: "USD", gstRate: 0.08, taxLabel: "Sales Tax",
+    industryNotes: ["A 24-hour cancellation notice is required."], confirm: true,
+  });
+  const q = await call("quote_price", { quantity: 5, depth: "medium" });
+  const notes = q.policyNotes.join(" | ");
+  assert.match(notes, /8% Sales Tax/, "uses the configured tax label + rate");
+  assert.match(notes, /24-hour cancellation/, "uses the trade's own policy note");
+  assert.doesNotMatch(notes, /concrete|abrasive|blast/i, "no blasting boilerplate leaks into an adapted trade");
+  assert.equal(q.unit, "hour");
+
+  // Flat pricing kind: a fixed fee, no quantity × rate.
+  const flat = await call("quote_price", { flatPrice: 300 });
+  assert.equal(flat.subtotal, 300);
+  assert.match(flat.rateSource, /flat/i);
+  assert.equal(flat.gst, 24); // 8% of 300
+
+  // demo_reset restores the blasting profile (GST + concrete note).
+  await call("demo_reset");
+  const back = await call("quote_price", { sqft: 500, depth: "medium" });
+  const backNotes = back.policyNotes.join(" | ");
+  assert.match(backNotes, /GST/);
+  assert.match(backNotes, /concrete/i);
+
+  await client.close();
+  await server.close();
+});
+
 test("pricing unit: an adapted trade quotes in its OWN unit, not sqft (de-blasted)", async () => {
   resetDb();
   const { server, client } = await connect();

@@ -373,7 +373,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div class="hero-inner" id="heroInner">
   <div class="eyebrow-h">BUSINESS MANAGEMENT IN A BOX · MODEL CONTEXT PROTOCOL</div>
   <h1 class="htitle">Run the whole<br>business with<br><span class="glow">one agent.</span></h1>
-  <p class="hlead"><b style="color:#e8ebe8">Most AI talks about business. Evolved runs one</b> — end to end: quotes that price themselves, safety, receipts, dispatch, invoicing, and on-chain settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>.</p>
+  <p class="hlead"><b style="color:#e8ebe8">Most AI talks about business. Evolved runs one</b> — end to end: quotes that price themselves, safety, receipts, dispatch, invoicing, and on-chain settlement. It runs a real Alberta company today, and spins up for <b style="color:#e8ebe8">any trade in one call</b>. <b style="color:#39ff14">Free, open source (MIT)</b> — no paywall on real functionality.</p>
   <div class="hcta">
     <a class="btn-pill" href="#run" onclick="setTimeout(judgeMode,450)">▶ Watch it run itself</a>
     <a class="btn-pill outline" href="#adapt">Make it your business</a>
@@ -382,7 +382,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <div class="s"><b class="lime" id="h-tools">83</b><span>MCP tools · 16 domains</span></div>
     <div class="s"><b>2</b><span>OKX rails · x402 + X Layer</span></div>
     <div class="s"><b>2</b><span>human gates · both money</span></div>
-    <div class="s"><b id="h-tests">41</b><span>tests · live testnet probe</span></div>
+    <div class="s"><b id="h-tests">47</b><span>tests · live testnet probe</span></div>
   </div>
   <div class="chips" id="chips">
     <span class="chip">service <b id="c-status">checking…</b></span>
@@ -481,9 +481,9 @@ export const PLAYGROUND_HTML = `<!doctype html>
 </div>
 
 <div class="card">
-  <div class="eyebrow">the asp earns too</div>
-  <h2>🧾 x402 — pay-per-call, live</h2>
-  <p class="hint">Watch the raw protocol: no payment → HTTP 402 with an <span class="mono">accepts</span> envelope; present proof → the service answers with a settlement receipt header, and the /stats scoreboard ticks.</p>
+  <div class="eyebrow">a built-in rail — opt-in</div>
+  <h2>🧾 x402 — the on-chain billing rail, live</h2>
+  <p class="hint">A rail any adopter can switch on for their own deployment — off by default, never gating the free system. Watch the raw protocol: no payment → HTTP 402 with an <span class="mono">accepts</span> envelope; present proof → the service answers with a settlement receipt header, and the /stats scoreboard ticks.</p>
   <div><button onclick="x402()">Run the 402 → pay → 200 flow</button></div>
   <div class="out" id="x-out"></div>
 </div>

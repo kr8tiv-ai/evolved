@@ -210,12 +210,21 @@ export interface PriceQuoteInput {
   surface?: SurfaceKind;
   access?: keyof typeof ACCESS_FACTORS;
   mobilization?: boolean;
+  /** Flat pricing kind: a fixed subtotal, no quantity × rate. For flat-fee
+   *  trades (a bench, a call-out). Overrides the rate math when set. */
+  flatPrice?: number;
 }
 
 /** What this business prices per — "sqft" unless a trade pack set otherwise. */
 export function pricingUnit(db: Database): string {
   const u = db.meta?.pricingUnit;
   return typeof u === "string" && u.trim() ? u.trim() : "sqft";
+}
+
+/** Sales-tax label — "GST" by default; a trade/region can set VAT, Sales Tax, etc. */
+export function taxLabel(db: Database): string {
+  const t = db.meta?.taxLabel;
+  return typeof t === "string" && t.trim() ? t.trim() : "GST";
 }
 
 /** Comparable closed/quoted work for the same surface+depth — grounds an estimate in real history. */
@@ -292,14 +301,16 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
 
   const eff = effectiveRate(db, depth, input.surface);
   const { rate, source } = eff;
-  const subtotal = round2(qty * rate * accessFactor + mobilization);
+  // Flat pricing kind: a fixed subtotal, no quantity × rate (bench, call-out).
+  const flat = typeof input.flatPrice === "number" && input.flatPrice > 0;
+  const subtotal = flat ? round2(input.flatPrice!) : round2(qty * rate * accessFactor + mobilization);
   const gst = round2(subtotal * gstRate(db));
   const total = round2(subtotal + gst);
-  // Company standard: deposit is 25% of the GST-inclusive total.
+  // Company standard: deposit is 25% of the tax-inclusive total.
   const deposit = round2(total * DEPOSIT_RATE);
 
-  const subLo = round2(qty * eff.range[0] * accessFactor + mobilization);
-  const subHi = round2(qty * eff.range[1] * accessFactor + mobilization);
+  const subLo = flat ? subtotal : round2(qty * eff.range[0] * accessFactor + mobilization);
+  const subHi = flat ? subtotal : round2(qty * eff.range[1] * accessFactor + mobilization);
 
   const profitability = profitabilityCheck(qty, depth, subtotal);
 
@@ -309,13 +320,16 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
       "Exposed-aggregate finishes are priced as a medium blast per company policy.",
     );
   }
+  const taxPct = round2(gstRate(db) * 100);
   policyNotes.push(
-    "Fresh concrete must cure 28 days before abrasive blasting.",
-    "Quote is valid 30 days; 25% deposit books the job, balance on completion, 5% GST on final invoice.",
+    `Quote is valid ${QUOTE_VALID_DAYS} days; ${round2(DEPOSIT_RATE * 100)}% deposit books the job, balance on completion, ${taxPct}% ${taxLabel(db)} on the final invoice.`,
   );
+  // Trade-specific policy lines (cure times, etc.) come from the dataset, so an
+  // adapted business isn't lectured about concrete it never touches.
+  for (const n of db.meta?.industryNotes ?? []) policyNotes.push(n);
   if (profitability.verdict === "below-break-even") {
     policyNotes.push(
-      `WARNING: this price is below the break-even rate of $${profitability.breakEvenRate.toFixed(2)}/sqft — flag to the owner, never silently raise.`,
+      `WARNING: this price is below the break-even rate of $${profitability.breakEvenRate.toFixed(2)}/${unit} — flag to the owner, never silently raise.`,
     );
   }
 
@@ -323,7 +337,7 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
     depth,
     surface: input.surface,
     rate,
-    rateSource: source,
+    rateSource: flat ? "flat price (fixed)" : source,
     confidence: eff.confidence,
     rateRange: eff.range,
     market: eff.market,

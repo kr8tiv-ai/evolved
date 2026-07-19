@@ -32,6 +32,8 @@ export function buildSeed(): Database {
       company: "Evolve Eco Blasting (demo dataset — fully synthetic)",
       currency: "CAD",
       gstRate: 0.05,
+      taxLabel: "GST",
+      industryNotes: ["Fresh concrete must cure 28 days before abrasive blasting."],
       seededAt,
     },
 

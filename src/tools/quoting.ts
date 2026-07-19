@@ -48,24 +48,26 @@ export function registerQuotingTools(server: McpServer): void {
       inputSchema: {
         sqft: z.number().positive().optional().describe("Square footage of the work area (area trades). For non-area trades, use quantity instead"),
         quantity: z.number().positive().optional().describe("Generic quantity that aliases sqft for non-area trades (hours, units, vehicles). Priced at quantity × tier rate + mobilization"),
-        depth: depthEnum.describe("Rate tier (blast depth for blasting; the trade's own tier for adapted businesses)"),
+        depth: depthEnum.optional().describe("Rate tier (blast depth for blasting; the trade's own tier for adapted businesses). Optional for a flat price"),
         surface: surfaceEnum.optional().describe("Surface type (drives learned pricing)"),
         access: z.enum(["easy", "moderate", "difficult"]).optional().describe("Site access difficulty (default easy)"),
         mobilization: z.boolean().optional().describe("Include the mobilization fee (default true)"),
+        flatPrice: z.number().positive().optional().describe("Flat-fee pricing kind: a fixed subtotal, no quantity × rate (a bench, a call-out)"),
       },
       annotations: { readOnlyHint: true },
     },
     async (input) => {
       const db = loadDb();
-      const qty = input.quantity ?? input.sqft;
-      if (qty === undefined) return ok({ error: "Provide sqft (area trades) or quantity (hours, units, vehicles)." });
+      const qty = input.quantity ?? input.sqft ?? (input.flatPrice ? 1 : undefined);
+      if (qty === undefined) return ok({ error: "Provide sqft or quantity (per-unit pricing), or flatPrice (a fixed fee)." });
       const result = priceQuote(db, {
         sqft: qty,
         quantity: input.quantity,
-        depth: input.depth as BlastDepth,
+        depth: (input.depth ?? "medium") as BlastDepth,
         surface: input.surface as SurfaceKind | undefined,
         access: input.access,
         mobilization: input.mobilization,
+        flatPrice: input.flatPrice,
       });
       return ok(result);
     },

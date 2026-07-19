@@ -210,8 +210,10 @@ export function registerOpsPlusTools(server: McpServer): void {
         trade: z.string().optional().describe("Freeform trade name (defaults from tradePack)"),
         region: z.string().optional(),
         currency: z.string().optional(),
-        gstRate: z.number().min(0).max(0.3).optional(),
+        gstRate: z.number().min(0).max(0.3).optional().describe("Sales-tax rate as a decimal (0.05 = 5% GST, 0.20 = 20% VAT, 0 = none)"),
+        taxLabel: z.string().max(24).optional().describe("Sales-tax label on quotes/invoices — 'GST' (default), 'VAT', 'Sales Tax', 'HST'…"),
         unit: z.string().max(24).optional().describe("What the rate card prices PER — 'sqft' (default), 'hour', 'unit', 'vehicle', 'linear ft'… so the quote speaks your trade, not blasting"),
+        industryNotes: z.array(z.string().min(1)).optional().describe("Trade-specific policy lines appended to every quote (cure times, permits, warranties). Defaults to none — no blasting boilerplate carries over"),
         rates: z.array(z.object({
           depth: z.enum(["very-light", "light", "medium", "heavy"]),
           ratePerSqft: z.number().positive(),
@@ -267,7 +269,11 @@ export function registerOpsPlusTools(server: McpServer): void {
           company: `${input.companyName} (demo dataset — fully synthetic)`,
           currency: input.currency ?? "CAD",
           gstRate: input.gstRate ?? 0.05,
+          taxLabel: input.taxLabel ?? "Tax",
           seededAt: nowIso(),
+          // Adapted trades start with NO blasting policy boilerplate; they bring
+          // their own trade notes (permits, cure times, warranties) if any.
+          industryNotes: input.industryNotes ?? [],
           ...((input.unit ?? pack?.unit) ? { pricingUnit: input.unit ?? pack?.unit } : {}),
         },
         customers: [], leads: [], quotes: [], jobs: [], receipts: [], actionItems: [],

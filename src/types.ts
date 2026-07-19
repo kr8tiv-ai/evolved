@@ -498,6 +498,10 @@ export interface Database {
      * the quote speaks, so adapted trades stop pretending to be blasting.
      */
     pricingUnit?: string;
+    /** Sales-tax label on quotes/invoices — "GST" (default), "VAT", "Sales Tax". */
+    taxLabel?: string;
+    /** Trade-specific policy lines appended to every quote (e.g. cure times). */
+    industryNotes?: string[];
   };
   customers: Customer[];
   leads: Lead[];
