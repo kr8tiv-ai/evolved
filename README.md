@@ -72,6 +72,26 @@ npm run demo    # the business loop, narrated in your terminal
 - **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 20 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
+## One complete system — and it starts with the MCP
+
+Evolved is the **brain**: 83 MCP tools that hold the business logic — pricing, safety, books, dispatch, on-chain settlement. Around that brain, the same operators run two more open surfaces, so the loop is complete from the truck to the chain. The MCP is the product; the other two are how real people touch it.
+
+- **The MCP server — *this repo*.** The engine any agent or MCP client calls. Everything below is a client of it. Clone, `npm install`, `npm run build`, and the whole system stands up with zero credentials.
+- **The crew field app — [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app).** The phone front-end for the jobsite: a worker taps one button in the truck — a photo, a receipt, an FLHA sign-off, a hazard report — and it lands in the App Inbox for the brain to file. $0/month on Google Apps Script + Sheets.
+- **The workbook spine.** The whole operation rendered as a Google Sheets operations workbook — 20 tabs, every collection a tab — created and synced by `workbook_create`, or exported to CSV with zero credentials (`workbook_export`). One shared source of truth for the humans and the agent alike.
+
+```mermaid
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
+flowchart LR
+    FA["📱 Field app<br><i>crew taps in the truck</i>"] --> INBOX["App Inbox<br><i>append-only capture</i>"]
+    INBOX --> MCP["🧠 Evolved MCP<br><i>83 tools — the brain</i>"]
+    MCP --> WB["📊 Ops workbook<br><i>Google Sheets · 20 tabs</i>"]
+    MCP --> CHAIN["⛓ On-chain settlement<br><i>X Layer testnet</i>"]
+    WB -.->|source of truth| MCP
+```
+
+Three surfaces, one loop, all open source — but it begins and ends at the MCP. An agent that speaks MCP runs the company; the field app and the workbook are the human-facing edges of the same brain.
+
 ## Watch one agent run the whole engagement
 
 <div align="center">

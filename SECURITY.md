@@ -23,12 +23,12 @@ stealing:
 
 ## The hosted demo's guardrails
 
-The public deployment is a shared, synthetic, single-tenant demo — and says
-so on the page. It is protected by:
+The public deployment is a shared, synthetic demo — one dataset for all
+visitors, reseeded hourly, and it says so on the page. It is protected by:
 
 | Control | Detail |
 |---|---|
-| Tool whitelist | The browser `/demo/call` route exposes 21 read/demo-safe tools; destructive tools (franchise_spinup, backups, sheet writes) return 403 |
+| Tool whitelist | The browser `/demo/call` route exposes 29 read/demo-safe tools; the full 83-tool surface (including franchise_spinup, backups, and workbook writes) is reachable only by pointing an MCP client at `/mcp` |
 | Rate limiting | Per-IP sliding window (default 40 req/min) on `/demo/call`, `/mcp`, and `/mcp-paid` |
 | Body caps | 256 KB request cap before any route reads the stream; 64 KB on demo calls |
 | Auto-reseed | The synthetic books restore hourly; replay ledger and revenue counters survive |
