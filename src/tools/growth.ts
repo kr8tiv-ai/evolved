@@ -26,6 +26,7 @@ export function registerGrowthTools(server: McpServer): void {
       description:
         "Draft the post-job review ask for a completed job — brand voice (no exclamation points), personal, with the one-line prompt that actually gets responses. Logs the request so reputation_report can track response rate. Draft only; a human sends it.",
       inputSchema: { jobId: z.string() },
+      annotations: { readOnlyHint: false },
     },
     async ({ jobId }) => {
       return ok(
@@ -63,6 +64,7 @@ export function registerGrowthTools(server: McpServer): void {
       description:
         "The reputation ledger: average rating, five-star share, response rate on requests, review velocity, and the testimonial bank (best quotes, ready for the website). Reviews are earned data — this is the growth loop's dashboard.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -91,6 +93,7 @@ export function registerGrowthTools(server: McpServer): void {
       description:
         "The Job P&L tab: every job's quoted-vs-actual — revenue, cost (time-log labor counted when actuals are missing), profit, margin, verdict — plus the business scorecard: jobs, total revenue, total cost, overall margin, quote win rate, and average $/sqft.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -144,6 +147,7 @@ export function registerGrowthTools(server: McpServer): void {
       description:
         "The live dispatch board, bucketed by the real pipeline statuses (Awaiting acceptance → Booked → Confirmed → In progress → Complete → Invoiced → Paid), with today's work, unscheduled-but-paid flags, and crew assignments.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -181,6 +185,7 @@ export function registerGrowthTools(server: McpServer): void {
         tagline: z.string().max(120).optional(),
         motto: z.string().max(120).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ company, tagline, motto }) => {
       if (!company && !tagline && !motto) return ok({ error: "Nothing to set — pass company, tagline, or motto." });
@@ -202,6 +207,7 @@ export function registerGrowthTools(server: McpServer): void {
       description:
         "See exactly what franchise_spinup would install for a trade — rate card, depth labels, trade-specific hazards — WITHOUT touching the current business. Safe on shared demos; the adaptable toolkit's showroom.",
       inputSchema: { tradePack: z.string().describe(`One of: ${TRADE_PACKS.map((p) => p.key).join(", ")} — or any trade name to fuzzy-match`) },
+      annotations: { readOnlyHint: true },
     },
     async ({ tradePack }) => {
       const pack = findTradePack(tradePack);
@@ -213,7 +219,7 @@ export function registerGrowthTools(server: McpServer): void {
         });
       }
       return ok({
-        pack: { key: pack.key, trade: pack.trade, description: pack.description },
+        pack: { key: pack.key, trade: pack.trade, description: pack.description, pricedPer: pack.unit ?? "sqft" },
         rateCard: pack.rateCard,
         tradeHazards: pack.hazards,
         wouldChange: [

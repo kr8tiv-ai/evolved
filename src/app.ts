@@ -21,15 +21,44 @@ import {
 // state-touching route. Generous for a human clicking a demo, hostile to
 // scripts hammering shared demo state.
 const RATE_LIMIT = Number(process.env.EVOLVED_RATE_LIMIT ?? 40); // req/min/ip
+// Number of trusted reverse-proxy hops in front of the app (managed hosting =
+// 1). Only this many rightmost X-Forwarded-For entries are trusted; anything a
+// client prepends is ignored, so the header can't be spoofed to dodge limits.
+// Set EVOLVED_TRUST_PROXY=0 to ignore XFF entirely (direct-exposed deploys).
+const TRUST_PROXY = Number(process.env.EVOLVED_TRUST_PROXY ?? 1);
 const rateBook = new Map<string, { n: number; t: number }>();
+
+function clientIp(req: IncomingMessage): string {
+  if (TRUST_PROXY > 0) {
+    const xff = String(req.headers["x-forwarded-for"] ?? "")
+      .split(",").map((s) => s.trim()).filter(Boolean);
+    if (xff.length) {
+      // The entry our own trusted proxy layer appended, counted from the right;
+      // an attacker can only prepend to the left of that, never past it.
+      return xff[Math.max(0, xff.length - TRUST_PROXY)];
+    }
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
+function pruneRateBook(now: number): void {
+  // Evict only expired windows; if still oversized (a real flood of distinct
+  // live IPs), drop the oldest slice. Never wipe the whole map — that would let
+  // header rotation reset every legitimate user's counter.
+  for (const [k, v] of rateBook) if (now - v.t > 60_000) rateBook.delete(k);
+  if (rateBook.size > 5000) {
+    const oldest = [...rateBook.entries()].sort((a, b) => a[1].t - b[1].t).slice(0, 1000);
+    for (const [k] of oldest) rateBook.delete(k);
+  }
+}
+
 function rateLimited(req: IncomingMessage): boolean {
-  const ip = (String(req.headers["x-forwarded-for"] ?? "").split(",")[0].trim()) ||
-    req.socket.remoteAddress || "unknown";
+  const ip = clientIp(req);
   const now = Date.now();
   const slot = rateBook.get(ip);
   if (!slot || now - slot.t > 60_000) {
     rateBook.set(ip, { n: 1, t: now });
-    if (rateBook.size > 5000) rateBook.clear(); // bounded memory
+    if (rateBook.size > 5000) pruneRateBook(now);
     return false;
   }
   slot.n += 1;
@@ -52,6 +81,26 @@ const DEMO_TOOLS = new Set([
   "workbook_export", "workbook_status", "franchise_preview",
   "reputation_report", "job_pnl_report", "dispatch_board",
 ]);
+
+// A couple of tools re-seed the ENTIRE dataset. On a shared HTTP deployment
+// that lets one anonymous caller wipe the books every other visitor is looking
+// at, so they are fenced off the raw /mcp(-paid) surface by default. This does
+// NOT touch the stdio server (the private, per-user path) or the playground's
+// own Judge-Mode reset (which runs in-process via /demo/call) — only the shared
+// public HTTP tool surface. Self-hosters set EVOLVED_ALLOW_DESTRUCTIVE=1.
+const ALLOW_DESTRUCTIVE_HTTP = process.env.EVOLVED_ALLOW_DESTRUCTIVE === "1";
+const SHARED_STATE_GUARDED = new Set(["demo_reset", "franchise_spinup"]);
+
+/** If a JSON-RPC body calls a guarded tool, return its id and name. */
+function guardedToolCall(body: unknown): { id: unknown; name: string } | null {
+  for (const m of (Array.isArray(body) ? body : [body])) {
+    const mm = m as { method?: string; id?: unknown; params?: { name?: string } };
+    if (mm?.method === "tools/call" && mm.params?.name && SHARED_STATE_GUARDED.has(mm.params.name)) {
+      return { id: mm.id ?? null, name: mm.params.name };
+    }
+  }
+  return null;
+}
 
 let demoClient: Client | null = null;
 async function getDemoClient(): Promise<Client> {
@@ -359,14 +408,20 @@ export async function handleRequest(
     }
     let result;
     if (proof.txHash) {
-      // Replay protection: a tx hash buys exactly one paid call.
-      const { loadDb, withDb } = await import("./store.js");
-      const db = loadDb();
-      if (db.usedTxHashes.includes(proof.txHash) || db.payments.some((p) => p.txHash === proof.txHash)) {
-        result = { verified: false, mode: paymentsMode(), detail: "Transaction already spent on a previous call or payment — replay rejected." };
+      // Replay protection: atomically claim the hash before the async verify,
+      // so concurrent calls carrying the same hash can't both settle.
+      const { reserveTxHash, commitTxHash, releaseTxHash } = await import("./store.js");
+      if (!reserveTxHash(proof.txHash)) {
+        result = { verified: false, mode: paymentsMode(), detail: "Transaction already spent on a previous call or payment, or being verified concurrently — replay rejected." };
       } else {
-        result = await verifyOnChain(proof.txHash, DEMO_PAYTO, price.baseUnits);
-        if (result.verified) withDb((d) => d.usedTxHashes.push(proof.txHash!));
+        try {
+          result = await verifyOnChain(proof.txHash, DEMO_PAYTO, price.baseUnits);
+        } catch (err) {
+          releaseTxHash(proof.txHash);
+          throw err;
+        }
+        if (result.verified) commitTxHash(proof.txHash);
+        else releaseTxHash(proof.txHash);
       }
     } else if (proof.simulated && paymentsMode() !== "live") {
       result = simulatedSettlement("/mcp-paid call");
@@ -397,6 +452,53 @@ export async function handleRequest(
   }
 
   if (url.pathname === "/mcp" || url.pathname === "/mcp-paid") {
+    // Read the body once so we can fence destructive tools off the shared demo
+    // AND still hand the parsed message to the transport (which then won't try
+    // to re-read the consumed stream).
+    let parsedBody: unknown;
+    if (req.method === "POST") {
+      let raw = "";
+      try {
+        raw = await readBody(req, 262_144);
+      } catch (err) {
+        res.writeHead(413, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: String(err instanceof Error ? err.message : err) }));
+        return;
+      }
+      if (raw.trim()) {
+        try {
+          parsedBody = JSON.parse(raw);
+        } catch {
+          res.writeHead(400, { "content-type": "application/json" });
+          res.end(JSON.stringify({ jsonrpc: "2.0", error: { code: -32700, message: "Parse error" }, id: null }));
+          return;
+        }
+      }
+    }
+
+    if (!ALLOW_DESTRUCTIVE_HTTP) {
+      const blocked = guardedToolCall(parsedBody);
+      if (blocked) {
+        // Answered as a normal tool result so the client stays happy — the
+        // shared demo simply declines to let a stranger re-seed everyone's data.
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({
+          jsonrpc: "2.0",
+          id: blocked.id,
+          result: {
+            content: [{
+              type: "text",
+              text: JSON.stringify({
+                spunUp: false, reset: false, disabledOnSharedDemo: blocked.name,
+                note: `${blocked.name} re-seeds the entire dataset, so it is disabled on this shared public endpoint to protect other visitors. Clone github.com/kr8tiv-ai/evolved (or set EVOLVED_ALLOW_DESTRUCTIVE=1 on your own deploy) for the unrestricted surface.`,
+              }, null, 2),
+            }],
+          },
+        }));
+        return;
+      }
+    }
+
     // Stateless mode: a fresh server+transport per request keeps the
     // endpoint horizontally scalable and session-free.
     const server = createServer();
@@ -409,7 +511,7 @@ export async function handleRequest(
     });
     try {
       await server.connect(transport);
-      await transport.handleRequest(req, res);
+      await transport.handleRequest(req, res, parsedBody);
     } catch (err) {
       if (!res.headersSent) {
         res.writeHead(500, { "content-type": "application/json" });

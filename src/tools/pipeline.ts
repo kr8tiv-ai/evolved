@@ -29,6 +29,7 @@ export function registerPipelineTools(server: McpServer): void {
         nextAction: z.string().describe("The concrete next step"),
         nextActionDate: z.string().optional().describe("YYYY-MM-DD, default tomorrow"),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -77,6 +78,7 @@ export function registerPipelineTools(server: McpServer): void {
         nextActionDate: z.string().optional(),
         notes: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -101,6 +103,7 @@ export function registerPipelineTools(server: McpServer): void {
       description:
         "The whole funnel at a glance: open leads by stage with next actions, quotes out with age, and jobs by dispatch status. The first tool to reach for when asked 'where's the business at?'",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -140,6 +143,7 @@ export function registerPipelineTools(server: McpServer): void {
         depositPaid: z.boolean().optional(),
         status: z.enum(["Booked", "Confirmed", "In progress"]).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       const { getForecast } = await import("../engine/weather.js");
@@ -179,6 +183,7 @@ export function registerPipelineTools(server: McpServer): void {
         fuel: z.number().min(0),
         revenue: z.number().positive().describe("Job revenue before GST (usually the quote subtotal)"),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -223,6 +228,7 @@ export function registerPipelineTools(server: McpServer): void {
       title: "List customers",
       description: "Customer book with contact details and their quotes/jobs at a glance.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();

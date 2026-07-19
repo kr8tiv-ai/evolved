@@ -30,6 +30,7 @@ export function registerFieldTools(server: McpServer): void {
         caption: z.string().max(200),
         takenBy: z.string().max(60),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ jobId, kind, caption, takenBy }) => {
       return ok(
@@ -64,6 +65,7 @@ export function registerFieldTools(server: McpServer): void {
         jobId: z.string().optional(),
         source: z.enum(["voice", "text"]).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ text, by, jobId, source }) => {
       return ok(
@@ -93,6 +95,7 @@ export function registerFieldTools(server: McpServer): void {
       description:
         "Punch a crew member in against a job. One open entry per person per job — double punch-ins are refused, not silently duplicated.",
       inputSchema: { crewName: z.string().max(60), jobId: z.string() },
+      annotations: { readOnlyHint: false },
     },
     async ({ crewName, jobId }) => {
       return ok(
@@ -118,6 +121,7 @@ export function registerFieldTools(server: McpServer): void {
       description:
         "Punch out: closes the open time entry, computes hours and wage from the crew member's rate (Time Log tab), and that labor flows into Job P&L as actual cost — quoted vs actual with no manual math.",
       inputSchema: { crewName: z.string().max(60), jobId: z.string(), note: z.string().max(200).optional() },
+      annotations: { readOnlyHint: false },
     },
     async ({ crewName, jobId, note }) => {
       return ok(
@@ -166,6 +170,7 @@ export function registerFieldTools(server: McpServer): void {
         })).min(1),
         musterPoint: z.string().max(120).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ jobId, capturedBy, crew, siteConditions, hazards, musterPoint }) => {
       return ok(

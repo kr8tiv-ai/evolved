@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.evolvedmcp.cloud/health)
 [![Tools](https://img.shields.io/badge/tools-83-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
-[![Tests](https://img.shields.io/badge/tests-41_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
+[![Tests](https://img.shields.io/badge/tests-46_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
 [Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [83 tools](#the-tool-surface--83-tools-16-domains) · [Docs](docs/)
@@ -57,7 +57,7 @@ Then run the whole company locally — no keys, no accounts, no funds:
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
-npm test        # 41 tests — including a LIVE X Layer testnet probe
+npm test        # 46 tests — including a LIVE X Layer testnet probe
 npm run demo    # the business loop, narrated in your terminal
 ```
 
@@ -68,7 +68,7 @@ npm run demo    # the business loop, narrated in your terminal
 - **Real-world ASP, both OKX rails.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC, and Evolved itself is monetized per-call through x402. An SMB earning on-chain *and* an agent service billing on-chain, in one submission.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). 41 tests pass, one of them live against X Layer testnet.
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 46 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
 - **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 20 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
@@ -136,7 +136,7 @@ For a cash-tight trade, that is not a feature. It is the difference between taki
 | **SMB invoices settle on-chain** | `invoice_payment_request` converts a balance due into an EIP-681 URI in test OKB on chainId **1952** (Terigon). `invoice_payment_check` verifies the transaction on-chain — exists, succeeded, right recipient, sufficient value, never used before — then flips the invoice and job to Paid. `xlayer_status` proves the rail is live RPC, not a mock. |
 | **Evolved bills per-call via x402** | `POST /mcp-paid` answers `402 Payment Required` with a spec-shaped `accepts` envelope (scheme `exact`, network `eip155:1952`, base64 copy in the `PAYMENT-REQUIRED` header) until proof arrives in the `X-PAYMENT` header; settled calls carry an `X-PAYMENT-RESPONSE` receipt. The free A2MCP tier at `POST /mcp` stays free. |
 
-Simulated mode is the default so judges can run everything offline, and every simulated settlement says so; `EVOLVED_X402_MODE=live` fails closed and demands real testnet transactions. Full protocol detail: [docs/ONCHAIN.md](docs/ONCHAIN.md).
+Simulated mode is the default so judges can run everything offline, and every simulated settlement says so; `EVOLVED_X402_MODE=live` fails closed and demands real testnet transactions. Full protocol detail: [docs/ONCHAIN.md](docs/ONCHAIN.md). Pinning your own real testnet settlements is a two-command runbook: [docs/GO-LIVE-ONCHAIN.md](docs/GO-LIVE-ONCHAIN.md).
 
 ## The frontier set
 
@@ -149,7 +149,7 @@ Simulated mode is the default so judges can run everything offline, and every si
 
 ## Make it yours — an adaptable toolkit, not a one-off
 
-The company is swappable. `franchise_spinup { tradePack: "pressure-washing", confirm: true }` re-seeds the entire OS for another trade — its own rate card in the quoting engine, **its own hazards in every FLHA the system drafts**, empty books, full machinery. Three packs ship today (`pressure-washing`, `line-painting`, `mobile-detailing`); adding yours is one entry in [`src/trades.ts`](src/trades.ts). And the server speaks the whole MCP spec, not just tools: **resources** (`evolved://rate-table`, `evolved://hazard-library`, `evolved://trade-packs`) and **prompts** (`morning-briefing`, `quote-a-job`, `run-the-lifecycle`) come built in, so any MCP client gets one-line entry points. The 10-minute adaptation guide: [docs/ADAPT.md](docs/ADAPT.md). Security posture and threat model: [SECURITY.md](SECURITY.md).
+The company is swappable. `franchise_spinup { tradePack: "pressure-washing", confirm: true }` re-seeds the entire OS for another trade — its own rate card in the quoting engine, **its own hazards in every FLHA the system drafts**, empty books, full machinery. Three packs ship today (`pressure-washing`, `line-painting`, `mobile-detailing`); adding yours is one entry in [`src/trades.ts`](src/trades.ts) — or pass a whole `customPack` (labels + hazards) **inline in one call, no fork**. And pricing is **unit-aware**: a trade declares what it charges *per* — `sqft`, `hour`, `unit`, `vehicle` — so an adapted business quotes in its own language (a detailer prices per vehicle, not "per 100 sqft of car"), not shoehorned into blasting. And the server speaks the whole MCP spec, not just tools: **resources** (`evolved://rate-table`, `evolved://hazard-library`, `evolved://trade-packs`) and **prompts** (`morning-briefing`, `quote-a-job`, `run-the-lifecycle`) come built in, so any MCP client gets one-line entry points. The 10-minute adaptation guide: [docs/ADAPT.md](docs/ADAPT.md). Security posture and threat model: [SECURITY.md](SECURITY.md).
 
 ## Full parity with the production system
 
@@ -197,16 +197,24 @@ src/
 │                       Sheets workbook spine (service-account JWT via node:crypto, no SDK)
 ├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
 ├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
-└── test/               41 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+└── test/               46 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
 ```
 
-## Wire it into your agent
+## Wire it into your agent — ~30 seconds
+
+**Hosted, nothing to install** — point any MCP client at the live server through the `mcp-remote` bridge:
+
+```json
+{ "mcpServers": { "evolved": { "command": "npx", "args": ["-y", "mcp-remote", "https://www.evolvedmcp.cloud/mcp"] } } }
+```
+
+**Local, fully offline** (after `git clone … && npm install && npm run build`):
 
 ```json
 { "mcpServers": { "evolved": { "command": "node", "args": ["<path-to>/evolved/dist/index.js"] } } }
 ```
 
-Works with Claude Desktop, Claude Code, OpenClaw, Hermes, Codex — anything that speaks MCP. HTTP mode (`npm run start:http`) serves the free tier at `POST /mcp`, the x402 tier at `POST /mcp-paid`, and `GET /health`. Optional live upgrades: `ANTHROPIC_API_KEY` (real vision and OCR escalation), `EVOLVED_LIVE_WEATHER=1` (real forecasts), `EVOLVED_X402_MODE=live` (require real testnet transactions), `EVOLVED_PAYTO=0x…` (your testnet receiving address).
+Works with Claude Desktop, Claude Code, Cursor, OpenClaw, Hermes, Codex — anything that speaks MCP. Every tool ships MCP **annotations** (`readOnlyHint` / `destructiveHint` / `openWorldHint`) so your client knows what's safe to call before it calls it. Full copy-paste guide for each client: **[docs/CONNECT.md](docs/CONNECT.md)**. HTTP mode (`npm run start:http`) serves the free tier at `POST /mcp`, the x402 tier at `POST /mcp-paid`, and `GET /health`. Optional live upgrades: `ANTHROPIC_API_KEY` (real vision and OCR escalation), `EVOLVED_LIVE_WEATHER=1` (real forecasts), `EVOLVED_X402_MODE=live` (require real testnet transactions), `EVOLVED_PAYTO=0x…` (your testnet receiving address).
 
 Then ask it things a business owner would:
 
@@ -230,7 +238,9 @@ npm test
 # ✔ field ops: photo album gaps, note routing to the inbox, time clock feeds Job P&L labor
 # ✔ safety: the JHA is authored on-site — field capture creates or upgrades the day's FLHA
 # ✔ growth: review loop, reputation ledger, dispatch board flags, brand config, pack preview
-# … 41 passing
+# ✔ security: replay claim is atomic under concurrency; destructive tools fenced off the shared endpoint
+# ✔ adaptability: an inline trade pack spins up a new trade; an adapted trade quotes in its own unit (per vehicle, not sqft)
+# … 46 passing
 ```
 
 The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -254,6 +264,7 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 | | |
 |---|---|
 | **Try it live** | [www.evolvedmcp.cloud](https://www.evolvedmcp.cloud/) — browser playground, zero install |
+| **Connect your agent** | [docs/CONNECT.md](docs/CONNECT.md) — copy-paste config for Claude Desktop, Claude Code, Cursor (hosted or local) |
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
 | Demo script | Two-act 90-second cut — [docs/DEMO.md](docs/DEMO.md) |

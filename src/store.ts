@@ -81,6 +81,39 @@ export function withDb<T>(fn: (d: Database) => T): T {
   return result;
 }
 
+// ---------- on-chain replay protection (atomic reservation) ----------
+// A transaction hash must settle EXACTLY ONE thing. The old check-then-write
+// straddled the async RPC verify, so two concurrent callers could both pass
+// the "already used?" test before either recorded the spend. `inFlightTx`
+// closes that window: claiming a hash is synchronous, so on Node's single
+// thread no two callers can both win the claim.
+const inFlightTx = new Set<string>();
+
+/**
+ * Atomically claim a txHash for verification. Returns false if the hash is
+ * already spent (persisted in usedTxHashes or on any payment) or is currently
+ * being verified by another in-flight call. On true, the caller MUST later
+ * call commitTxHash (on success) or releaseTxHash (on failure).
+ */
+export function reserveTxHash(txHash: string): boolean {
+  const d = loadDb();
+  const spent = d.usedTxHashes.includes(txHash) || d.payments.some((p) => p.txHash === txHash);
+  if (spent || inFlightTx.has(txHash)) return false;
+  inFlightTx.add(txHash);
+  return true;
+}
+
+/** Persist a verified hash to the spent ledger and drop the in-flight claim. */
+export function commitTxHash(txHash: string): void {
+  withDb((d) => { if (!d.usedTxHashes.includes(txHash)) d.usedTxHashes.push(txHash); });
+  inFlightTx.delete(txHash);
+}
+
+/** Release an in-flight claim without spending it (verification failed). */
+export function releaseTxHash(txHash: string): void {
+  inFlightTx.delete(txHash);
+}
+
 // ---------- small shared utilities ----------
 
 export function nowIso(): string {

@@ -105,6 +105,7 @@ export function registerSheetTools(server: McpServer): void {
       description:
         "The data spine as an operations workbook: every tab with its row count. This is the system of record — every tool writes through it.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -121,6 +122,7 @@ export function registerSheetTools(server: McpServer): void {
         tab: z.string(),
         maxRows: z.number().int().positive().max(500).optional(),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ tab, maxRows }) => {
       const db = loadDb();
@@ -142,6 +144,7 @@ export function registerSheetTools(server: McpServer): void {
         priority: z.enum(["low", "normal", "high"]).optional(),
         due: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -171,6 +174,7 @@ export function registerSheetTools(server: McpServer): void {
         summary: z.string(),
         fields: z.record(z.string(), z.string()).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -194,6 +198,7 @@ export function registerSheetTools(server: McpServer): void {
       title: "App Inbox queue",
       description: "Inbox rows by status — NEW rows await filing; NEEDS REVIEW rows want a human or smarter judgment.",
       inputSchema: { status: z.enum(["NEW", "FILED", "NEEDS REVIEW"]).optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ status }) => {
       const db = loadDb();
@@ -208,6 +213,7 @@ export function registerSheetTools(server: McpServer): void {
       description:
         "Deterministically route NEW inbox rows to the right book: lead → Leads (+customer), todo → To-Do, supplier → Suppliers, receipt → the OCR expense pipeline, quick → keyword-sniffed or NEEDS REVIEW. Append-only, idempotent per row, exactly like the production autopilot.",
       inputSchema: {},
+      annotations: { readOnlyHint: false },
     },
     async () => {
       const { runOcrPipeline } = await import("../engine/ocr.js");

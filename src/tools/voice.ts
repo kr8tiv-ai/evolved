@@ -40,6 +40,7 @@ export function registerVoiceTools(server: McpServer): void {
         utterance: z.string().min(2),
         speaker: z.string().optional().describe("Crew member name (default: crew)"),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ utterance, speaker }) => {
       const who = speaker ?? "crew";

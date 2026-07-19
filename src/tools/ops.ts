@@ -21,6 +21,7 @@ export function registerOpsTools(server: McpServer): void {
       description:
         "The 6:30 AM owner briefing, on demand: the one thing not to drop today, today's jobs with crews, money pulse (month revenue, expenses, receivables), quotes out with age, leads needing a touch, auto-raised action items, five-day blast-day weather verdicts, and system health. One call, whole business.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const digest = await withDb((db) => buildMorningDigest(db));
@@ -35,6 +36,7 @@ export function registerOpsTools(server: McpServer): void {
       description:
         "Run the ball-drop catcher across the books. Auto-raises items for: deposit in but unscheduled, invoice unpaid 7+ days, quote unanswered 7 days, quote expiring within 7 days, job complete but not invoiced, and open leads with stale next actions. Deduplicates against items already open.",
       inputSchema: {},
+      annotations: { readOnlyHint: false },
     },
     async () => {
       return ok(
@@ -58,6 +60,7 @@ export function registerOpsTools(server: McpServer): void {
       title: "Resolve an action item",
       description: "Mark an action item handled. It leaves the digest and the open list.",
       inputSchema: { actionItemId: z.string(), resolution: z.string().optional() },
+      annotations: { readOnlyHint: false },
     },
     async ({ actionItemId, resolution }) => {
       return ok(
@@ -79,6 +82,7 @@ export function registerOpsTools(server: McpServer): void {
       description:
         "Five-day forecast with blast-day verdicts (Good blast day / Marginal / No-go) using the company's gating thresholds: no blasting at precip ≥50%, wind >40 km/h, or highs below 3°C.",
       inputSchema: { days: z.number().int().min(1).max(14).optional() },
+      annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async ({ days }) => {
       return ok(await getForecast(days ?? 5));
@@ -92,6 +96,7 @@ export function registerOpsTools(server: McpServer): void {
       description:
         "Restore the synthetic demo dataset to its seeded state (all names, numbers, and dollar figures are invented). Useful between demo runs.",
       inputSchema: {},
+      annotations: { readOnlyHint: false, destructiveHint: true },
     },
     async () => {
       const db = resetDb();
@@ -116,6 +121,7 @@ export function registerOpsTools(server: McpServer): void {
       description:
         "Everything on one screen: funnel counts, money position, open safety items, and open action items. The health check an investor or owner asks for first.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();

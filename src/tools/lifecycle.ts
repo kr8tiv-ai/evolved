@@ -322,6 +322,7 @@ export function registerLifecycleTools(server: McpServer): void {
         depth: z.enum(["very-light", "light", "medium", "heavy"]),
         access: z.enum(["easy", "moderate", "difficult"]).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -391,6 +392,7 @@ export function registerLifecycleTools(server: McpServer): void {
         simulatePayment: z.boolean().optional(),
         txHash: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       const db = loadDb();
@@ -420,6 +422,7 @@ export function registerLifecycleTools(server: McpServer): void {
       title: "Lifecycle status",
       description: "Every lifecycle with stage, open gates, and full step log — the audit trail of an autonomous engagement.",
       inputSchema: { lifecycleId: z.string().optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ lifecycleId }) => {
       const db = loadDb();
@@ -444,6 +447,7 @@ export function registerLifecycleTools(server: McpServer): void {
         signerName: z.string(),
         decision: z.enum(["accept", "decline"]),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -502,6 +506,7 @@ export function registerLifecycleTools(server: McpServer): void {
         rating: z.number().int().min(1).max(5),
         comment: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(

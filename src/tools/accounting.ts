@@ -42,6 +42,7 @@ export function registerAccountingTools(server: McpServer): void {
       description:
         "Canonicalized vendor spend: total spend, receipt count, category, first seen — with new-vendor flags. Misspellings and variants roll up to one vendor record.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -68,6 +69,7 @@ export function registerAccountingTools(server: McpServer): void {
       description:
         "The 3-day style audit: receipts with OCR warnings, arithmetic that does not reconcile (subtotal + GST ≠ total), future/stale dates, and missing job attribution on job-sized spends. Clean receipts are counted, dirty ones are itemized.",
       inputSchema: { days: z.number().int().positive().max(90).optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ days }) => {
       const db = loadDb();
@@ -97,6 +99,7 @@ export function registerAccountingTools(server: McpServer): void {
       description:
         "Draft polite-but-firm reminder messages for every unpaid invoice, escalating tone with age (gentle < 7 days, direct 7–20, final notice 21+). Brand voice: no exclamation points, abrasive blasting not sandblasting.",
       inputSchema: { invoiceId: z.string().optional().describe("One invoice, or omit for all outstanding") },
+      annotations: { readOnlyHint: false },
     },
     async ({ invoiceId }) => {
       return ok(

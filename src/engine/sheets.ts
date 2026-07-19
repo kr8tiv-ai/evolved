@@ -309,15 +309,18 @@ async function writeTabs(token: string, spreadsheetId: string, tabs: WorkbookTab
  * "You need access" page. drive.file scope covers files the SA created.
  */
 async function shareWorkbook(token: string, spreadsheetId: string, email?: string): Promise<string> {
+  // Writer access is only ever granted to a NAMED account. The link-shared
+  // default is read-only: the workbook holds customer PII, so "anyone with the
+  // link" must never be able to edit or delete it.
   const perm = email
     ? { role: "writer", type: "user", emailAddress: email }
-    : { role: "writer", type: "anyone" };
+    : { role: "reader", type: "anyone" };
   await sheetsFetch(
     token,
     `https://www.googleapis.com/drive/v3/files/${spreadsheetId}/permissions${email ? "" : "?sendNotificationEmail=false"}`,
     perm,
   );
-  return email ? `shared with ${email} (writer)` : "anyone with the link (writer)";
+  return email ? `shared with ${email} (writer)` : "anyone with the link (read-only)";
 }
 
 export async function createGoogleWorkbook(

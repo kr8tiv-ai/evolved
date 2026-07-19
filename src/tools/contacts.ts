@@ -22,6 +22,7 @@ export function registerContactsTools(server: McpServer): void {
       description:
         "One search across the whole rolodex. Customers come back with their quotes, jobs, and open balance; suppliers with their pricebook summary; crew with certifications and rate.",
       inputSchema: { query: z.string().min(1) },
+      annotations: { readOnlyHint: true },
     },
     async ({ query }) => {
       const db = loadDb();
@@ -66,6 +67,7 @@ export function registerContactsTools(server: McpServer): void {
         products: z.string().optional(),
         notes: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -88,6 +90,7 @@ export function registerContactsTools(server: McpServer): void {
       description:
         "What the company actually pays each supplier, by product: purchase history from the price log with latest unit prices — the negotiating sheet for the next order.",
       inputSchema: { supplier: z.string().optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ supplier }) => {
       const db = loadDb();
@@ -121,6 +124,7 @@ export function registerContactsTools(server: McpServer): void {
         certifications: z.array(z.string()).optional(),
         hourlyRate: z.number().positive(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -145,6 +149,7 @@ export function registerContactsTools(server: McpServer): void {
       description:
         "Active crew with roles, rates, certifications, expiring-cert flags, and current job assignments from the dispatch board.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();

@@ -27,6 +27,7 @@ export function registerCfoTools(server: McpServer): void {
         ratePct: z.number().optional().describe("rate-change: percent, e.g. 10 or -5"),
         demandPct: z.number().optional().describe("demand-shock: percent, e.g. -20"),
       },
+      annotations: { readOnlyHint: true },
     },
     async (input) => {
       const db = loadDb();
@@ -41,6 +42,7 @@ export function registerCfoTools(server: McpServer): void {
       description:
         "The CFO one-pager: receivables aging, customer concentration risk, monthly run-rate from the books, weather-capacity outlook (share of blastable days ahead), review reputation, and the three numbers to fix first.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();

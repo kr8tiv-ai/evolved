@@ -15,6 +15,8 @@ export interface TradePack {
   key: string;
   trade: string;
   description: string;
+  /** What the rate card prices PER (default "sqft"). "vehicle", "hour", etc. */
+  unit?: string;
   rateCard: { depth: BlastDepth; label: string; ratePerSqft: number }[];
   hazards: HazardEntry[];
 }
@@ -56,11 +58,12 @@ export const TRADE_PACKS: TradePack[] = [
     key: "mobile-detailing",
     trade: "mobile auto detailing",
     description: "On-site vehicle detailing — fleets, dealerships, driveway service.",
+    unit: "vehicle",
     rateCard: [
-      { depth: "very-light", label: "Express exterior (per 100 sqft of vehicle)", ratePerSqft: 8 },
-      { depth: "light", label: "Full exterior + interior vacuum", ratePerSqft: 14 },
-      { depth: "medium", label: "Full detail (shampoo, clay, sealant)", ratePerSqft: 24 },
-      { depth: "heavy", label: "Restoration (paint correction, extraction)", ratePerSqft: 45 },
+      { depth: "very-light", label: "Express exterior", ratePerSqft: 60 },
+      { depth: "light", label: "Full exterior + interior vacuum", ratePerSqft: 120 },
+      { depth: "medium", label: "Full detail (shampoo, clay, sealant)", ratePerSqft: 220 },
+      { depth: "heavy", label: "Restoration (paint correction, extraction)", ratePerSqft: 450 },
     ],
     hazards: [
       { hazard: "Chemical exposure (degreasers, acids)", risk: "medium", mitigations: ["Nitrile gloves and eye protection for chemical application", "SDS sheets in the truck; no mixing products"] },

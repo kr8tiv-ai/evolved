@@ -15,7 +15,10 @@ import {
   paymentsMode, paymentUri, simulatedSettlement, verifyOnChain, whyOnChain,
   x402Envelope, XLAYER_TESTNET, CAD_PER_OKB_DEMO,
 } from "../engine/payments.js";
-import { addDays, loadDb, logActivity, nowIso, round2, shortId, today, withDb } from "../store.js";
+import {
+  addDays, commitTxHash, loadDb, logActivity, nowIso, releaseTxHash,
+  reserveTxHash, round2, shortId, today, withDb,
+} from "../store.js";
 
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
@@ -33,6 +36,7 @@ export function registerPaymentTools(server: McpServer): void {
         split: z.enum(["deposit", "balance", "full"]).optional().describe("deposit = 25% up front (default when nothing is paid yet); balance = the rest; full = the whole invoice"),
         payTo: z.string().optional().describe("Override recipient address (0x…); default is the documented demo address"),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ invoiceId, split, payTo }) => {
       return ok(
@@ -99,6 +103,7 @@ export function registerPaymentTools(server: McpServer): void {
         txHash: z.string().optional().describe("X Layer testnet transaction hash (required in live mode)"),
         simulate: z.boolean().optional().describe("Demo-mode settlement without a real transaction"),
       },
+      annotations: { readOnlyHint: false, openWorldHint: true },
     },
     async ({ paymentId, txHash, simulate }) => {
       const db = loadDb();
@@ -109,17 +114,22 @@ export function registerPaymentTools(server: McpServer): void {
       const mode = paymentsMode();
       let result;
       if (txHash) {
-        // Replay protection: a transaction hash settles exactly one payment.
-        const alreadyUsed =
-          db.usedTxHashes.includes(txHash) ||
-          db.payments.some((p) => p.txHash === txHash && p.id !== paymentId);
-        if (alreadyUsed) {
+        // Replay protection: atomically claim the hash BEFORE the async verify
+        // so two concurrent calls can't both spend one transaction.
+        if (!reserveTxHash(txHash)) {
           return ok({
             verified: false,
-            detail: `Transaction ${txHash} already settled a different payment — replay rejected.`,
+            detail: `Transaction ${txHash} already settled or is being verified concurrently — replay rejected.`,
           });
         }
-        result = await verifyOnChain(txHash, payment.payTo, payment.amountBaseUnits);
+        try {
+          result = await verifyOnChain(txHash, payment.payTo, payment.amountBaseUnits);
+        } catch (err) {
+          releaseTxHash(txHash);
+          throw err;
+        }
+        if (result.verified) commitTxHash(txHash);
+        else releaseTxHash(txHash);
       } else if (simulate && mode !== "live") {
         result = simulatedSettlement(paymentId);
       } else {
@@ -136,8 +146,8 @@ export function registerPaymentTools(server: McpServer): void {
           const p = d.payments.find((x) => x.id === paymentId)!;
           if (result.verified) {
             p.status = "paid";
+            // commitTxHash already recorded the spend in usedTxHashes.
             p.txHash = result.txHash ?? (result.mode === "simulated" ? "simulated" : undefined);
-            if (result.txHash) d.usedTxHashes.push(result.txHash);
             p.paidAt = nowIso();
             const invoice = d.invoices.find((i) => i.id === p.invoiceId);
             if (invoice) {
@@ -160,6 +170,7 @@ export function registerPaymentTools(server: McpServer): void {
       description:
         "Live read-only connectivity check against the X Layer testnet RPC: chain id and latest block. Proof the on-chain rail is real, not a mock.",
       inputSchema: {},
+      annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async () => {
       const status = await chainStatus();
@@ -180,6 +191,7 @@ export function registerPaymentTools(server: McpServer): void {
       description:
         "How Evolved monetizes as an ASP: the HTTP endpoint exposes POST /mcp (free) and POST /mcp-paid (x402). The paid route answers 402 Payment Required with an accepts envelope (scheme exact, network eip155:1952) until the caller presents payment proof in the X-PAYMENT header. Returns the exact envelope and a curl walkthrough.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const price = demoOkbPricePerCall();

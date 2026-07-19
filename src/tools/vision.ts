@@ -29,6 +29,7 @@ export function registerVisionTools(server: McpServer): void {
         customerName: z.string().optional().describe("Provide to create the draft quote in the books"),
         siteAddress: z.string().optional(),
       },
+      annotations: { readOnlyHint: false, openWorldHint: true },
     },
     async (input) => {
       const estimate = await estimateFromPhoto(input.imageBase64, input.mediaType, {

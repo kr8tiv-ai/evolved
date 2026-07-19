@@ -24,9 +24,9 @@ function ok(data: unknown) {
 const NO_CREDS_GUIDE =
   "No Google credentials configured. Set EVOLVED_GOOGLE_SA to a service-account JSON " +
   "(inline or a file path) with Sheets + Drive scope. workbook_create then builds the " +
-  "spreadsheet and shares it (link-shared by default, or pass shareWith for a specific " +
-  "account); or share your own sheet with the service account's client_email and use " +
-  "workbook_link. Falling back to the CSV workbook export, which contains the identical tabs.";
+  "spreadsheet and shares it (link-shared READ-ONLY by default, or pass shareWith to grant " +
+  "a specific account writer access); or share your own sheet with the service account's " +
+  "client_email and use workbook_link. Falling back to the CSV workbook export, which contains the identical tabs.";
 
 export function registerWorkbookTools(server: McpServer): void {
   server.registerTool(
@@ -36,6 +36,7 @@ export function registerWorkbookTools(server: McpServer): void {
       description:
         "The state of the operations-workbook spine: linked Google Sheet (if any), tab list, cell counts, credential mode, and last sync time.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -55,6 +56,7 @@ export function registerWorkbookTools(server: McpServer): void {
       description:
         "Render the ENTIRE operating system — quotes, dispatch, expenses, invoices, inventory, crew, time log, photos, field notes, safety, reviews, action items, rate table, Job P&L, record log — as a CSV workbook bundle. Works offline with no credentials; the same tabs a Google Sheets sync writes.",
       inputSchema: {},
+      annotations: { readOnlyHint: false },
     },
     async () => {
       return ok(
@@ -81,11 +83,12 @@ export function registerWorkbookTools(server: McpServer): void {
     {
       title: "Create a live Google Sheets workbook",
       description:
-        "Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). The sheet is shared automatically (link-shared writer by default; pass shareWith to grant a specific Google account instead). Without credentials it explains the setup and falls back to the CSV export.",
+        "Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). The sheet is shared automatically (link-shared READ-ONLY by default — the books hold PII; pass shareWith to grant a specific Google account writer access). Without credentials it explains the setup and falls back to the CSV export.",
       inputSchema: {
         title: z.string().max(120).optional().describe("Spreadsheet title; defaults to '<Company> — Ops Workbook'"),
-        shareWith: z.string().email().optional().describe("Share with this Google account (writer) instead of anyone-with-the-link"),
+        shareWith: z.string().email().optional().describe("Grant this Google account writer access (instead of read-only anyone-with-the-link)"),
       },
+      annotations: { readOnlyHint: false, openWorldHint: true },
     },
     async ({ title, shareWith }) => {
       const creds = googleCreds();
@@ -121,6 +124,7 @@ export function registerWorkbookTools(server: McpServer): void {
       description:
         "Attach Evolved to a Google Sheets workbook you already have (by spreadsheet id). Subsequent workbook_sync calls write every tab into it. The service account in EVOLVED_GOOGLE_SA must have edit access to that sheet.",
       inputSchema: { spreadsheetId: z.string().min(20).describe("The id from the sheet URL") },
+      annotations: { readOnlyHint: false },
     },
     async ({ spreadsheetId }) => {
       if (!googleCreds()) return ok({ linked: false, guide: NO_CREDS_GUIDE });
@@ -145,6 +149,7 @@ export function registerWorkbookTools(server: McpServer): void {
       description:
         "Push the entire current database into the linked workbook — updates every tab (adds missing ones) in the linked Google Sheet, or refreshes the CSV bundle when running credential-free.",
       inputSchema: {},
+      annotations: { readOnlyHint: false, openWorldHint: true },
     },
     async () => {
       const creds = googleCreds();

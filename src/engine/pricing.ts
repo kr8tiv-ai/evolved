@@ -203,10 +203,19 @@ export function effectiveRate(
 
 export interface PriceQuoteInput {
   sqft: number;
+  /** Generic quantity that aliases sqft for non-area trades (hours, units,
+   *  vehicles…). When omitted, sqft is the quantity — identical behavior. */
+  quantity?: number;
   depth: BlastDepth;
   surface?: SurfaceKind;
   access?: keyof typeof ACCESS_FACTORS;
   mobilization?: boolean;
+}
+
+/** What this business prices per — "sqft" unless a trade pack set otherwise. */
+export function pricingUnit(db: Database): string {
+  const u = db.meta?.pricingUnit;
+  return typeof u === "string" && u.trim() ? u.trim() : "sqft";
 }
 
 /** Comparable closed/quoted work for the same surface+depth — grounds an estimate in real history. */
@@ -263,6 +272,10 @@ export interface PriceQuoteResult {
   total: number;
   deposit: number;
   ratePerSqftEffective: number;
+  /** What the rate is priced per ("sqft" by default; the trade's own unit). */
+  unit: string;
+  /** The quantity used (sqft, hours, units, vehicles…). */
+  quantity: number;
   profitability: ProfitabilityCheck;
   policyNotes: string[];
 }
@@ -272,19 +285,23 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
   const access = input.access ?? "easy";
   const accessFactor = ACCESS_FACTORS[access] ?? 1.0;
   const mobilization = input.mobilization === false ? 0 : MOBILIZATION_FEE;
+  // Generic quantity: sqft for area trades, or hours/units/vehicles elsewhere.
+  // Defaults to sqft, so area pricing is byte-for-byte unchanged.
+  const qty = input.quantity ?? input.sqft;
+  const unit = pricingUnit(db);
 
   const eff = effectiveRate(db, depth, input.surface);
   const { rate, source } = eff;
-  const subtotal = round2(input.sqft * rate * accessFactor + mobilization);
+  const subtotal = round2(qty * rate * accessFactor + mobilization);
   const gst = round2(subtotal * gstRate(db));
   const total = round2(subtotal + gst);
   // Company standard: deposit is 25% of the GST-inclusive total.
   const deposit = round2(total * DEPOSIT_RATE);
 
-  const subLo = round2(input.sqft * eff.range[0] * accessFactor + mobilization);
-  const subHi = round2(input.sqft * eff.range[1] * accessFactor + mobilization);
+  const subLo = round2(qty * eff.range[0] * accessFactor + mobilization);
+  const subHi = round2(qty * eff.range[1] * accessFactor + mobilization);
 
-  const profitability = profitabilityCheck(input.sqft, depth, subtotal);
+  const profitability = profitabilityCheck(qty, depth, subtotal);
 
   const policyNotes: string[] = [];
   if (depth !== input.depth) {
@@ -317,7 +334,9 @@ export function priceQuote(db: Database, input: PriceQuoteInput): PriceQuoteResu
     gst,
     total,
     deposit,
-    ratePerSqftEffective: input.sqft > 0 ? round2(subtotal / input.sqft) : 0,
+    ratePerSqftEffective: qty > 0 ? round2(subtotal / qty) : 0,
+    unit,
+    quantity: qty,
     profitability,
     policyNotes,
   };

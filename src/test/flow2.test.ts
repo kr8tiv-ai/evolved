@@ -13,7 +13,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../server.js";
 import { handleRequest } from "../app.js";
 import { chainStatus, XLAYER_TESTNET } from "../engine/payments.js";
-import { loadDb, resetDb } from "../store.js";
+import { commitTxHash, loadDb, releaseTxHash, reserveTxHash, resetDb } from "../store.js";
 
 async function connect() {
   const server = createServer();
@@ -298,6 +298,38 @@ test("x402 over real HTTP: 402 challenge, then simulated proof unlocks the MCP s
   }
 });
 
+test("shared-demo guard: destructive tools are fenced off raw /mcp, safe tools pass through", async () => {
+  resetDb();
+  const httpServer = createHttpServer((req, res) => void handleRequest(req, res));
+  await new Promise<void>((resolve) => httpServer.listen(0, resolve));
+  const port = (httpServer.address() as AddressInfo).port;
+  const base = `http://localhost:${port}`;
+  const headers = { "content-type": "application/json", accept: "application/json, text/event-stream" };
+  try {
+    // A raw tools/call to a state-wiping tool is declined (not executed).
+    const before = loadDb().meta.seededAt;
+    const blocked = await fetch(`${base}/mcp`, {
+      method: "POST", headers,
+      body: JSON.stringify({ jsonrpc: "2.0", id: 7, method: "tools/call", params: { name: "demo_reset", arguments: {} } }),
+    });
+    assert.equal(blocked.status, 200);
+    const bj = await blocked.json() as { result: { content: { text: string }[] } };
+    assert.match(bj.result.content[0].text, /disabledOnSharedDemo/);
+    assert.match(bj.result.content[0].text, /demo_reset/);
+    assert.equal(loadDb().meta.seededAt, before, "demo_reset must not have run");
+
+    // A normal message still passes through to the MCP transport.
+    const init = await fetch(`${base}/mcp`, {
+      method: "POST", headers,
+      body: JSON.stringify({ jsonrpc: "2.0", id: 8, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "guard-probe", version: "0" } } }),
+    });
+    assert.equal(init.status, 200);
+    assert.match(await init.text(), /serverInfo/);
+  } finally {
+    httpServer.close();
+  }
+});
+
 test("X Layer testnet RPC: live read-only probe (skips cleanly offline)", async (t) => {
   const status = await chainStatus();
   if (!status.reachable) {
@@ -361,6 +393,129 @@ test("review fixes: replay protection, declined e-sign is final, custom price br
 
   await client.close();
   await server.close();
+});
+
+test("every tool carries MCP annotations; read/write/destructive hints are correct", async () => {
+  const { server, client } = await connect();
+  const tools = (await client.listTools()).tools;
+  assert.equal(tools.length, 83, "all 83 tools listed");
+  // Every tool must declare readOnlyHint so clients know what's safe to call.
+  for (const t of tools) {
+    assert.ok(t.annotations, `${t.name} is missing annotations`);
+    assert.equal(typeof t.annotations.readOnlyHint, "boolean", `${t.name} needs readOnlyHint`);
+  }
+  const ann = (name: string) => tools.find((t) => t.name === name)?.annotations ?? {};
+  // Destructive re-seeds must be flagged; pure reports must be read-only.
+  assert.equal(ann("franchise_spinup").destructiveHint, true);
+  assert.equal(ann("demo_reset").destructiveHint, true);
+  assert.equal(ann("business_snapshot").readOnlyHint, true);
+  assert.equal(ann("xlayer_status").readOnlyHint, true);
+  assert.equal(ann("xlayer_status").openWorldHint, true);
+  assert.equal(ann("quote_create").readOnlyHint, false);
+  assert.equal(ann("invoice_payment_check").readOnlyHint, false);
+  await client.close();
+  await server.close();
+});
+
+test("franchise: an inline customPack adapts to a brand-new trade in one call (no fork)", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  const res = await call("franchise_spinup", {
+    companyName: "Aurora Window Cleaning",
+    trade: "window cleaning",
+    customPack: {
+      rateCard: [
+        { depth: "very-light", label: "Ground-floor rinse", ratePerSqft: 0.4 },
+        { depth: "light", label: "Standard interior + exterior", ratePerSqft: 0.7 },
+        { depth: "medium", label: "Hard-water stain removal", ratePerSqft: 1.1 },
+        { depth: "heavy", label: "Post-construction scrape", ratePerSqft: 2.2 },
+      ],
+      hazards: [
+        { hazard: "Ladder and elevated work", risk: "high", mitigations: ["Tie off above 3m", "Spotter on the ladder"] },
+      ],
+    },
+    confirm: true,
+  });
+  assert.equal(res.spunUp, true);
+  assert.equal(res.trade, "window cleaning");
+  assert.equal(res.tradeHazardsInstalled, 1);
+  assert.ok(res.rateCard.some((r: { label: string }) => /hard-water/i.test(r.label)), "inline labels installed");
+
+  // The inline hazard now shows up when the system drafts a JHA.
+  const hazLib = await client.readResource({ uri: "evolved://hazard-library" }).then((r: any) => JSON.parse(r.contents[0].text));
+  assert.ok(hazLib.installedTradePack.some((h: { hazard: string }) => /ladder/i.test(h.hazard)));
+
+  // A rate card that misses a depth is rejected, not silently defaulted.
+  const bad = await call("franchise_spinup", {
+    companyName: "Broken Co",
+    customPack: { rateCard: [{ depth: "light", label: "only one", ratePerSqft: 1 }] },
+    confirm: true,
+  });
+  assert.equal(bad.spunUp, false);
+  assert.match(bad.error, /all four depths/i);
+
+  await call("demo_reset");
+  await client.close();
+  await server.close();
+});
+
+test("pricing unit: an adapted trade quotes in its OWN unit, not sqft (de-blasted)", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // Baseline blasting still prices per sqft with identical math (quantity omitted).
+  const blast = await call("quote_price", { sqft: 500, depth: "medium" });
+  assert.equal(blast.unit, "sqft");
+  assert.equal(blast.quantity, 500);
+
+  // Spin up a detailing shop — its rate card is priced per VEHICLE.
+  await call("franchise_spinup", { companyName: "Aurora Detailing", tradePack: "mobile-detailing", confirm: true });
+  const q = await call("quote_price", { quantity: 3, depth: "light" });
+  assert.equal(q.unit, "vehicle", "quote speaks the trade's unit");
+  assert.equal(q.quantity, 3);
+  // 3 vehicles x $120 (light tier) x easy access + $250 mobilization = $610.
+  assert.equal(q.subtotal, 610);
+
+  await call("demo_reset");
+  const back = await call("quote_price", { sqft: 500, depth: "medium" });
+  assert.equal(back.unit, "sqft", "demo_reset restores the blasting unit");
+
+  await client.close();
+  await server.close();
+});
+
+test("replay race: concurrent settlement of one txHash — exactly one wins (atomic reservation)", async () => {
+  resetDb();
+  const hash = "0x" + "cd".repeat(32);
+
+  // Two callers reach the reservation at the same time, then each awaits the
+  // (async) on-chain verify before recording the spend — the exact window the
+  // old check-then-write left open. The synchronous claim must let only one in.
+  const attempt = async (): Promise<"settled" | "rejected"> => {
+    if (!reserveTxHash(hash)) return "rejected";
+    await Promise.resolve(); // stand-in for the async RPC verify
+    commitTxHash(hash);
+    return "settled";
+  };
+  const outcomes = await Promise.all([attempt(), attempt(), attempt()]);
+  assert.equal(outcomes.filter((o) => o === "settled").length, 1, "exactly one concurrent caller may spend a hash");
+  assert.equal(outcomes.filter((o) => o === "rejected").length, 2);
+
+  // Committed hash is now in the persistent ledger and blocks any later claim.
+  assert.ok(loadDb().usedTxHashes.includes(hash));
+  assert.equal(reserveTxHash(hash), false, "a spent hash can never be reclaimed");
+
+  // A failed verification releases its claim so an honest retry can proceed.
+  const other = "0x" + "ef".repeat(32);
+  assert.equal(reserveTxHash(other), true);
+  releaseTxHash(other); // verification failed
+  assert.equal(reserveTxHash(other), true, "a released (failed) hash is reclaimable");
+  releaseTxHash(other);
 });
 
 test("adaptable toolkit: MCP resources + prompts registered; trade pack installs rates AND hazards", async () => {

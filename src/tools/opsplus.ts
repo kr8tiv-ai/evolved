@@ -77,6 +77,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       description:
         "The deterministic business brain: spend pulse vs last month, top and new vendors, inbox backlog, reorder alerts, pending on-chain settlements. Insights are fingerprint-deduplicated (refreshed, never duplicated) and ranked by learned importance weights that your feedback trains.",
       inputSchema: {},
+      annotations: { readOnlyHint: false },
     },
     async () => {
       return ok(
@@ -120,6 +121,7 @@ export function registerOpsPlusTools(server: McpServer): void {
         insightId: z.string(),
         rating: z.enum(["Important", "Not important", "Done"]),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ insightId, rating }) => {
       return ok(
@@ -144,6 +146,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       title: "Activity feed (total recall)",
       description: "The audit trail: every capture, filing, receipt, payment, and voice command in reverse-chronological order.",
       inputSchema: { limit: z.number().int().positive().max(300).optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ limit }) => {
       const db = loadDb();
@@ -157,6 +160,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       title: "Back up the books",
       description: "Full snapshot of the data spine to a timestamped backup file. Keeps the most recent 25 snapshots (rotation guards shared demo hosts against disk-fill).",
       inputSchema: {},
+      annotations: { readOnlyHint: false },
     },
     async () => {
       const db = loadDb();
@@ -180,6 +184,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       title: "List backups",
       description: "Every backup snapshot on file.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const dir = process.env.EVOLVED_BACKUP_DIR ?? join(DATA_DIR, "backups");
@@ -198,7 +203,7 @@ export function registerOpsPlusTools(server: McpServer): void {
       description:
         "The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library with trade-specific hazards, digest, learning loop, on-chain invoicing). Pass tradePack for a ready-made pack (" +
         TRADE_PACKS.map((p) => p.key).join(", ") +
-        ") or supply your own rates. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.",
+        "), supply your own rates, or pass a full customPack (labels + hazards) INLINE to adapt to a brand-new trade in one call — no repo fork. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.",
       inputSchema: {
         companyName: z.string(),
         tradePack: z.string().optional().describe("Ready-made pack: " + TRADE_PACKS.map((p) => p.key).join(" | ")),
@@ -206,33 +211,54 @@ export function registerOpsPlusTools(server: McpServer): void {
         region: z.string().optional(),
         currency: z.string().optional(),
         gstRate: z.number().min(0).max(0.3).optional(),
+        unit: z.string().max(24).optional().describe("What the rate card prices PER — 'sqft' (default), 'hour', 'unit', 'vehicle', 'linear ft'… so the quote speaks your trade, not blasting"),
         rates: z.array(z.object({
           depth: z.enum(["very-light", "light", "medium", "heavy"]),
           ratePerSqft: z.number().positive(),
         })).optional().describe("Custom rate card — must cover all four depths; defaults to the blasting card"),
+        customPack: z.object({
+          rateCard: z.array(z.object({
+            depth: z.enum(["very-light", "light", "medium", "heavy"]),
+            label: z.string().min(1),
+            ratePerSqft: z.number().positive(),
+          })).describe("Four tiers, one per depth, with YOUR trade's own labels"),
+          hazards: z.array(z.object({
+            hazard: z.string().min(1),
+            risk: z.enum(["low", "medium", "high"]),
+            mitigations: z.array(z.string().min(1)),
+          })).optional().describe("Your trade's hazards — merged into every FLHA the system drafts"),
+        }).optional().describe("Bring your own trade pack INLINE (labels + hazards) — adapt to a brand-new trade in one call, no repo fork"),
         confirm: z.boolean().describe("Must be true — this replaces the current demo dataset"),
       },
+      annotations: { readOnlyHint: false, destructiveHint: true },
     },
     async (input) => {
       if (!input.confirm) {
         return ok({ spunUp: false, error: "Set confirm:true — franchise_spinup replaces the current demo dataset (backup_create first if you want to keep it)." });
       }
-      const pack = input.tradePack ? findTradePack(input.tradePack) : undefined;
-      if (input.tradePack && !pack) {
+      const named = input.tradePack ? findTradePack(input.tradePack) : undefined;
+      if (input.tradePack && !named) {
         return ok({ spunUp: false, error: `Unknown trade pack "${input.tradePack}". Available: ${TRADE_PACKS.map((p) => p.key).join(", ")}.` });
       }
+      // A named pack OR an inline customPack both resolve to the same shape.
+      const pack = named ?? (input.customPack
+        ? { key: "custom", trade: input.trade ?? "custom", description: "inline pack", rateCard: input.customPack.rateCard, hazards: input.customPack.hazards ?? [] }
+        : undefined);
       const trade = input.trade ?? pack?.trade;
       if (!trade) {
-        return ok({ spunUp: false, error: "Provide trade or tradePack." });
+        return ok({ spunUp: false, error: "Provide trade, tradePack, or customPack." });
       }
-      const rates = input.rates ?? pack?.rateCard.map((r) => ({ depth: r.depth, ratePerSqft: r.ratePerSqft }));
-      if (input.rates) {
-        const provided = new Set(input.rates.map((r) => r.depth));
-        const missing = (["very-light", "light", "medium", "heavy"] as const).filter((d) => !provided.has(d));
-        if (missing.length) {
-          return ok({ spunUp: false, error: `Custom rate card must cover all four depths — missing: ${missing.join(", ")}.` });
+      // Any rate card supplied (inline pack or explicit rates) must cover all four depths.
+      const ALL_DEPTHS = ["very-light", "light", "medium", "heavy"] as const;
+      for (const [card, label] of [[input.rates, "rates"], [input.customPack?.rateCard, "customPack.rateCard"]] as const) {
+        if (card) {
+          const missing = ALL_DEPTHS.filter((d) => !new Set(card.map((r) => r.depth)).has(d));
+          if (missing.length) {
+            return ok({ spunUp: false, error: `${label} must cover all four depths — missing: ${missing.join(", ")}.` });
+          }
         }
       }
+      const rates = input.rates ?? pack?.rateCard.map((r) => ({ depth: r.depth, ratePerSqft: r.ratePerSqft }));
       const rateLabels = new Map(pack?.rateCard.map((r) => [r.depth, r.label]) ?? []);
       const fresh = buildSeed();
       const blank: Database = {
@@ -242,6 +268,7 @@ export function registerOpsPlusTools(server: McpServer): void {
           currency: input.currency ?? "CAD",
           gstRate: input.gstRate ?? 0.05,
           seededAt: nowIso(),
+          ...((input.unit ?? pack?.unit) ? { pricingUnit: input.unit ?? pack?.unit } : {}),
         },
         customers: [], leads: [], quotes: [], jobs: [], receipts: [], actionItems: [],
         flhas: [], invoices: [], pricingOutcomes: [], quoteCounter: {},

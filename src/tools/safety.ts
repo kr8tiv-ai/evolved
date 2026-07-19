@@ -27,6 +27,7 @@ export function registerSafetyTools(server: McpServer): void {
         musterPoint: z.string().optional(),
         openedBy: z.string(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -71,6 +72,7 @@ export function registerSafetyTools(server: McpServer): void {
         incidentFree: z.boolean(),
         notes: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -105,6 +107,7 @@ export function registerSafetyTools(server: McpServer): void {
       title: "Safety record",
       description: "The FLHA history: open assessments needing sign-off, signed records, and incident flags across all jobs.",
       inputSchema: { jobId: z.string().optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ jobId }) => {
       const db = loadDb();

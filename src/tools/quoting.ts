@@ -46,17 +46,22 @@ export function registerQuotingTools(server: McpServer): void {
       description:
         "Price an abrasive-blasting job with the company rate engine: learned $/sqft rates by blast depth and surface, access factor, mobilization, 5% GST, 25% deposit — plus a full profitability check (media, labor, fuel, overhead, break-even rate, margin verdict). Use this before creating any quote.",
       inputSchema: {
-        sqft: z.number().positive().describe("Square footage of the work area"),
-        depth: depthEnum.describe("Blast depth required"),
+        sqft: z.number().positive().optional().describe("Square footage of the work area (area trades). For non-area trades, use quantity instead"),
+        quantity: z.number().positive().optional().describe("Generic quantity that aliases sqft for non-area trades (hours, units, vehicles). Priced at quantity × tier rate + mobilization"),
+        depth: depthEnum.describe("Rate tier (blast depth for blasting; the trade's own tier for adapted businesses)"),
         surface: surfaceEnum.optional().describe("Surface type (drives learned pricing)"),
         access: z.enum(["easy", "moderate", "difficult"]).optional().describe("Site access difficulty (default easy)"),
         mobilization: z.boolean().optional().describe("Include the mobilization fee (default true)"),
       },
+      annotations: { readOnlyHint: true },
     },
     async (input) => {
       const db = loadDb();
+      const qty = input.quantity ?? input.sqft;
+      if (qty === undefined) return ok({ error: "Provide sqft (area trades) or quantity (hours, units, vehicles)." });
       const result = priceQuote(db, {
-        sqft: input.sqft,
+        sqft: qty,
+        quantity: input.quantity,
         depth: input.depth as BlastDepth,
         surface: input.surface as SurfaceKind | undefined,
         access: input.access,
@@ -88,6 +93,7 @@ export function registerQuotingTools(server: McpServer): void {
         notes: z.string().optional(),
         leadId: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -186,6 +192,7 @@ export function registerQuotingTools(server: McpServer): void {
       description:
         "Render a quote as a polished, dark-brand HTML document (Boreal Void page, Cyber Lime underline, Aurora Neon labels, diamond bullets, payment schedule with the big green total) ready to print to PDF and send. Returns the file path and the HTML.",
       inputSchema: { quoteId: z.string() },
+      annotations: { readOnlyHint: true },
     },
     async ({ quoteId }) => {
       const db = loadDb();
@@ -208,6 +215,7 @@ export function registerQuotingTools(server: McpServer): void {
         quoteId: z.string(),
         status: z.enum(["Draft", "Sent", "Accepted", "Declined", "Expired"]),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ quoteId, status }) => {
       return ok(
@@ -255,6 +263,7 @@ export function registerQuotingTools(server: McpServer): void {
       inputSchema: {
         status: z.enum(["Draft", "Sent", "Accepted", "Declined", "Expired"]).optional(),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ status }) => {
       const db = loadDb();
@@ -276,6 +285,7 @@ export function registerQuotingTools(server: McpServer): void {
       inputSchema: {
         surface: surfaceEnum.optional().describe("Show the learned rate for a specific surface"),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ surface }) => {
       const db = loadDb();
@@ -318,6 +328,7 @@ export function registerQuotingTools(server: McpServer): void {
         actualCostPerSqft: z.number().positive(),
         won: z.boolean(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -373,6 +384,7 @@ export function registerQuotingTools(server: McpServer): void {
           .optional()
           .describe("$/sqft to benchmark; defaults to the current learned rate"),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ depth, surface, price }) => {
       const db = loadDb();
@@ -399,6 +411,7 @@ export function registerQuotingTools(server: McpServer): void {
         depth: depthEnum.optional().describe("Limit to one blast depth"),
         surface: surfaceEnum.optional().describe("Learned status for a specific surface"),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ depth, surface }) => {
       const db = loadDb();

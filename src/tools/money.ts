@@ -28,6 +28,7 @@ export function registerMoneyTools(server: McpServer): void {
         text: z.string().describe("Raw receipt text (from a photo OCR or typed)"),
         jobId: z.string().optional().describe("Job to attribute this cost to"),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ text, jobId }) => {
       const result = await runOcrPipeline(text);
@@ -110,6 +111,7 @@ export function registerMoneyTools(server: McpServer): void {
       description:
         "Expense breakdown by category and vendor for a month (YYYY-MM, default current). Shows OCR provenance and reclaimable GST — the bookkeeping view an accountant actually wants.",
       inputSchema: { month: z.string().regex(/^\d{4}-\d{2}$/).optional() },
+      annotations: { readOnlyHint: true },
     },
     async ({ month }) => {
       const db = loadDb();
@@ -147,6 +149,7 @@ export function registerMoneyTools(server: McpServer): void {
         jobId: z.string(),
         extraLines: z.array(z.object({ description: z.string(), amount: z.number() })).optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async ({ jobId, extraLines }) => {
       return ok(
@@ -191,6 +194,7 @@ export function registerMoneyTools(server: McpServer): void {
       title: "Render branded invoice document",
       description: "Render an invoice in the company's dark brand as a self-contained HTML document ready to print to PDF.",
       inputSchema: { invoiceId: z.string() },
+      annotations: { readOnlyHint: true },
     },
     async ({ invoiceId }) => {
       const db = loadDb();
@@ -210,6 +214,7 @@ export function registerMoneyTools(server: McpServer): void {
       description:
         "Profit & loss for a month or the whole book: revenue from paid invoices, expenses from the receipt ledger, per-job margins from recorded actuals, and the business scorecard (win rate, average $/sqft, overall margin).",
       inputSchema: { month: z.string().regex(/^\d{4}-\d{2}$/).optional().describe("YYYY-MM; omit for all-time") },
+      annotations: { readOnlyHint: true },
     },
     async ({ month }) => {
       const db = loadDb();

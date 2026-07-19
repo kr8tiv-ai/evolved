@@ -491,6 +491,13 @@ export interface Database {
     company: string; currency: string; gstRate: number; seededAt: string;
     /** Lifetime settled x402 paid calls on this deployment (survives resets). */
     paidCalls?: number;
+    /**
+     * What the rate card is priced PER — "sqft" for area trades (default),
+     * or "hour", "unit", "vehicle", "linear ft", etc. for trades that don't
+     * price by area. Quantity × tier rate is the same math; this is the noun
+     * the quote speaks, so adapted trades stop pretending to be blasting.
+     */
+    pricingUnit?: string;
   };
   customers: Customer[];
   leads: Lead[];

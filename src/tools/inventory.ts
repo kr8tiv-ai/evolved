@@ -37,6 +37,7 @@ export function registerInventoryTools(server: McpServer): void {
         section: z.enum(["Materials & Media", "Consumables & PPE", "Equipment & General"]).optional(),
         lowStockOnly: z.boolean().optional(),
       },
+      annotations: { readOnlyHint: true },
     },
     async ({ section, lowStockOnly }) => {
       const db = loadDb();
@@ -74,6 +75,7 @@ export function registerInventoryTools(server: McpServer): void {
         supplier: z.string().optional(),
         receiptId: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -114,6 +116,7 @@ export function registerInventoryTools(server: McpServer): void {
         qty: z.number().positive(),
         jobId: z.string().optional(),
       },
+      annotations: { readOnlyHint: false },
     },
     async (input) => {
       return ok(
@@ -149,6 +152,7 @@ export function registerInventoryTools(server: McpServer): void {
       description:
         "Everything at or below its reorder point, with suggested order quantity (back to par), preferred supplier, last-paid unit price, estimated cost, and recent burn rate so nothing runs out mid-job.",
       inputSchema: {},
+      annotations: { readOnlyHint: true },
     },
     async () => {
       const db = loadDb();
@@ -189,6 +193,7 @@ export function registerInventoryTools(server: McpServer): void {
       description:
         "Supplier price history per product from real purchases: last price vs previous, percent change, and spike flags (≥10% increase). Catches supplier creep before it eats the margin.",
       inputSchema: { product: z.string().optional().describe("Filter to one product (fuzzy)") },
+      annotations: { readOnlyHint: true },
     },
     async ({ product }) => {
       const db = loadDb();

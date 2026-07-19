@@ -26,6 +26,32 @@ company. Three packs ship today — `pressure-washing`, `line-painting`,
 `mobile-detailing` — and the `evolved://trade-packs` MCP resource lists
 them with full contents.
 
+**No fork needed for a brand-new trade.** Pass a whole pack inline:
+
+```
+franchise_spinup {
+  companyName: "Aurora Mobile Detailing",
+  trade: "mobile detailing",
+  unit: "vehicle",
+  customPack: {
+    rateCard: [
+      { depth: "very-light", label: "Express exterior",  ratePerSqft: 60 },
+      { depth: "light",      label: "Full ext + interior", ratePerSqft: 120 },
+      { depth: "medium",     label: "Full detail",        ratePerSqft: 220 },
+      { depth: "heavy",      label: "Restoration",        ratePerSqft: 450 }
+    ],
+    hazards: [{ hazard: "Chemical exposure", risk: "medium", mitigations: ["Nitrile gloves", "SDS in the truck"] }]
+  },
+  confirm: true
+}
+```
+
+**Pricing speaks your unit.** `unit` sets what the rate card charges *per* —
+`sqft` (default), `hour`, `unit`, `vehicle`, `linear ft`. `quote_price` then
+takes a `quantity` and prices it at `quantity × tier rate + mobilization`, and
+every quote says the right noun. A detailer quotes per vehicle, not "per 100
+sqft of car."
+
 ## The 10-minute version (your own trade)
 
 1. Fork the repo.
