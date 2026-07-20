@@ -48,9 +48,21 @@ zero-credential CSV export, the same two modes as `workbook_status`.
 
 ## Status & source
 
-Deployed and in active development. It is part of the same free, open-source
-system (MIT); the dashboard's own source is published in its repository as it is
-scrubbed for public release — the link lands here and in the README when it's up.
+Live and open source (MIT): **[kr8tiv-ai/evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard)**,
+deployed at **[ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)**. A
+fresh clone runs **credential-free in demo mode** against synthetic fixtures —
+see the whole thing before wiring anything real:
+
+```bash
+git clone https://github.com/kr8tiv-ai/evolve-dashboard
+cd evolve-dashboard && npm install && npm start   # http://127.0.0.1:5178 · demo@example.com / demo1234
+```
+
+It's company-agnostic: every business-specific thing (branding, labels, units,
+tax, which tabs exist, column names) lives in one profile under
+`config/profiles/`, so adapting it to your trade is a single file. Point it at
+your own workbook + [router](https://github.com/kr8tiv-ai/evolve-ops-workbook)
+and set your own login.
 
 ## Boundary
 

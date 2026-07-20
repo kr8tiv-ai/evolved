@@ -67,7 +67,8 @@ optional human-facing polish.
 ## 3 · Your Apps Script Router (optional · needed only for the field app + dashboard · 30 min)
 
 The field app and dashboard reach your workbook through a tiny secret-gated web
-app. Use the clean-room template — [`templates/router.gs`](../templates/router.gs):
+app. Use the clean-room template — [`templates/router.gs`](../templates/router.gs)
+(also its own repo, with the workbook template: [kr8tiv-ai/evolve-ops-workbook](https://github.com/kr8tiv-ai/evolve-ops-workbook)):
 
 1. Your workbook → **Extensions → Apps Script**, paste `templates/router.gs`.
 2. **Generate your OWN secret** (`openssl rand -hex 24`) and set it in
@@ -91,11 +92,13 @@ for the MCP to file. Integration detail: [FIELD-APP.md](FIELD-APP.md).
 ## 5 · Your dashboard (optional · 30 min)
 
 The owner's eyes — a login-protected web app that reads your workbook through the
-same router. Live reference instance: **[ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)**
-(behind auth). Source is being published to `kr8tiv-ai/evolve-dashboard` (MIT);
-its README carries the exact env vars, router actions, and workbook tabs it
-expects — deploy it, point it at **your** router, set your own login. Overview:
-[DASHBOARD.md](DASHBOARD.md).
+same router. Open source (MIT): **[kr8tiv-ai/evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard)**,
+live at **[ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)**. It
+runs **credential-free in demo mode** first (`git clone … && npm install && npm start`
+→ `demo@example.com / demo1234`), so you see it working before wiring anything
+real; then point it at **your** router and set your own login. It's
+company-agnostic — one profile under `config/profiles/` sets your branding,
+units, tax, and tabs. Overview: [DASHBOARD.md](DASHBOARD.md).
 
 ---
 

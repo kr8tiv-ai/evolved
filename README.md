@@ -30,6 +30,25 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 
 ---
 
+## Quick start — running in about 2 minutes
+
+**Try it now, nothing to install:** open the live playground at **[www.evolvedmcp.cloud](https://www.evolvedmcp.cloud/)** and click Judge Mode.
+
+**Run the MCP yourself** *(prerequisites: Node 20+ and git — nothing else, no keys, no accounts):*
+
+```bash
+git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
+npm install && npm run build && npm run demo   # the business loop, narrated
+```
+
+**Wire it into your agent** — hosted (nothing to install) via the `mcp-remote` bridge:
+
+```json
+{ "mcpServers": { "evolved": { "command": "npx", "args": ["-y", "mcp-remote", "https://www.evolvedmcp.cloud/mcp"] } } }
+```
+
+Then ask it: *"Run the morning digest — what am I about to drop?"* Full client configs (Claude Desktop, Cursor, local stdio): [docs/CONNECT.md](docs/CONNECT.md). Make it **your** business in one call, then stand up the whole system (workbook, field app, dashboard): **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)** — an afternoon for the MCP + workbook, a weekend for all four surfaces.
+
 ## The 60-second judge tour
 
 The service is live. You can verify every headline claim from your terminal before reading another word.
@@ -105,8 +124,8 @@ Open source, all MIT — the system reads as one thing from whichever repo you l
 |---|---|---|
 | **evolved** | 🧠 The MCP brain — 84 tools, the workbook spine, the on-chain rail, the trade packs (this repo) | [kr8tiv-ai/evolved](https://github.com/kr8tiv-ai/evolved) |
 | **evolve-field-app** | ✋ The crew's hands — tap-once field capture, $0/month on Apps Script | [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) |
-| **workbook + router** | 📊 The spine + the secret-gated Apps Script router the human surfaces read through | [`scripts/make-workbook-template.mjs`](scripts/make-workbook-template.mjs) · [`templates/router.gs`](templates/router.gs) |
-| **owner dashboard** | 📈 The owner's eyes — login-protected finance/ops dashboard, live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com) (source open-sourcing to `kr8tiv-ai/evolve-dashboard`, MIT) | [docs/DASHBOARD.md](docs/DASHBOARD.md) |
+| **evolve-ops-workbook** | 📊 The spine — a 20-tab workbook template + the secret-gated Apps Script router the human surfaces read through (generate your own secret) | [kr8tiv-ai/evolve-ops-workbook](https://github.com/kr8tiv-ai/evolve-ops-workbook) · in-repo: [`make-workbook-template.mjs`](scripts/make-workbook-template.mjs) · [`router.gs`](templates/router.gs) |
+| **evolve-dashboard** | 📈 The owner's eyes — login-protected finance/ops dashboard (runs credential-free in demo mode), live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com) | [kr8tiv-ai/evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard) · [docs/DASHBOARD.md](docs/DASHBOARD.md) |
 | **evolvedmcp-cloud** | 🌐 The landing page + zero-install Judge-Mode playground (the site at www.evolvedmcp.cloud) | [kr8tiv-io/evolvedmcp-cloud](https://github.com/kr8tiv-io/evolvedmcp-cloud) |
 
 Related Evolve-brand repos: [kr8tiv-io/Evolve-Rebrand](https://github.com/kr8tiv-io/Evolve-Rebrand) (the identity system) and [kr8tiv-io/evolve-lifestyle](https://github.com/kr8tiv-io/evolve-lifestyle) (the apparel arm) — the brand this operating system runs under.
@@ -117,9 +136,9 @@ Full guide with commands and effort estimates: **[docs/STAND-UP-YOUR-OWN.md](doc
 
 1. **Your ops workbook** *(required, ~10 min)* — `node scripts/make-workbook-template.mjs <trade> "My Company"` → import the 20 CSV tabs into a Google Sheet.
 2. **Your MCP** *(required, ~20 min)* — clone this repo, point any MCP client at it ([CONNECT.md](docs/CONNECT.md)), and `franchise_spinup` your trade. You now have an agent-run business.
-3. **Your router** *(optional, ~30 min)* — deploy [`templates/router.gs`](templates/router.gs) as an Apps Script web app with your **own** generated secret; the field app and dashboard read through it.
+3. **Your router** *(optional, ~30 min)* — deploy the Apps Script router from [evolve-ops-workbook](https://github.com/kr8tiv-ai/evolve-ops-workbook) ([`router.gs`](templates/router.gs)) as a web app with your **own** generated secret; the field app and dashboard read through it.
 4. **Your field app** *(optional, ~20 min)* — deploy [evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app), point it at your router.
-5. **Your dashboard** *(optional, ~30 min)* — deploy the dashboard, point it at your router, set your own login.
+5. **Your dashboard** *(optional, ~30 min)* — deploy [evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard) (it runs credential-free in demo mode first — `npm install && npm start`), then point it at your router and set your own login.
 
 The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Everything is optional and independent — stop after any step.
 
