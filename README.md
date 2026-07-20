@@ -97,6 +97,32 @@ flowchart LR
 
 **Stand up the whole thing for your own company** — your workbook, your router, your field app, your dashboard, your MCP, nothing of Evolve's: **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)**. The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Every piece is MIT, free, and optional.
 
+### Every repo in the system
+
+Open source, all MIT — the system reads as one thing from whichever repo you land on first:
+
+| Repo / surface | Role | Link |
+|---|---|---|
+| **evolved** | 🧠 The MCP brain — 84 tools, the workbook spine, the on-chain rail, the trade packs (this repo) | [kr8tiv-ai/evolved](https://github.com/kr8tiv-ai/evolved) |
+| **evolve-field-app** | ✋ The crew's hands — tap-once field capture, $0/month on Apps Script | [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) |
+| **workbook + router** | 📊 The spine + the secret-gated Apps Script router the human surfaces read through | [`scripts/make-workbook-template.mjs`](scripts/make-workbook-template.mjs) · [`templates/router.gs`](templates/router.gs) |
+| **owner dashboard** | 📈 The owner's eyes — login-protected finance/ops dashboard, live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com) (source open-sourcing to `kr8tiv-ai/evolve-dashboard`, MIT) | [docs/DASHBOARD.md](docs/DASHBOARD.md) |
+| **evolvedmcp-cloud** | 🌐 The landing page + zero-install Judge-Mode playground (the site at www.evolvedmcp.cloud) | [kr8tiv-io/evolvedmcp-cloud](https://github.com/kr8tiv-io/evolvedmcp-cloud) |
+
+Related Evolve-brand repos: [kr8tiv-io/Evolve-Rebrand](https://github.com/kr8tiv-io/Evolve-Rebrand) (the identity system) and [kr8tiv-io/evolve-lifestyle](https://github.com/kr8tiv-io/evolve-lifestyle) (the apparel arm) — the brand this operating system runs under.
+
+### Stand up your own — the five steps
+
+Full guide with commands and effort estimates: **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)**. In short:
+
+1. **Your ops workbook** *(required, ~10 min)* — `node scripts/make-workbook-template.mjs <trade> "My Company"` → import the 20 CSV tabs into a Google Sheet.
+2. **Your MCP** *(required, ~20 min)* — clone this repo, point any MCP client at it ([CONNECT.md](docs/CONNECT.md)), and `franchise_spinup` your trade. You now have an agent-run business.
+3. **Your router** *(optional, ~30 min)* — deploy [`templates/router.gs`](templates/router.gs) as an Apps Script web app with your **own** generated secret; the field app and dashboard read through it.
+4. **Your field app** *(optional, ~20 min)* — deploy [evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app), point it at your router.
+5. **Your dashboard** *(optional, ~30 min)* — deploy the dashboard, point it at your router, set your own login.
+
+The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Everything is optional and independent — stop after any step.
+
 Four surfaces, one loop, all open source and free — and it begins at the MCP. The brain runs the company; the field app, the workbook, and the dashboard are how real people touch the same system. **Blasting is just the proving ground — `franchise_spinup` makes it any service business in one call.**
 
 ## Watch one agent run the whole engagement
@@ -161,6 +187,29 @@ The company is swappable — and not just its name. `franchise_spinup { tradePac
 ## Full parity with the production system
 
 Everything the live field app and ops workbook do, as first-class tools: **inventory control** (par levels, reorder suggestions priced from real COD receipts, per-job burn-down, supplier price-spike watch), **contacts/CRM** (customers with balances, suppliers with pricebooks, crew with certifications), **the ops-sheet engine** (the data spine rendered as the operations workbook — the field App Inbox with a deterministic filing engine), **accounting depth** (tiered-OCR receipts with vendor canonicalization and duplicate guards, discrepancy reports, escalating receivables reminders, P&L with reclaimable GST), **the workbook spine** (a real Google Sheets workbook created and synced from the database, or the same 20 tabs as CSV with zero credentials), **field operations** (before/after photo albums with gap detection, voice and text field notes that never get lost, a crew time clock that feeds real labor cost into Job P&L, and hazard assessments authored ON-SITE by the crew — auto-drafts are only starting points), and **growth** (review requests with a tracked response rate, the reputation ledger and testimonial bank, the Job P&L scorecard with win rate and overall margin, and the live dispatch board).
+
+## Everything it does — the full capability set
+
+A reader should finish this knowing exactly what the system runs, not a teaser. All 84 tools, grouped by what they do for a business:
+
+- **Quoting intelligence** — price any job with a rate engine that *learns*: a $/unit rate per tier that converges toward what actually wins work at healthy margins, a confidence score and a suggested price range that tightens with data, a market-band benchmark so a quote is never blind, and a full profitability check (media, labour, fuel, overhead, break-even rate, margin verdict). Create the quote, render the branded document, track its status, and teach the engine from the outcome.
+- **Photo-to-quote** — a customer texts a photo; the system estimates surface, area, condition, and tier, then returns a confidence-banded price range grounded in comparable jobs already in the books, a market benchmark, and the site factors that could move it — before booking a branded draft with a measure-to-confirm clause.
+- **Invoicing & receivables** — turn a job into an invoice with the deposit applied, render it, chase it: escalating reminders, receivables aging, and a running balance-due per customer.
+- **Receipts → books** — ingest a receipt through tiered OCR (escalates the hard ones), reconcile subtotal + tax = total, categorise it, canonicalise the vendor, guard against duplicates, and roll it into expenses, per-job cost, and the P&L (with reclaimable tax broken out).
+- **Job & lead tracking** — a full pipeline (lead → contacted → quoted → won/lost), a dispatch board bucketed by real job statuses with today's work and unscheduled-but-paid flags, and job scheduling/completion with actuals capture.
+- **Inventory control** — media, coatings, PPE, and consumables on hand with par levels and reorder points, per-job burn-down, receive-against-receipt, reorder suggestions priced from real purchase history, and a supplier price-spike watch.
+- **Contacts / CRM** — customers with balances, suppliers with pricebooks, and crew with certifications and hourly rates.
+- **Safety & FLHA** — draft the day's field-level hazard assessment from the job scope with per-hazard mitigations and standard PPE, capture it on-site, sign it off per worker, and escalate a hazard immediately — an uncleared stop-work outranks every money flag on the board. Audit-ready records.
+- **Dispatch & the daily loop** — a morning digest that leads with the one thing not to drop, then money pulse, today's jobs, leads, and quotes out; an action-item "ball-drop" scanner (deposit in but unscheduled, invoice unpaid, quote expiring, job done but not invoiced); a weather-gated booking check; and a live business snapshot.
+- **CFO forecasting** — model add-a-truck (capex, utilisation ramp, break-even month), rate changes with price elasticity, and demand shocks over a 12-month cash table grounded in the books and weather-gated seasonality; plus a financial-health one-pager (receivables aging, customer-concentration risk, run-rate).
+- **Field operations** — before/after photo albums with gap detection, voice and text field notes that never get lost, a crew time clock that feeds real labour cost into Job P&L, and JHAs authored on-site.
+- **Voice commands** — "used four bags of crushed glass on the Kowalczyk job" burns down inventory against that job; "open the FLHA" drafts the hazard assessment; "next stop?" reads the dispatch board. Unmatched job hints refuse rather than guess.
+- **Growth** — post-job review requests with a tracked response rate, a reputation ledger and testimonial bank, and a Job P&L scorecard (quoted vs actual, win rate, overall margin, average $/unit).
+- **On-chain settlement** — turn an invoice into an EIP-681 payment request in test OKB on OKX X Layer, verify settlement with read-only RPC (replay-protected, never holds keys), and monetise the agent itself with an opt-in x402 pay-per-call rail.
+- **The workbook spine** — render the whole operation as a real Google Sheets workbook (created and synced via service account) or the identical 20 tabs as a zero-credential CSV bundle.
+- **Business-in-a-box & trade packs** — `franchise_spinup` re-seeds the entire OS for any trade in one call (rate card, hazards, pricing unit, currency, tax label, policy notes), `franchise_preview` window-shops a pack safely, `brand_configure` makes rendered documents feel like your company, and daily insights train on the owner's feedback. Backups, activity feed, and demo reset round it out.
+
+Named-tool reference below; full parameter-level docs (generated from the live server so they can't drift): [docs/TOOLS.md](docs/TOOLS.md).
 
 ## The tool surface — 84 tools, 16 domains
 
