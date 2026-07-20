@@ -2,7 +2,9 @@
 
 Evolved is free and open source (MIT). You can run the whole system — the MCP
 brain, the crew field app, the workbook backend, and a complete demo dataset —
-at no cost, for any service business. Here's the whole path, start to running.
+at no cost, for any service business. This page is the **quick path** (the MCP +
+your workbook, an afternoon). To stand up all four surfaces — workbook, router,
+field app, dashboard, MCP — as one system, follow **[STAND-UP-YOUR-OWN.md](STAND-UP-YOUR-OWN.md)**.
 
 ## The 4 steps
 

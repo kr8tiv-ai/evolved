@@ -20,11 +20,11 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.evolvedmcp.cloud/health)
-[![Tools](https://img.shields.io/badge/tools-83-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
-[![Tests](https://img.shields.io/badge/tests-47_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
+[![Tools](https://img.shields.io/badge/tools-84-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
+[![Tests](https://img.shields.io/badge/tests-48_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
-[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [84 tools](#the-tool-surface--83-tools-16-domains) · [Docs](docs/)
+[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [84 tools](#the-tool-surface--84-tools-16-domains) · [Docs](docs/)
 
 </div>
 
@@ -82,7 +82,7 @@ Evolved isn't just an MCP server — it's a complete, free, open-source operatin
 - 🧠 **The MCP — the brain** *(this repo).* 84 tools that hold the business logic: pricing, safety, books, dispatch, on-chain settlement. Every other surface is a client of it. Clone, `npm install`, `npm run build`, zero credentials.
 - ✋ **The field app — the crew's hands** — [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) (MIT). A worker taps one button in the truck — photo, receipt, FLHA sign-off, hazard, note — and it lands in the App Inbox for the brain to file. $0/month on Google Apps Script. Deployed and in daily production use, which is what makes the tool surface a description of real work rather than a design exercise. Everything queues except safety: `hazard_report` escalates immediately, and an uncleared **stop-work** outranks every money flag on the dispatch board. ([how it plugs in](docs/FIELD-APP.md))
 - 📊 **The workbook — the spine** — the whole operation as a 20-tab Google Sheets workbook, created and synced by `workbook_create` or exported to CSV with zero credentials. One shared source of truth for the humans and the agent. ([generate your own](docs/ONBOARDING.md))
-- 📈 **The dashboard — the owner's eyes.** A login-protected, mobile-responsive web app reading the same workbook — deployed on Hostinger behind real auth: a finance dashboard with interactive charts (spend proportion, revenue and margin trends, job-profitability comparison); job P&Ls, quotes, invoices, and receivables with every entity clickable through to its document; filterable receipts with pop-up images; an insights page (last month's revenue, where the money went, margin trends, outstanding receivables); a safety page (FLHAs, mitigations, worker sign-offs — audit-ready); a maintenance page (servicing, wear items, overdue work); and a company inventory page tied to a materials price tracker. Same dark aurora branding. Read-only onto the spine — it shows, the brain does. ([how it plugs in](docs/DASHBOARD.md))
+- 📈 **The dashboard — the owner's eyes.** A login-protected, mobile-responsive web app reading the same workbook — **live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)** (behind auth), source open-sourcing to `kr8tiv-ai/evolve-dashboard` (MIT): a finance dashboard with interactive charts (spend proportion, revenue and margin trends, job-profitability comparison); job P&Ls, quotes, invoices, and receivables with every entity clickable through to its document; filterable receipts with pop-up images; an insights page (last month's revenue, where the money went, margin trends, outstanding receivables); a safety page (FLHAs, mitigations, worker sign-offs — audit-ready); a maintenance page (servicing, wear items, overdue work); and a company inventory page tied to a materials price tracker. Same dark aurora branding. Read-only onto the spine — it shows, the brain does. ([how it plugs in](docs/DASHBOARD.md))
 
 ```mermaid
 %%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
@@ -94,6 +94,8 @@ flowchart LR
     WB -.->|source of truth| MCP
     WB --> DASH["📈 Owner dashboard<br><i>the owner's eyes</i>"]
 ```
+
+**Stand up the whole thing for your own company** — your workbook, your router, your field app, your dashboard, your MCP, nothing of Evolve's: **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)**. The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Every piece is MIT, free, and optional.
 
 Four surfaces, one loop, all open source and free — and it begins at the MCP. The brain runs the company; the field app, the workbook, and the dashboard are how real people touch the same system. **Blasting is just the proving ground — `franchise_spinup` makes it any service business in one call.**
 
@@ -269,8 +271,8 @@ Built for the **OKX AI Genesis Hackathon** by [Matt Haynes](https://github.com/M
 | | |
 |---|---|
 | **Try it live** | [www.evolvedmcp.cloud](https://www.evolvedmcp.cloud/) — browser playground, zero install |
-| **Run your own business** | [docs/ONBOARDING.md](docs/ONBOARDING.md) — pick trade → generate workbook → connect app → running |
-| **The four surfaces** | [field app](docs/FIELD-APP.md) (hands) · [workbook](docs/ONBOARDING.md) (spine) · [dashboard](docs/DASHBOARD.md) (eyes) · MCP (brain, this repo) |
+| **Stand up your own** | [docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md) — the whole system for your company (afternoon → weekend) · quick path: [ONBOARDING.md](docs/ONBOARDING.md) |
+| **The four surfaces** | 🧠 MCP (this repo) · ✋ [field app](https://github.com/kr8tiv-ai/evolve-field-app) ([docs](docs/FIELD-APP.md)) · 📊 [workbook](docs/ONBOARDING.md) + [router template](templates/router.gs) · 📈 dashboard ([ops.evolveecoblasting.com](https://ops.evolveecoblasting.com), [docs](docs/DASHBOARD.md)) |
 | **Connect your agent** | [docs/CONNECT.md](docs/CONNECT.md) — copy-paste config for Claude Desktop, Claude Code, Cursor (hosted or local) |
 | Live endpoint | `/mcp` (free A2MCP) · `/mcp-paid` (x402) · `/health` · `/stats` (revenue scoreboard) |
 | Listing | A2MCP ASP with an implemented x402 paid tier — [docs/OKX-LISTING.md](docs/OKX-LISTING.md) |
