@@ -26,7 +26,7 @@ card, so this renders a full-width branded preview straight to the playground:
 
 Evolved: a business-in-a-box, run by an AI, paid on-chain. #OKXAI
 
-A real Alberta company's ops brain, live as an MCP service — 83 tools, x402 + on-chain settlement on @okx X Layer testnet. Any service business, one call. Run it in your browser:
+A real Alberta company's ops brain, live as an MCP service — 84 tools, x402 + on-chain settlement on @okx X Layer testnet. Any service business, one call. Run it in your browser:
 
 https://www.evolvedmcp.cloud
 
@@ -51,7 +51,7 @@ One agent runs the whole engagement, humans approve only the money:
 ◆ Voice commands from the crew, a CFO simulator, a quote engine that learns from won jobs
 ◆ Trade packs ship today: pressure washing, line painting, mobile detailing — yours is one file away
 
-83 tools. 41 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
+84 tools. 48 tests incl. a live testnet probe. Fully open source. Synthetic data, real math.
 
 Try it in your browser, zero install:
 www.evolvedmcp.cloud
@@ -66,7 +66,7 @@ github.com/kr8tiv-ai/evolved
 
 Most AI business tools are chatbots wearing a suit. #OKXAI
 
-Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 83 tools, open source.
+Evolved: a company-in-a-box proven on a real Alberta blasting company, settling invoices in OKB on @okx X Layer testnet. 84 tools, open source.
 
 www.evolvedmcp.cloud
 

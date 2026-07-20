@@ -1,7 +1,7 @@
 /**
  * Evolved — MCP server assembly.
  *
- * 83 tools across sixteen domains: quoting intelligence, money, pipeline,
+ * 84 tools across sixteen domains: quoting intelligence, money, pipeline,
  * safety, autonomous ops, inventory, contacts/CRM, the ops-sheet engine,
  * accounting depth, on-chain payments (X Layer testnet), the autonomous
  * lifecycle, the frontier set (photo-to-quote, voice, CFO, franchise),
@@ -41,7 +41,7 @@ export const SERVER_INFO = {
 };
 
 /** Kept in lockstep with registrations below; enforced by the test suite. */
-export const TOOL_COUNT = 83;
+export const TOOL_COUNT = 84;
 
 export function createServer(): McpServer {
   const server = new McpServer(SERVER_INFO, {
@@ -59,7 +59,12 @@ export function createServer(): McpServer {
       "Google Sheets operations workbook (service account via",
       "EVOLVED_GOOGLE_SA), workbook_export writes the same tabs as CSV with",
       "zero credentials. Field crews log photos, notes, and time against",
-      "jobs and author the day's JHA on-site (flha_field_capture).",
+      "jobs and author the day's JHA on-site (flha_field_capture), and",
+      "escalate anything unsafe with hazard_report — which raises an urgent",
+      "action item, drafts the owner notification, and stops the job on a",
+      "stop-work call. The human half of this system is a deployed phone app",
+      "the real crew uses daily; read evolved://field-app for how its capture",
+      "paths map onto these tools.",
       "Start with business_snapshot or morning_digest to orient. All demo",
       "data is synthetic; demo_reset restores it; franchise_spinup re-seeds",
       "the whole OS for a brand-new trade (franchise_preview to window-shop).",
@@ -69,7 +74,7 @@ export function createServer(): McpServer {
   registerQuotingTools(server); // 9
   registerMoneyTools(server); // 5
   registerPipelineTools(server); // 6
-  registerSafetyTools(server); // 3
+  registerSafetyTools(server); // 4
   registerOpsTools(server); // 6
   registerInventoryTools(server); // 5
   registerContactsTools(server); // 5
@@ -106,6 +111,31 @@ export function createServer(): McpServer {
           builtIn: HAZARD_LIBRARY.map(({ hazard, risk, mitigations }) => ({ hazard, risk, mitigations })),
           installedTradePack: loadDb().customHazards,
           standardPpe: STANDARD_PPE,
+        }, null, 2),
+      }],
+    }),
+  );
+  server.registerResource(
+    "field-app",
+    "evolved://field-app",
+    { title: "The field app (deployed front-end)", description: "The human front-end this toolkit is modelled on: a production phone app the real crew uses every day, and how its capture paths map onto Evolved's tools.", mimeType: "application/json" },
+    async (uri) => ({
+      contents: [{
+        uri: uri.href, mimeType: "application/json",
+        text: JSON.stringify({
+          what: "Evolved is the agent-facing half of a system that already exists. The human half is a mobile field app the real Alberta crew uses on their phones — the proof that these tools describe real work, not a demo.",
+          status: "Deployed and in daily production use",
+          repo: "https://github.com/kr8tiv-ai/evolve-field-app",
+          platform: "Google Apps Script web app (installable to the phone home screen), $0/month",
+          whyItMatters: "Crews are not going to run an MCP client on a jobsite. The field app is how the data actually gets captured; Evolved is how an agent reasons about it. Same operating system, two front doors.",
+          capturePaths: [
+            { app: "Name + 4-digit PIN sign-in", evolved: "identity on every capture — crew_checkin / crew_checkout carry who did the work" },
+            { app: "One-tap capture (receipt, job photo, lead, quote, inventory, price, anything)", evolved: "field_photo_log, field_note, receipt ingestion, lead capture — everything lands in one staged inbox first" },
+            { app: "FLHA with verified per-worker PIN sign-off", evolved: "flha_open (auto-draft), flha_field_capture (crew-authored on-site), flha_signoff" },
+            { app: "Report a Hazard — one-screen escalation, emails management immediately", evolved: "hazard_report — records it, raises an urgent action item, drafts the owner notification, and stops the job on a stop-work call" },
+            { app: "App Inbox staging tab — nothing writes straight into the live financial tabs", evolved: "inbox_* filing engine with the same discipline: capture is safe, filing is deliberate" },
+          ],
+          designRule: "The app never writes directly into live financial tabs. Every capture lands in a staging inbox and is filed deliberately — the same reason Evolved keeps human gates at money decisions.",
         }, null, 2),
       }],
     }),

@@ -10,7 +10,7 @@ import { createServer as createHttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createServer } from "../server.js";
+import { createServer, TOOL_COUNT } from "../server.js";
 import { handleRequest } from "../app.js";
 import { chainStatus, XLAYER_TESTNET } from "../engine/payments.js";
 import { commitTxHash, loadDb, releaseTxHash, reserveTxHash, resetDb } from "../store.js";
@@ -247,7 +247,7 @@ test("x402 over real HTTP: 402 challenge, then simulated proof unlocks the MCP s
     // Health advertises both endpoints.
     const health = (await (await fetch(`${base}/health`)).json()) as { endpoints: Record<string, string>; tools: number };
     assert.ok(health.endpoints["/mcp-paid"]);
-    assert.equal(health.tools, 83);
+    assert.equal(health.tools, TOOL_COUNT);
 
     // No payment → 402 with spec-shaped envelope + base64 header.
     const challenge = await fetch(`${base}/mcp-paid`, {
@@ -398,7 +398,7 @@ test("review fixes: replay protection, declined e-sign is final, custom price br
 test("every tool carries MCP annotations; read/write/destructive hints are correct", async () => {
   const { server, client } = await connect();
   const tools = (await client.listTools()).tools;
-  assert.equal(tools.length, 83, "all 83 tools listed");
+  assert.equal(tools.length, TOOL_COUNT, `all ${TOOL_COUNT} tools listed`);
   // Every tool must declare readOnlyHint so clients know what's safe to call.
   for (const t of tools) {
     assert.ok(t.annotations, `${t.name} is missing annotations`);
@@ -563,9 +563,14 @@ test("adaptable toolkit: MCP resources + prompts registered; trade pack installs
   // The server speaks the whole MCP spec: resources and prompts, not just tools.
   const resources = await client.listResources();
   const uris = resources.resources.map((r) => r.uri);
-  for (const u of ["evolved://rate-table", "evolved://hazard-library", "evolved://trade-packs"]) {
+  for (const u of ["evolved://rate-table", "evolved://hazard-library", "evolved://trade-packs", "evolved://field-app"]) {
     assert.ok(uris.includes(u), `missing resource ${u}`);
   }
+  // The field-app resource is the completeness proof: a real deployed front-end.
+  const fieldRes = await client.readResource({ uri: "evolved://field-app" });
+  const fieldApp = JSON.parse((fieldRes.contents[0] as { text: string }).text);
+  assert.match(fieldApp.repo, /evolve-field-app/);
+  assert.ok(fieldApp.capturePaths.some((p: { evolved: string }) => p.evolved.includes("hazard_report")));
   const packRes = await client.readResource({ uri: "evolved://trade-packs" });
   const packs = JSON.parse((packRes.contents[0] as { text: string }).text);
   assert.ok(packs.some((p: { key: string }) => p.key === "pressure-washing"));

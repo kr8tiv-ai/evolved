@@ -1,8 +1,8 @@
 # The 90-second demo
 
 > **v3 — the any-business cut (SHIPPED as `submission/evolved-demo.mp4`, 90.0s).**
-> Title (any service business, run by an AI) → premise (83 tools / 16 domains /
-> 41 tests, live `/health`) → **trade packs** (pressure washing, line painting,
+> Title (any service business, run by an AI) → premise (84 tools / 16 domains /
+> 48 tests, live `/health`) → **trade packs** (pressure washing, line painting,
 > mobile detailing, YOUR trade — `franchise_spinup`) → intake by text, voice,
 > or photo (`quote_from_photo`) → the autonomous lifecycle with two human money
 > gates → **the JHA authored on-site** (`flha_field_capture`) → **the workbook

@@ -99,6 +99,51 @@ test("field: photo album, note routing, and the time clock feed Job P&L", async 
   assert.ok(row.cost > 0);
 });
 
+test("field: reporting a hazard escalates it, and stop-work actually stops the job", async () => {
+  resetDb();
+  const { client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // A low-severity report is still recorded, but it must not cry wolf.
+  const low = await call("hazard_report", {
+    reportedBy: "T. Field", what: "Extension cord run across the walkway", where: "Side gate", severity: "low",
+  });
+  assert.equal(low.actionItem.severity, "info");
+  assert.equal(low.workStopped, undefined);
+
+  // A bad job reference never silently drops a hazard.
+  const bogus = await call("hazard_report", {
+    reportedBy: "T. Field", what: "Something unsafe over here", where: "Yard", severity: "high", jobId: "JOB-NOPE",
+  });
+  assert.match(bogus.error, /No job/);
+
+  // Stop-work: urgent action item, owner draft, and the job comes off "In progress".
+  await call("crew_checkin", { crewName: "T. Field", jobId: "JOB-1043" });
+  const stop = await call("hazard_report", {
+    reportedBy: "T. Field", what: "Live overhead line inside the blast radius", where: "North fence line",
+    severity: "stop-work", jobId: "JOB-1043", immediateAction: "Shut down the pot and pulled everyone back",
+  });
+  assert.equal(stop.actionItem.severity, "urgent");
+  assert.match(stop.actionItem.message, /STOP-WORK/);
+  assert.match(stop.workStopped.message, /Work is STOPPED/);
+  assert.equal(stop.workStopped.jobId, "JOB-1043");
+  assert.match(stop.notifyOwner.subject, /\[STOP WORK\]/);
+  assert.match(stop.notifyOwner.body, /WORK IS STOPPED/);
+  assert.match(stop.notifyOwner.body, /Shut down the pot/);
+  // Drafted, never auto-sent on a crew member's behalf.
+  assert.match(stop.note, /drafted, not sent/);
+
+  // The safety record surfaces it loudly until someone clears it.
+  const log = await call("safety_log");
+  assert.equal(log.stopWorkActive, true);
+  assert.ok(log.unclearedHazards.some((h: any) => h.id === stop.report.id));
+
+  // ...and it outranks the money flags on the dispatch board.
+  const board = await call("dispatch_board");
+  assert.match(board.flags[0], /STOP-WORK hazard uncleared/);
+});
+
 test("field: the JHA is authored on-site — field capture creates or upgrades the day's FLHA", async () => {
   resetDb();
   const { client } = await connect();

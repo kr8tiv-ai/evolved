@@ -14,7 +14,7 @@ flowchart TB
         A[stdio — src/index.ts]
         B[Streamable HTTP — src/http.ts<br>POST /mcp, stateless, free A2MCP endpoint]
     end
-    subgraph surface [Tool surface — src/tools/* — 83 tools]
+    subgraph surface [Tool surface — src/tools/* — 84 tools]
         Q[quoting 7 · money 5 · pipeline 6<br>safety 3 · ops 6]
         R[inventory 5 · contacts 5 · sheet 6<br>accounting 3 · payments 4]
         S2[lifecycle 5 · vision 1 · voice 1<br>cfo 2 · opsplus 6]
@@ -37,7 +37,7 @@ clients and over Streamable HTTP for hosted use. The HTTP entry point is
 deliberately **stateless** — a fresh server and transport per request — so the
 free A2MCP endpoint scales horizontally and holds no session state.
 
-**Tool surface.** 83 tools in 16 domains (the five originals plus inventory,
+**Tool surface.** 84 tools in 16 domains (the five originals plus inventory,
 contacts/CRM, the ops-sheet engine, accounting depth, on-chain payments,
 the autonomous lifecycle, the frontier set, business-in-a-box, the workbook
 spine, field ops, and growth). Tools validate input with zod, call engines,

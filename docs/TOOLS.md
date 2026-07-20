@@ -1,6 +1,6 @@
 # Tool catalog
 
-Generated from the live server — 83 tools. Every tool returns JSON.
+Generated from the live server — 84 tools. Every tool returns JSON.
 
 ## Quoting intelligence
 
@@ -10,11 +10,13 @@ Price an abrasive-blasting job with the company rate engine: learned $/sqft rate
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `sqft` | number | yes | Square footage of the work area |
-| `depth` | `very-light` · `light` · `medium` · `heavy` | yes | Blast depth required |
+| `sqft` | number | no | Square footage of the work area (area trades). For non-area trades, use quantity instead |
+| `quantity` | number | no | Generic quantity that aliases sqft for non-area trades (hours, units, vehicles). Priced at quantity × tier rate + mobilization |
+| `depth` | `very-light` · `light` · `medium` · `heavy` | no | Rate tier (blast depth for blasting; the trade's own tier for adapted businesses). Optional for a flat price |
 | `surface` | `driveway` · `sidewalk` · `patio` · `garage-pad` · `exposed-aggregate` · `trailer` · `equipment` · `fence` · `brick` · `other` | no | Surface type (drives learned pricing) |
 | `access` | `easy` · `moderate` · `difficult` | no | Site access difficulty (default easy) |
 | `mobilization` | boolean | no | Include the mobilization fee (default true) |
+| `flatPrice` | number | no | Flat-fee pricing kind: a fixed subtotal, no quantity × rate (a bench, a call-out) |
 
 ### `quote_create`
 
@@ -230,9 +232,22 @@ Close the day's FLHA: every crew member signs, incident status is recorded, and 
 | `incidentFree` | boolean | yes |  |
 | `notes` | string | no |  |
 
+### `hazard_report`
+
+The one-screen escalation from the deployed field app: a crew member found something unsafe and needs it off their hands NOW. Records the hazard, raises an action item at the matching urgency, and returns a ready-to-send owner notification. A 'stop-work' report is not a severity label — it puts the job into a stopped state and says so in the response, because the crew has already downed tools. Nothing here waits for the next FLHA.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `reportedBy` | string | yes |  |
+| `what` | string | yes | What the hazard is, in the reporter's own words |
+| `where` | string | yes | Where on site — the crew has to be able to find it again |
+| `severity` | `low` · `medium` · `high` · `stop-work` | yes |  |
+| `jobId` | string | no | Attach to a job when the hazard is on one of ours |
+| `immediateAction` | string | no | What the reporter already did (tagged out, coned off, evacuated) |
+
 ### `safety_log`
 
-The FLHA history: open assessments needing sign-off, signed records, and incident flags across all jobs.
+The safety record: FLHAs (open assessments needing sign-off, signed records, incident flags) plus hazards escalated from the field and whether they have been cleared.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -458,11 +473,12 @@ Draft polite-but-firm reminder messages for every unpaid invoice, escalating ton
 
 ### `invoice_payment_request`
 
-Turn an invoice's balance due into an on-chain payment request on OKX X Layer TESTNET: EIP-681 payment URI, recipient, amount in test OKB (fixed synthetic FX rate), chain details, and explorer link. Testnet and demo funds only — Evolved never signs or moves assets.
+Turn an invoice into an on-chain payment request on OKX X Layer TESTNET: EIP-681 payment URI, recipient, amount in test OKB (fixed synthetic FX rate), chain details, and explorer link. `split` chooses the deposit (25% of the GST-inclusive total, programmable — funds the job before the crew mobilizes), the remaining balance, or the full amount. Testnet and demo funds only — Evolved never signs or moves assets.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `invoiceId` | string | yes |  |
+| `split` | `deposit` · `balance` · `full` | no | deposit = 25% up front (default when nothing is paid yet); balance = the rest; full = the whole invoice |
 | `payTo` | string | no | Override recipient address (0x…); default is the documented demo address |
 
 ### `invoice_payment_check`
@@ -629,7 +645,7 @@ _No parameters._
 
 ### `franchise_spinup`
 
-The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library with trade-specific hazards, digest, learning loop, on-chain invoicing). Pass tradePack for a ready-made pack (pressure-washing, line-painting, mobile-detailing) or supply your own rates. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.
+The productization story in one call: re-seed the entire operations brain for a NEW company — any name, any trade, your rate card — with empty books and the full machinery intact (quoting engine, receipts pipeline, FLHA library with trade-specific hazards, digest, learning loop, on-chain invoicing). Pass tradePack for a ready-made pack (pressure-washing, line-painting, mobile-detailing), supply your own rates, or pass a full customPack (labels + hazards) INLINE to adapt to a brand-new trade in one call — no repo fork. This is how one company's ops system becomes anyone's. DESTRUCTIVE to current demo data: requires confirm:true.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -638,19 +654,24 @@ The productization story in one call: re-seed the entire operations brain for a 
 | `trade` | string | no | Freeform trade name (defaults from tradePack) |
 | `region` | string | no |  |
 | `currency` | string | no |  |
-| `gstRate` | number | no |  |
+| `gstRate` | number | no | Sales-tax rate as a decimal (0.05 = 5% GST, 0.20 = 20% VAT, 0 = none) |
+| `taxLabel` | string | no | Sales-tax label on quotes/invoices — 'GST' (default), 'VAT', 'Sales Tax', 'HST'… |
+| `unit` | string | no | What the rate card prices PER — 'sqft' (default), 'hour', 'unit', 'vehicle', 'linear ft'… so the quote speaks your trade, not blasting |
+| `industryNotes` | array of string | no | Trade-specific policy lines appended to every quote (cure times, permits, warranties). Defaults to none — no blasting boilerplate carries over |
 | `rates` | array of objects | no | Custom rate card — must cover all four depths; defaults to the blasting card |
+| `customPack` | object | no | Bring your own trade pack INLINE (labels + hazards) — adapt to a brand-new trade in one call, no repo fork |
 | `confirm` | boolean | yes | Must be true — this replaces the current demo dataset |
 
 ## Workbook spine (Google Sheets / CSV)
 
 ### `workbook_create`
 
-Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). Without credentials it explains the setup and falls back to the CSV export.
+Spin up a REAL Google Sheets operations workbook from the current database — every collection a tab, exactly like the production company's workbook. Requires EVOLVED_GOOGLE_SA (service-account JSON, inline or path). The sheet is shared automatically (link-shared READ-ONLY by default — the books hold PII; pass shareWith to grant a specific Google account writer access). Without credentials it explains the setup and falls back to the CSV export.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `title` | string | no | Spreadsheet title; defaults to '<Company> — Ops Workbook' |
+| `shareWith` | string | no | Grant this Google account writer access (instead of read-only anyone-with-the-link) |
 
 ### `workbook_sync`
 

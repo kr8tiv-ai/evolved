@@ -4,7 +4,7 @@
 
 ### Most AI talks about business. Evolved runs one.
 
-One agent takes **any** service business from a texted photo to a paid, on-chain invoice. **Free, open source (MIT), and adaptable to any trade in one call** — proven on a real Alberta company. 83 tools, live as an MCP service, with on-chain settlement on OKX X Layer testnet.
+One agent takes **any** service business from a texted photo to a paid, on-chain invoice. **Free, open source (MIT), and adaptable to any trade in one call** — proven on a real Alberta company. 84 tools, live as an MCP service, with on-chain settlement on OKX X Layer testnet.
 
 > **A complete business operating system — free, open source, for *any* company.** Not just an MCP server: four surfaces around one source of truth — the **MCP brain**, the **crew field app** (its hands), the **workbook spine**, and the **owner dashboard** (its eyes). Blasting is only the proving ground; `franchise_spinup` makes it any service business in one call. Pick your trade, generate your workbook, connect the app: **[docs/ONBOARDING.md](docs/ONBOARDING.md)**.
 
@@ -24,7 +24,7 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 [![Tests](https://img.shields.io/badge/tests-47_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
-[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [83 tools](#the-tool-surface--83-tools-16-domains) · [Docs](docs/)
+[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [84 tools](#the-tool-surface--83-tools-16-domains) · [Docs](docs/)
 
 </div>
 
@@ -59,7 +59,7 @@ Then run the whole company locally — no keys, no accounts, no funds:
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
-npm test        # 47 tests — including a LIVE X Layer testnet probe
+npm test        # 48 tests — including a LIVE X Layer testnet probe
 npm run demo    # the business loop, narrated in your terminal
 ```
 
@@ -71,7 +71,7 @@ npm run demo    # the business loop, narrated in your terminal
 - **Both OKX rails — and the paid one is opt-in.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC. The x402 pay-per-call tier is a **built-in rail any adopter can switch on** for their own deployment — off by default, never gating the free system. The on-chain integration judges score, without a toll on the open promise.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 47 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 48 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
 - **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 20 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
@@ -79,8 +79,8 @@ npm run demo    # the business loop, narrated in your terminal
 
 Evolved isn't just an MCP server — it's a complete, free, open-source operating system **any** service business can run, with four surfaces around a single source of truth:
 
-- 🧠 **The MCP — the brain** *(this repo).* 83 tools that hold the business logic: pricing, safety, books, dispatch, on-chain settlement. Every other surface is a client of it. Clone, `npm install`, `npm run build`, zero credentials.
-- ✋ **The field app — the crew's hands** — [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) (MIT). A worker taps one button in the truck — photo, receipt, FLHA sign-off, hazard, note — and it lands in the App Inbox for the brain to file. $0/month on Google Apps Script. ([how it plugs in](docs/FIELD-APP.md))
+- 🧠 **The MCP — the brain** *(this repo).* 84 tools that hold the business logic: pricing, safety, books, dispatch, on-chain settlement. Every other surface is a client of it. Clone, `npm install`, `npm run build`, zero credentials.
+- ✋ **The field app — the crew's hands** — [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) (MIT). A worker taps one button in the truck — photo, receipt, FLHA sign-off, hazard, note — and it lands in the App Inbox for the brain to file. $0/month on Google Apps Script. Deployed and in daily production use, which is what makes the tool surface a description of real work rather than a design exercise. Everything queues except safety: `hazard_report` escalates immediately, and an uncleared **stop-work** outranks every money flag on the dispatch board. ([how it plugs in](docs/FIELD-APP.md))
 - 📊 **The workbook — the spine** — the whole operation as a 20-tab Google Sheets workbook, created and synced by `workbook_create` or exported to CSV with zero credentials. One shared source of truth for the humans and the agent. ([generate your own](docs/ONBOARDING.md))
 - 📈 **The dashboard — the owner's eyes.** A login-protected, mobile-responsive web app reading the same workbook — deployed on Hostinger behind real auth: a finance dashboard with interactive charts (spend proportion, revenue and margin trends, job-profitability comparison); job P&Ls, quotes, invoices, and receivables with every entity clickable through to its document; filterable receipts with pop-up images; an insights page (last month's revenue, where the money went, margin trends, outstanding receivables); a safety page (FLHAs, mitigations, worker sign-offs — audit-ready); a maintenance page (servicing, wear items, overdue work); and a company inventory page tied to a materials price tracker. Same dark aurora branding. Read-only onto the spine — it shows, the brain does. ([how it plugs in](docs/DASHBOARD.md))
 
@@ -88,7 +88,7 @@ Evolved isn't just an MCP server — it's a complete, free, open-source operatin
 %%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
     FA["✋ Field app<br><i>crew's hands</i>"] --> INBOX["App Inbox"]
-    INBOX --> MCP["🧠 Evolved MCP<br><i>the brain · 83 tools</i>"]
+    INBOX --> MCP["🧠 Evolved MCP<br><i>the brain · 84 tools</i>"]
     MCP --> WB["📊 Workbook spine<br><i>Google Sheets · 20 tabs</i>"]
     MCP --> CHAIN["⛓ On-chain settlement<br><i>X Layer testnet</i>"]
     WB -.->|source of truth| MCP
@@ -160,14 +160,14 @@ The company is swappable — and not just its name. `franchise_spinup { tradePac
 
 Everything the live field app and ops workbook do, as first-class tools: **inventory control** (par levels, reorder suggestions priced from real COD receipts, per-job burn-down, supplier price-spike watch), **contacts/CRM** (customers with balances, suppliers with pricebooks, crew with certifications), **the ops-sheet engine** (the data spine rendered as the operations workbook — the field App Inbox with a deterministic filing engine), **accounting depth** (tiered-OCR receipts with vendor canonicalization and duplicate guards, discrepancy reports, escalating receivables reminders, P&L with reclaimable GST), **the workbook spine** (a real Google Sheets workbook created and synced from the database, or the same 20 tabs as CSV with zero credentials), **field operations** (before/after photo albums with gap detection, voice and text field notes that never get lost, a crew time clock that feeds real labor cost into Job P&L, and hazard assessments authored ON-SITE by the crew — auto-drafts are only starting points), and **growth** (review requests with a tracked response rate, the reputation ledger and testimonial bank, the Job P&L scorecard with win rate and overall margin, and the live dispatch board).
 
-## The tool surface — 83 tools, 16 domains
+## The tool surface — 84 tools, 16 domains
 
 | Domain | Tools |
 |---|---|
 | **Quoting intelligence** | `quote_price` · `quote_create` · `quote_render` · `quote_update_status` · `quote_list` · `pricing_rates` · `pricing_record_outcome` · `market_benchmark` · `pricing_learning_status` |
 | **Money** | `receipt_ingest` · `expense_report` · `invoice_create` · `invoice_render` · `pnl_report` |
 | **Pipeline** | `lead_capture` · `lead_update` · `pipeline_view` · `job_schedule` · `job_complete` · `customer_list` |
-| **Safety (FLHA)** | `flha_open` · `flha_signoff` · `safety_log` |
+| **Safety (FLHA)** | `flha_open` · `flha_signoff` · `hazard_report` · `safety_log` |
 | **Autonomous ops** | `morning_digest` · `action_items_scan` · `action_item_resolve` · `weather_check` · `business_snapshot` · `demo_reset` |
 | **Inventory control** | `inventory_status` · `inventory_receive` · `inventory_consume` · `inventory_reorder_suggestions` · `price_watch` |
 | **Contacts / CRM** | `contact_search` · `supplier_add` · `supplier_pricebook` · `crew_add` · `crew_roster` |
@@ -191,7 +191,7 @@ Three layers, dependencies pointing one way: tools validate and delegate, engine
 src/
 ├── index.ts            stdio entry — plug into Claude Desktop / any MCP client
 ├── http.ts · app.ts    Streamable HTTP: /mcp (free) · /mcp-paid (x402) · /health · /stats
-├── server.ts           assembles all 83 tools + 3 MCP resources + 3 prompts
+├── server.ts           assembles all 84 tools + 4 MCP resources + 3 prompts
 ├── playground.ts       the zero-install browser playground (Judge Mode lives here)
 ├── tools/              16 domains — thin, zod-validated handlers (quoting, money, pipeline,
 │                       safety, inventory, contacts, sheet, accounting, payments, lifecycle,
@@ -202,7 +202,7 @@ src/
 │                       Sheets workbook spine (service-account JWT via node:crypto, no SDK)
 ├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
 ├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
-└── test/               47 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+└── test/               48 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
 ```
 
 ## Wire it into your agent — ~30 seconds

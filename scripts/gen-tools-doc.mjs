@@ -14,7 +14,7 @@ const DOMAINS = [
   ["Quoting intelligence", ["quote_price","quote_create","quote_render","quote_update_status","quote_list","pricing_rates","pricing_record_outcome","market_benchmark","pricing_learning_status"]],
   ["Money", ["receipt_ingest","expense_report","invoice_create","invoice_render","pnl_report"]],
   ["Pipeline", ["lead_capture","lead_update","pipeline_view","job_schedule","job_complete","customer_list"]],
-  ["Safety", ["flha_open","flha_signoff","safety_log"]],
+  ["Safety", ["flha_open","flha_signoff","hazard_report","safety_log"]],
   ["Autonomous ops", ["morning_digest","action_items_scan","action_item_resolve","weather_check","business_snapshot","demo_reset"]],
   ["Inventory control", ["inventory_status","inventory_receive","inventory_consume","inventory_reorder_suggestions","price_watch"]],
   ["Contacts / CRM", ["contact_search","supplier_add","supplier_pricebook","crew_add","crew_roster"]],

@@ -167,9 +167,16 @@ export function registerGrowthTools(server: McpServer): void {
       return ok({
         board,
         today: db.jobs.filter((j) => j.scheduledDate === todayStr).map((j) => j.id),
-        flags: db.jobs
-          .filter((j) => j.depositPaid && !j.scheduledDate && !["Complete", "Invoiced", "Paid"].includes(j.status))
-          .map((j) => `${j.id}: deposit in but UNSCHEDULED — book it`),
+        flags: [
+          // Safety holds sit ABOVE money flags: an uncleared stop-work is the one
+          // thing on this board that means "nobody is working right now".
+          ...db.hazardReports
+            .filter((h) => h.severity === "stop-work" && !h.clearedAt)
+            .map((h) => `${h.jobId ?? "NO JOB"}: STOP-WORK hazard uncleared (${h.id}) — ${h.what}`),
+          ...db.jobs
+            .filter((j) => j.depositPaid && !j.scheduledDate && !["Complete", "Invoiced", "Paid"].includes(j.status))
+            .map((j) => `${j.id}: deposit in but UNSCHEDULED — book it`),
+        ],
       });
     },
   );

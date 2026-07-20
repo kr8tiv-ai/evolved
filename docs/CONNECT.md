@@ -61,7 +61,7 @@ Then wire the stdio binary into any MCP client:
 }
 ```
 
-That's it — the full 83-tool surface, running on synthetic demo data with no
+That's it — the full 84-tool surface, running on synthetic demo data with no
 credentials. `npm run demo` narrates the business loop in your terminal if you
 want to see it move first.
 
@@ -69,7 +69,7 @@ want to see it move first.
 
 ## What your client will see
 
-- **83 tools** across 16 domains, each carrying MCP `annotations` so your client
+- **84 tools** across 16 domains, each carrying MCP `annotations` so your client
   knows which are read-only and which write or are destructive
   (`readOnlyHint` / `destructiveHint` / `openWorldHint`).
 - **3 resources** — `evolved://rate-table`, `evolved://hazard-library`,

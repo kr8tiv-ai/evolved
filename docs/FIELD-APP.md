@@ -33,6 +33,39 @@ Because the seam is just "append a row, then let the agent file it," the field
 app stays dumb and safe: it can never corrupt the books, and the agent decides
 (with human gates at money) what each capture becomes.
 
+The one thing that does **not** go through the inbox is a hazard.
+
+## Safety escalates; it does not queue
+
+Everything else the crew captures can wait for the next filing run. An unsafe
+thing cannot. The field app's **Report a Hazard** screen is a one-screen
+escalation that notifies management immediately, and `hazard_report` is its
+counterpart on the MCP side:
+
+| | |
+|---|---|
+| `hazard_report` | Records the hazard, raises an action item at the matching urgency, and returns a **drafted** owner notification |
+| `safety_log` | Surfaces uncleared hazards and `stopWorkActive` alongside the FLHA record |
+| `dispatch_board` | Lists an uncleared stop-work **above** the money flags — it is the one thing that means nobody is working right now |
+
+Three deliberate choices worth knowing about:
+
+- **`stop-work` is a state, not a label.** It says work is stopped, and it stays
+  visible on the board and in the safety log until a human clears it. Clearing is
+  an act, not a timeout.
+- **It does not invent a job status.** The pipeline statuses are a money and
+  delivery ladder that dispatch, the board, and the sheet tabs all agree on. A
+  safety hold is orthogonal to where a job sits on that ladder, so it lives on the
+  hazard record and is surfaced as a flag rather than corrupting the ladder.
+- **The owner notification is drafted, never auto-sent.** Evolved does not send
+  messages on a crew member's behalf without the operator seeing them.
+
+A bad `jobId` never drops a hazard — it returns an error telling you to re-send
+without one, because losing a hazard report is worse than filing it loosely.
+
+Read **`evolved://field-app`** (an MCP resource) for the full map of which app
+capture path corresponds to which tool.
+
 ## Stand up your own
 
 1. **Deploy the field app.** Follow the field-app repo's README — copy the

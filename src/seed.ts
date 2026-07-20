@@ -416,5 +416,14 @@ export function buildSeed(): Database {
       { id: "TIME-001", crewName: "R. Nozzle", jobId: "JOB-1041", inAt: isoDaysAgo(6), outAt: isoDaysAgo(6), hours: 7, wage: 315 },
       { id: "TIME-002", crewName: "T. Field", jobId: "JOB-1041", inAt: isoDaysAgo(6), outAt: isoDaysAgo(6), hours: 7, wage: 315 },
     ],
+    hazardReports: [
+      {
+        id: "HZ-001", jobId: "JOB-1041", reportedBy: "T. Field",
+        what: "Frayed sling on the yard's overhead hoist — visible broken strands near the hook",
+        where: "Client yard, north bay", severity: "high",
+        immediateAction: "Tagged it out and told the yard manager; we are not lifting with it",
+        at: isoDaysAgo(5), acknowledgedBy: "Todd", acknowledgedAt: isoDaysAgo(5), clearedAt: isoDaysAgo(4),
+      },
+    ],
   };
 }

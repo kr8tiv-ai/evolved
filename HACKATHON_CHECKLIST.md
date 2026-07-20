@@ -4,7 +4,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 **Live:** https://www.evolvedmcp.cloud (custom domain, SSL) · mirror https://powderblue-leopard-801168.hostingersite.com
 **Repo:** https://github.com/kr8tiv-ai/evolved (public, MIT) · **HackQuest project:** "Evolved - Business in a box MCP" (score 90, Meets Entry Standard)
-**Numbers of record:** 83 tools · 16 domains · 41 tests · v3.0.0
+**Numbers of record:** 84 tools · 16 domains · 48 tests · v3.0.0
 
 ---
 
@@ -12,13 +12,13 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] **Favicon on browser tabs** — Evolve emblem (arc + treeline + E-swish, silver on Boreal Void) as `favicon.ico` (16/32/48/64) + `icon-16/32/192/512.png` + `apple-touch-icon.png` + `site.webmanifest` (`scripts/make-favicon.py`, from the square project logo, wordmark cropped so it reads at 16px). Head has `<link rel="icon/apple-touch-icon/manifest">`. Verified live: browser fetches `/favicon.ico` → 200 image/x-icon on both domains.
 - [x] **SEO head** — `robots` (index,follow,max-image-preview:large,max-snippet:-1), `keywords`, `author`, `application-name`, `og:locale`, plus **JSON-LD** `@graph` (SoftwareApplication: free/MIT/v3.0.0/sameAs github+X + WebSite/publisher Matt Haynes). Canonical + theme-color already present.
 - [x] **AI-SEO** — `/llms.txt` (llmstxt.org format: name + summary + links + what-it-does + built-by, accurate 83/16, endpoints, chainId 1952); `/robots.txt` explicitly welcomes GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot, Bytespider, Applebot-Extended + Sitemap; `/sitemap.xml`. All 200, correct content-types.
-- [x] **Social share card (X / Facebook / Telegram / LinkedIn / Discord)** — full OG (type/site_name/title/description/url/image 1200×630 + secure_url/type/width/height/alt/locale) + Twitter `summary_large_image` (site/creator @aurora_ventures, title/description/image/alt), image = the branded `og.png` (boreal aurora + chrome EVOLVED + "Business-in-a-box, run by an AI. Paid on-chain." + 83-tool footer), served at `/og.png` (200 image/png). Verified in crawler-facing HTML.
-- [x] Build clean, **41 tests green** (added inline asserts: favicon link, JSON-LD, /robots.txt + /sitemap.xml + /llms.txt + /favicon.ico + /site.webmanifest). Deployed evolvedmcp.cloud (019f69ca) + powderblue. Commit 2379227.
+- [x] **Social share card (X / Facebook / Telegram / LinkedIn / Discord)** — full OG (type/site_name/title/description/url/image 1200×630 + secure_url/type/width/height/alt/locale) + Twitter `summary_large_image` (site/creator @aurora_ventures, title/description/image/alt), image = the branded `og.png` (boreal aurora + chrome EVOLVED + "Business-in-a-box, run by an AI. Paid on-chain." + 84-tool footer), served at `/og.png` (200 image/png). Verified in crawler-facing HTML.
+- [x] Build clean, **48 tests green** (added inline asserts: favicon link, JSON-LD, /robots.txt + /sitemap.xml + /llms.txt + /favicon.ico + /site.webmanifest). Deployed evolvedmcp.cloud (019f69ca) + powderblue. Commit 2379227.
 
 ## 0. FINAL POLISH — INLINE VIDEO (BOTH) + HARD AUDIT (2026-07-16 — DONE ✅)
 - [x] **README TRUE INLINE PLAYER (verified live):** `github.com/user-attachments/assets/ca858ecb-…` embedded at the top of the README; rendered README shows a native `<video controls>` (src = signed `private-user-images.githubusercontent.com/…mp4`). Uploaded in-page (fetch committed file → `File` → `file-attachment.attach()` → captured URL from the upload-policy response) — no click-through.
 - [x] **Website LIVING INLINE PLAYER (deployed both domains):** film section is now a muted-autoplay loop that plays in-view (paused off-screen) with a "Watch with sound" pill (unmute + restart + native controls) and a pulsing "PLAYING · MUTED" badge; mobile falls back to poster + "Tap to play" (no heavy autoplay). Verified: muted/loop set, sound affordance flips muted→false + adds controls, `/demo.mp4` 206 video/mp4. Never a click-through.
-- [x] **AUDIT — endpoints:** `/health` 200 (tools=83, v3.0.0, lists /mcp + /mcp-paid) · `/mcp` free 200 (MCP init) · `/mcp-paid` **402** (scheme `exact`, network `eip155:1952`, PAYMENT-REQUIRED header) → with proof **200 + X-PAYMENT-RESPONSE receipt** (`settled:true, mode:simulated`) · `/stats` 200 JSON. **PASS.**
+- [x] **AUDIT — endpoints:** `/health` 200 (tools=84, v3.0.0, lists /mcp + /mcp-paid) · `/mcp` free 200 (MCP init) · `/mcp-paid` **402** (scheme `exact`, network `eip155:1952`, PAYMENT-REQUIRED header) → with proof **200 + X-PAYMENT-RESPONSE receipt** (`settled:true, mode:simulated`) · `/stats` 200 JSON. **PASS.**
 - [x] **AUDIT — Judge Mode:** autopilot runs against the live endpoint — 11 live `/demo/call` requests, overlay + act text advancing. **PASS.**
 - [x] **AUDIT — mobile:** at a real 375px viewport `docScrollWidth == clientWidth`, `overflowX false`, `canScrollX false`; new film section within viewport. **Zero horizontal overflow. PASS.**
 - [x] **AUDIT — consistency (15-agent verify workflow):** numbers uniform 83/16/41/v3.0.0 everywhere (README tool table totals exactly 83 across 16 rows); no stale 27/65/67/84 or 30/34/35/36; links resolve; live README carries the inline video. **ONE** low/cosmetic finding (README demo-link display text was bare-apex) → fixed to `www.evolvedmcp.cloud/demo.mp4`. Commits e5e36bd…4784475.
@@ -36,23 +36,23 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 
 ## 0. ELEVATION PASS (2026-07-16 — DONE ✅)
 - [x] **Pitch:** one-liner "Most AI talks about business. Evolved runs one." in README hero + playground hero + HackQuest Intro; a trade-specific "Why on-chain matters here" section (instant/final/programmable/self-verifying).
-- [x] **Depth (no new tools → stays 83; assertions added → stays 41 tests):** photo-quote returns a confidence-banded price range + comparable-jobs grounding + market benchmark + site price-drivers, absurd dims clamped; `invoice_payment_request` gains a programmable deposit split (25% enforced) + a `whyOnChain` cash-flow block; lifecycle money gate is margin-aware. Playground surfaces all of it.
-- [x] **Accuracy:** standardized **www.evolvedmcp.cloud** across code/docs/submission/cards + HackQuest; 4-agent audit workflow returned ZERO findings. Live www re-verified (v3.0.0, 83 tools, depth in outputs, one-liner + why-on-chain cards).
+- [x] **Depth (no new tools → stays 84; assertions added → stays 48 tests):** photo-quote returns a confidence-banded price range + comparable-jobs grounding + market benchmark + site price-drivers, absurd dims clamped; `invoice_payment_request` gains a programmable deposit split (25% enforced) + a `whyOnChain` cash-flow block; lifecycle money gate is margin-aware. Playground surfaces all of it.
+- [x] **Accuracy:** standardized **www.evolvedmcp.cloud** across code/docs/submission/cards + HackQuest; 4-agent audit workflow returned ZERO findings. Live www re-verified (v3.0.0, 84 tools, depth in outputs, one-liner + why-on-chain cards).
 - [x] **Video:** re-rendered 90.0s with www baked in; deployed both domains; HackQuest link → https://www.evolvedmcp.cloud/demo.mp4?v=7.
 
 ## A. Product / code (DONE ✅)
-- [x] MCP server, 83 tools / 16 domains, stdio + Streamable HTTP (`/mcp` free, `/mcp-paid` x402)
+- [x] MCP server, 84 tools / 16 domains, stdio + Streamable HTTP (`/mcp` free, `/mcp-paid` x402)
 - [x] x402 pay-per-call (402 challenge, scheme `exact`, `eip155:1952`) — live, verified
 - [x] On-chain invoice settlement on X Layer testnet (EIP-681, read-only RPC verify, replay-protected, no keys held)
 - [x] Autonomous lifecycle with two human money gates
 - [x] Learning quote engine + market benchmark; receipts→books (tiered OCR); FLHA safety; dispatch; inventory; CRM; CFO
 - [x] v3 domains: **Workbook spine** (Google Sheets via service account / CSV, 20 tabs), **Field ops** (photos, notes, crew clock, on-site JHA), **Growth** (reviews, reputation, Job P&L scorecard, dispatch board, brand config, franchise preview)
 - [x] Trade packs (pressure-washing, line-painting, mobile-detailing) + `franchise_spinup` / `franchise_preview`
-- [x] 41 tests green (incl. live X Layer testnet probe); adversarial-review hardened (29 findings + 2 more audit passes)
+- [x] 48 tests green (incl. live X Layer testnet probe); adversarial-review hardened (29 findings + 2 more audit passes)
 - [x] Security: per-IP rate limit, 256KB body cap, demo-tool whitelist, security headers, SECURITY.md threat model
 
 ## B. Deploy / hosting (DONE ✅)
-- [x] **Custom domain www.evolvedmcp.cloud** live (Hostinger addon, SSL) — serving v3.0.0 / 83 tools
+- [x] **Custom domain www.evolvedmcp.cloud** live (Hostinger addon, SSL) — serving v3.0.0 / 84 tools
 - [x] Mirror on powderblue-leopard subdomain kept as fallback
 - [x] Demo video self-hosted at `/demo.mp4` (video/mp4 + byte ranges) on both domains
 - [x] Self-hosted brand media route `/media/*` (hero video, scene imagery)
@@ -65,7 +65,7 @@ _Last updated: 2026-07-16 (Fable). Deadline: form July 17 23:59 UTC; OKX listing
 - [x] Short X announcement (link-preview pull-through) saved to `submission/x-post-draft.md`
 
 ## C. Repo presentation (IN PROGRESS)
-- [x] README: hero, badges, 60-sec judge tour, why-this-wins, lifecycle mermaid, 83-tool table, scaffolding, tests
+- [x] README: hero, badges, 60-sec judge tour, why-this-wins, lifecycle mermaid, 84-tool table, scaffolding, tests
 - [x] docs/ up to date (TOOLS.md autogen 83, ARCHITECTURE workbook section, ADAPT, OKX-LISTING, DEPLOY, DEMO, GALLERY)
 - [x] **GitHub hero / social-preview image** — DONE: premium composite from the real Evolve aurora boreal-treeline scene (backgrounds only, no equipment), chrome wordmark + keynote scrim; feeds README hero + `assets/social-preview.png` (`scripts/make-hero-photo.py`)
 - [ ] GitHub repo **Settings → Social preview** upload (Matt — no API; `assets/social-preview.png` ready)

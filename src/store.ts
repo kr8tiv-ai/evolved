@@ -26,6 +26,7 @@ function ensureShape(d: Database): Database {
     "suppliers", "crew", "inventory", "inventoryMovements", "priceLog",
     "vendors", "inbox", "todos", "payments", "esigns", "lifecycles",
     "reviews", "insights", "activity", "photos", "fieldNotes", "timeEntries",
+    "hazardReports",
   ];
   for (const k of arrays) {
     if (!Array.isArray(d[k])) (d as unknown as Record<string, unknown>)[k] = fresh[k];

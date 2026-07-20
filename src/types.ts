@@ -439,6 +439,27 @@ export interface FieldNote {
   at: string;
 }
 
+/**
+ * A hazard escalated from the field — the one-screen "Report a Hazard" path.
+ * Distinct from an FLHA: an FLHA is the planned assessment for a shift, this is
+ * an unplanned thing someone found and needed off their hands immediately.
+ * "stop-work" is a real state, not a severity label: work is down until cleared.
+ */
+export interface HazardReport {
+  id: string;
+  jobId?: string;
+  reportedBy: string;
+  what: string;
+  where: string;
+  severity: "low" | "medium" | "high" | "stop-work";
+  immediateAction?: string;
+  at: string;
+  actionItemId?: string;
+  acknowledgedBy?: string;
+  acknowledgedAt?: string;
+  clearedAt?: string;
+}
+
 export interface TimeEntry {
   id: string;
   crewName: string;
@@ -538,6 +559,8 @@ export interface Database {
   photos: JobPhoto[];
   fieldNotes: FieldNote[];
   timeEntries: TimeEntry[];
+  /** Unplanned hazards escalated from the field (Report a Hazard). */
+  hazardReports: HazardReport[];
   /** Linked live workbook (Google Sheets when credentialed, CSV otherwise). */
   workbook?: WorkbookLink;
   brand?: BrandConfig;

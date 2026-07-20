@@ -74,7 +74,7 @@ const DEMO_TOOLS = new Set([
   "business_snapshot", "morning_digest", "weather_check", "xlayer_status",
   "x402_info", "pricing_rates", "quote_price", "quote_from_photo",
   "market_benchmark", "pricing_learning_status",
-  "pipeline_view", "flha_open", "flha_signoff", "safety_log",
+  "pipeline_view", "flha_open", "flha_signoff", "hazard_report", "safety_log",
   "lifecycle_start", "lifecycle_advance", "lifecycle_status",
   "invoice_payment_request", "invoice_payment_check",
   "cfo_forecast", "cfo_health", "voice_command", "demo_reset",
@@ -281,7 +281,7 @@ export async function handleRequest(
       "",
       "> Evolved is a business-in-a-box for the agent economy: a real Alberta service company's operations brain, published as an open-source MCP (Model Context Protocol) Agentic Service Provider. One agent runs a service business end to end — photo-to-quote, e-sign, weather-gated scheduling, FLHA safety, receipts-to-books, invoicing, and on-chain settlement — and any trade can spin up its own copy in one call.",
       "",
-      "Evolved is live and free to try. It exposes 83 tools across 16 domains over MCP, monetizes itself per-call via the x402 payment protocol, and settles invoices in OKB on the OKX X Layer testnet (chainId 1952). It never holds keys and cannot move funds; humans approve only the two money gates. Demo data is synthetic; the math and the trade are real.",
+      "Evolved is live and free to try. It exposes 84 tools across 16 domains over MCP, monetizes itself per-call via the x402 payment protocol, and settles invoices in OKB on the OKX X Layer testnet (chainId 1952). It never holds keys and cannot move funds; humans approve only the two money gates. Demo data is synthetic; the math and the trade are real.",
       "",
       "## Links",
       "- [Live playground (zero install)](https://www.evolvedmcp.cloud/)",
@@ -319,7 +319,7 @@ export async function handleRequest(
       const tool = String(body.tool ?? "");
       if (!DEMO_TOOLS.has(tool)) {
         res.writeHead(403, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 83-tool surface.` }));
+        res.end(JSON.stringify({ error: `Tool "${tool}" is not on the playground whitelist. Clone the repo or point an MCP client at /mcp for the full 84-tool surface.` }));
         return;
       }
       const client = await getDemoClient();
