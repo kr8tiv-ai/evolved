@@ -520,7 +520,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <div class="bg-word">Adapt</div>
     <div class="kicker">Make it yours · one call</div>
     <h2 class="sh">What business are <span class="glow">you</span> running?</h2>
-    <p class="sp">Evolved is a toolkit, not a one-off. Pick a trade and preview exactly what <span class="mono">franchise_spinup</span> installs — the rate card into the quoting engine, the trade's hazards into every JHA, empty books, the full machine. Adding your own is one entry in <span class="mono">src/trades.ts</span>; <span class="mono">brand_configure</span> makes every rendered quote feel like your company. Read-only and safe to click here.</p>
+    <p class="sp">Evolved is a complete system for <b style="color:#e8ebe8">any</b> service business, not a one-off — blasting is just the proving ground. Four surfaces around one source of truth: the <b style="color:#39ff14">MCP brain</b>, the <b style="color:#39ff14">crew field app</b> (its hands), the <b style="color:#39ff14">workbook spine</b>, and the <b style="color:#39ff14">owner dashboard</b> (its eyes). Pick a trade and preview exactly what <span class="mono">franchise_spinup</span> installs — the rate card into the quoting engine, the trade's hazards into every JHA, its own unit, currency, and tax label, empty books, the full machine. <span class="mono">brand_configure</span> makes every rendered quote feel like your company. Read-only and safe to click here.</p>
   </div>
   <div class="trades">
     <div class="trade rv" onclick="packPreview('pressure-washing')">
