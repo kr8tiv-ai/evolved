@@ -44,6 +44,9 @@ export function buildSeed(): Database {
       { id: "CUST-004", name: "Marcus Tran", phone: "587-555-0104", address: "4415 Orchards Blvd SW, Edmonton", notes: "Garage pad + sidewalk package.", createdAt: isoDaysAgo(19) },
       { id: "CUST-005", name: "Willow Creek Homes", phone: "780-555-0105", email: "site@willowcreek.example", address: "Show home: 1203 Meadowview Dr, Leduc", notes: "Builder — show-home refresh contract potential.", createdAt: isoDaysAgo(11) },
       { id: "CUST-006", name: "Dale Petersen", phone: "780-555-0106", address: "56 Ravine Cres, Sherwood Park", notes: "Cast-iron patio set + fence line.", createdAt: isoDaysAgo(6) },
+      { id: "CUST-007", name: "Redwater Storage Co-op", phone: "780-555-0107", email: "ops@redwaterstorage.example", address: "5 Depot Rd, Redwater", notes: "Warehouse floor recoat prep — annual contract potential.", createdAt: isoDaysAgo(52) },
+      { id: "CUST-008", name: "Beaumont Auto Group", phone: "780-555-0108", email: "service@beaumontauto.example", address: "6120 50 St, Beaumont", notes: "Shop floor + hoist bays. Net-30 account.", createdAt: isoDaysAgo(47) },
+      { id: "CUST-009", name: "Leduc County Public Works", phone: "780-555-0109", email: "roads@leduc-county.example", address: "101 Airport Rd, Nisku", notes: "Bridge rail and guard-post refinishing. Tender work.", createdAt: isoDaysAgo(15) },
     ],
 
     leads: [
@@ -51,6 +54,7 @@ export function buildSeed(): Database {
       { id: "LEAD-002", customerId: "CUST-006", source: "Referral", stage: "Quoted", summary: "Dale Petersen — cast-iron patio set, dustless strip", nextAction: "Follow up on quote", nextActionDate: daysAhead(2), createdAt: isoDaysAgo(6), updatedAt: isoDaysAgo(3) },
       { id: "LEAD-003", customerId: "CUST-001", source: "Repeat client", stage: "Contacted", summary: "Northgate — parkade line-marking removal, 3 levels", nextAction: "Send ballpark range, book measure", nextActionDate: daysAgo(1), createdAt: isoDaysAgo(9), updatedAt: isoDaysAgo(4) },
       { id: "LEAD-004", customerId: "CUST-003", source: "Phone", stage: "New", summary: "Bighorn — six flat-deck trailers, blast and prime", nextAction: "Call back with shop-rate options", nextActionDate: daysAhead(1), createdAt: isoDaysAgo(2), updatedAt: isoDaysAgo(2) },
+      { id: "LEAD-005", customerId: "CUST-009", source: "Tender portal", stage: "Site visit", summary: "Leduc County — bridge rail + guard-post refinishing (public works tender)", nextAction: "Site walk with the county engineer, measure linear feet", nextActionDate: daysAhead(3), createdAt: isoDaysAgo(15), updatedAt: isoDaysAgo(3) },
     ],
 
     quotes: [
@@ -100,6 +104,28 @@ export function buildSeed(): Database {
         notes: "Fleet pilot — four more trailers if quality lands.",
         createdAt: isoDaysAgo(34), updatedAt: isoDaysAgo(28),
       },
+      {
+        id: "ECO-Q-DEMO-05",
+        customerId: "CUST-007",
+        siteAddress: "5 Depot Rd, Redwater",
+        lines: [{ description: "Warehouse floor — medium blast, coating removal + profile for recoat", sqft: 3200, depth: "medium", surface: "other", amount: 28560 }],
+        sqftTotal: 3200,
+        subtotal: 28560, gst: 1428, total: 29988, depositRequired: 7497,
+        status: "Accepted", validUntil: daysAhead(11),
+        notes: "Largest job of the quarter. Phased over three nights to keep the aisles open.",
+        createdAt: isoDaysAgo(30), updatedAt: isoDaysAgo(22),
+      },
+      {
+        id: "ECO-Q-DEMO-06",
+        customerId: "CUST-008",
+        siteAddress: "6120 50 St, Beaumont",
+        lines: [{ description: "Service-bay floor — light blast, oil-stain and sealer removal", sqft: 1450, depth: "light", surface: "garage-pad", amount: 5640 }],
+        sqftTotal: 1450,
+        subtotal: 5640, gst: 282, total: 5922, depositRequired: 1480.5,
+        status: "Sent", validUntil: daysAhead(18),
+        notes: "Comparing against an epoxy contractor's prep line item.",
+        createdAt: isoDaysAgo(5), updatedAt: isoDaysAgo(5),
+      },
     ],
 
     jobs: [
@@ -143,6 +169,39 @@ export function buildSeed(): Database {
         depositPaid: true,
         createdAt: isoDaysAgo(7), updatedAt: isoDaysAgo(1),
       },
+      {
+        id: "JOB-1044",
+        quoteId: "ECO-Q-DEMO-05",
+        customerId: "CUST-007",
+        siteAddress: "5 Depot Rd, Redwater",
+        scope: "Warehouse floor — medium blast, coating removal + profile for recoat (3,200 sqft, 3 nights)",
+        status: "Invoiced",
+        scheduledDate: daysAgo(10),
+        crew: ["T. Field", "R. Nozzle"],
+        depositPaid: true,
+        actuals: {
+          hoursWorked: 33, crewSize: 2, wages: 2739, materials: 4980, fuel: 594,
+          totalCost: 8313, revenue: 28560, profit: 20247, marginPct: 71,
+          verdict: "healthy", completedAt: isoDaysAgo(7),
+        },
+        createdAt: isoDaysAgo(22), updatedAt: isoDaysAgo(7),
+      },
+      {
+        id: "JOB-1045",
+        customerId: "CUST-002",
+        siteAddress: "8811 Silver Berry Rd, Edmonton",
+        scope: "Exposed-aggregate driveway — medium blast (referral neighbour, garage pad add-on)",
+        status: "Paid",
+        scheduledDate: daysAgo(16),
+        crew: ["T. Field", "R. Nozzle"],
+        depositPaid: true,
+        actuals: {
+          hoursWorked: 9, crewSize: 2, wages: 810, materials: 520, fuel: 162,
+          totalCost: 1492, revenue: 4720, profit: 3228, marginPct: 68,
+          verdict: "healthy", completedAt: isoDaysAgo(14),
+        },
+        createdAt: isoDaysAgo(20), updatedAt: isoDaysAgo(12),
+      },
     ],
 
     receipts: [
@@ -177,6 +236,22 @@ export function buildSeed(): Database {
         lineItems: [{ description: "P100 cartridges x6", amount: 89.94 }, { description: "Cut-resistant gloves", amount: 43.39 }],
         ocr: { model: "haiku", escalated: false, confidence: 0.97, warnings: [] },
         createdAt: isoDaysAgo(15),
+      },
+      {
+        id: "RCPT-2005", vendor: "Prairie Abrasives Supply", date: daysAgo(11),
+        amountBeforeTax: 4742.86, gst: 237.14, total: 4980,
+        category: "Abrasive media", paymentMethod: "visa", jobId: "JOB-1044",
+        lineItems: [{ description: "Crushed glass 40/70 — 120 bags (warehouse job)", amount: 4200 }, { description: "Garnet 80 mesh — 15 bags", amount: 542.86 }],
+        ocr: { model: "haiku", escalated: false, confidence: 0.95, warnings: [] },
+        createdAt: isoDaysAgo(11),
+      },
+      {
+        id: "RCPT-2006", vendor: "Petro-Canada", date: daysAgo(10),
+        amountBeforeTax: 565.71, gst: 28.29, total: 594,
+        category: "Fuel", paymentMethod: "debit", jobId: "JOB-1044",
+        lineItems: [{ description: "Diesel 428.6 L (3 nights, generator + compressor)", amount: 565.71 }],
+        ocr: { model: "haiku", escalated: false, confidence: 0.93, warnings: [] },
+        createdAt: isoDaysAgo(10),
       },
     ],
 
@@ -219,6 +294,22 @@ export function buildSeed(): Database {
         subtotal: 2320, gst: 116, total: 2436, depositApplied: 609, balanceDue: 1827,
         status: "Sent", dueDate: daysAgo(3), createdAt: isoDaysAgo(12), // unpaid 12 days → auto-raise
       },
+      {
+        id: "ECO-INV-9003",
+        jobId: "JOB-1045",
+        customerId: "CUST-002",
+        lines: [{ description: "Exposed-aggregate driveway + garage pad — medium blast", amount: 4720 }],
+        subtotal: 4720, gst: 236, total: 4956, depositApplied: 1239, balanceDue: 0,
+        status: "Paid", dueDate: daysAgo(6), createdAt: isoDaysAgo(14),
+      },
+      {
+        id: "ECO-INV-9004",
+        jobId: "JOB-1044",
+        customerId: "CUST-007",
+        lines: [{ description: "Warehouse floor — medium blast, coating removal + profile (3,200 sqft)", amount: 28560 }],
+        subtotal: 28560, gst: 1428, total: 29988, depositApplied: 7497, balanceDue: 22491,
+        status: "Overdue", dueDate: daysAgo(4), createdAt: isoDaysAgo(7), // large receivable, just overdue
+      },
     ],
 
     rateTable: [
@@ -246,6 +337,7 @@ export function buildSeed(): Database {
       { id: "SUP-001", name: "Prairie Abrasives Supply", location: "Edmonton", phone: "780-555-0301", website: "prairieabrasives.example", products: "Crushed glass, garnet, soda media", createdAt: isoDaysAgo(120) },
       { id: "SUP-002", name: "Northside Safety Co.", location: "Edmonton", phone: "780-555-0302", products: "PPE, respirator cartridges, hearing protection", createdAt: isoDaysAgo(100) },
       { id: "SUP-003", name: "Foothills Equipment Rentals", location: "Leduc", phone: "780-555-0303", products: "Compressors, hose, couplers", createdAt: isoDaysAgo(80) },
+      { id: "SUP-004", name: "Cascade Coatings & Primers", location: "Nisku", phone: "780-555-0304", products: "Zinc primer, epoxy, urethane topcoat", notes: "Same-day pickup on stocked primers.", createdAt: isoDaysAgo(70) },
     ],
 
     crew: [
@@ -260,6 +352,8 @@ export function buildSeed(): Database {
       { id: "INV-004", section: "Consumables & PPE", name: "Cut-resistant gloves", unit: "pair", onHand: 8, parLevel: 8, reorderAt: 3, lastUnitCost: 21.7, lastPurchasedAt: daysAgo(15) },
       { id: "INV-005", section: "Equipment & General", name: "Blast hose 50 ft", unit: "each", onHand: 3, parLevel: 3, reorderAt: 1, lastUnitCost: 189.99, lastSupplier: "Princess Auto", lastPurchasedAt: daysAgo(4) },
       { id: "INV-006", section: "Equipment & General", name: "Quick couplers", unit: "each", onHand: 9, parLevel: 8, reorderAt: 4, lastUnitCost: 20.36, lastSupplier: "Princess Auto", lastPurchasedAt: daysAgo(4) },
+      { id: "INV-007", section: "Materials & Media", name: "Zinc primer (2-part)", unit: "4 L kit", onHand: 5, parLevel: 8, reorderAt: 3, preferredSupplierId: "SUP-004", lastUnitCost: 96.5, lastSupplier: "Cascade Coatings & Primers", lastPurchasedAt: daysAgo(18) },
+      { id: "INV-008", section: "Consumables & PPE", name: "Blast suit (Tyvek)", unit: "each", onHand: 12, parLevel: 10, reorderAt: 4, lastUnitCost: 8.75, lastSupplier: "Northside Safety Co.", lastPurchasedAt: daysAgo(30) },
     ],
 
     inventoryMovements: [
@@ -293,6 +387,9 @@ export function buildSeed(): Database {
     todos: [
       { id: "TODO-001", task: "Fit-test new P100 cartridges before Thursday job", category: "Safety", priority: "high", status: "Open", added: daysAgo(2), due: daysAhead(2) },
       { id: "TODO-002", task: "Call Foothills about compressor service interval", category: "Equipment", priority: "normal", status: "Open", added: daysAgo(5) },
+      { id: "TODO-003", task: "Compressor 500-hour service due (currently 512 hrs) — book Foothills", category: "Maintenance", priority: "high", status: "Open", added: daysAgo(3), due: daysAhead(4) },
+      { id: "TODO-004", task: "Replace blast nozzle #2 — venturi wear past spec, throughput dropping", category: "Maintenance", priority: "normal", status: "Open", added: daysAgo(1), due: daysAhead(7) },
+      { id: "TODO-005", task: "Invoice ECO-INV-9004 (Redwater, $22,491) overdue 4 days — send reminder", category: "Money", priority: "high", status: "Open", added: daysAgo(0), due: daysAhead(1) },
     ],
 
     payments: [],
@@ -300,6 +397,8 @@ export function buildSeed(): Database {
     lifecycles: [],
     reviews: [
       { id: "REV-001", jobId: "JOB-1041", customerId: "CUST-003", status: "received", rating: 5, comment: "Both trailers came back looking factory-fresh. Crew was in and out in two days and left the yard spotless.", requestedAt: isoDaysAgo(5), receivedAt: isoDaysAgo(3) },
+      { id: "REV-002", jobId: "JOB-1044", customerId: "CUST-007", status: "received", rating: 5, comment: "Ran three nights without disrupting a single shift. The recoat crew said it was the best-profiled floor they'd seen all year.", requestedAt: isoDaysAgo(6), receivedAt: isoDaysAgo(4) },
+      { id: "REV-003", jobId: "JOB-1045", customerId: "CUST-002", status: "requested", requestedAt: isoDaysAgo(12) },
     ],
     insights: [],
     insightWeights: {},
