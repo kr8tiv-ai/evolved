@@ -96,9 +96,12 @@ same router. Open source (MIT): **[kr8tiv-ai/evolve-dashboard](https://github.co
 live at **[ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)**. It
 runs **credential-free in demo mode** first (`git clone … && npm install && npm start`
 → `demo@example.com / demo1234`), so you see it working before wiring anything
-real; then point it at **your** router and set your own login. It's
-company-agnostic — one profile under `config/profiles/` sets your branding,
-units, tax, and tabs. Overview: [DASHBOARD.md](DASHBOARD.md).
+real; then point it at **your** router and set your own login. To read the
+workbook the MCP generates, set **`COMPANY_PROFILE=evolved`** — that shipped
+profile already maps every dashboard view onto the MCP's exact tabs (verified by
+the repo's `scripts/verify-evolved.js`; no guessing). It's company-agnostic —
+one profile under `config/profiles/` sets your branding, units, tax, and tabs.
+Overview: [DASHBOARD.md](DASHBOARD.md).
 
 ---
 

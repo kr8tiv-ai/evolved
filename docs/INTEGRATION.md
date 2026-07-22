@@ -60,30 +60,37 @@ Honest status — no hand-waving:
 | Field app is deployed and in daily use | **Verified in production** (the real crew uses it); not exercisable from this public repo |
 | All four surfaces read/write ONE workbook | **Verified in production** (the real Evolve sheet); the Router contract (`readTab`/`writeRow`/`appendRow`/`setCell`) is the seam |
 | A stranger can generate the workbook + stand up each surface | **Verified per-piece** (each runs); the **end-to-end fresh deploy** is documented in [STAND-UP-YOUR-OWN.md](STAND-UP-YOUR-OWN.md) but not yet CI-tested as one flow |
-| The MCP-generated workbook feeds the dashboard out of the box | **Aspirational — see below.** The MCP's template schema and the dashboard's demo profile target slightly different tab/column vocabularies today |
+| The MCP-generated workbook feeds the dashboard out of the box | **Verified.** The MCP emits the 25 tabs the dashboard reads; the dashboard's `evolved` profile (`COMPANY_PROFILE=evolved`) maps them — all 17 populated entities parse cleanly from the real CSV export (`evolve-dashboard/scripts/verify-evolved.js`). The only step needing a live secret is pointing the deployed dashboard's Router at your sheet |
 
-## The one real gap, named plainly
+## The schema bridge — closed
 
 The dashboard is company-agnostic: it maps tabs and columns through a **profile**
-(`config/profiles/*.js`). Its shipped `demo` profile targets the tab/column names
-of the real production workbook, which differ from the MCP's clean template in a
-few places:
+(`config/profiles/*.js`). The bridge was closed from both ends:
 
-| Dashboard expects | MCP template produces | To reconcile |
-|---|---|---|
-| `FLHA` | `Safety (FLHA)` | rename, or a profile alias |
-| `Employee Hours` | `Time Log` | rename, or a profile alias |
-| `Hazard Reports` | (folded into safety) | add a tab |
-| `Maintenance` | (none yet) | add a tab/domain |
-| `Price Log`, `Price Watch`, `Vendors` | data exists, not exported as tabs | export them |
+- **MCP side:** `workbook_export` now emits five more tabs so the workbook is a
+  superset of what the dashboard reads — **Vendors**, **Price Log**, **Price
+  Watch** (derived), **Hazard Reports**, and **Maintenance** (a new synthetic
+  domain). 25 tabs total.
+- **Dashboard side:** a new profile, [`config/profiles/evolved.js`](https://github.com/kr8tiv-ai/evolve-dashboard/blob/main/config/profiles/evolved.js),
+  maps the dashboard's 18 entities onto the MCP's exact tab and column headers
+  (e.g. its `FLHA` view reads `Safety (FLHA)`, its hours view reads `Time Log`).
+  Additive and non-breaking — it doesn't touch the default profile or the live
+  deployment.
 
-**How it's closed:** ship a dashboard profile keyed to the MCP template schema
-(a one-file, non-breaking addition to the dashboard's `config/profiles/`), OR
-extend the MCP's `workbook_export` to emit the dashboard's tab names. Either is
-small; the mapping above is the whole contract. Until then, a fresh deploy wires
-the MCP + workbook + field app cleanly, and the dashboard runs against its own
-**credential-free demo fixtures** (`npm start`) — so every surface is runnable
-today, and the last mile is this schema alignment, not new plumbing.
+**Verified without a secret:** [`scripts/verify-evolved.js`](https://github.com/kr8tiv-ai/evolve-dashboard/blob/main/scripts/verify-evolved.js)
+parses the MCP's real CSV export through the dashboard's own `lib/schema` with
+this profile — **all 17 populated entities read cleanly** (quotes, jobs, leads,
+dispatch, receipts, hours, inventory, price log/watch, suppliers, to-dos, action
+items, customers, vendors, FLHA, hazard reports, maintenance). So the whole path
+is proven end to end in code:
+
+```
+MCP workbook_create/export  ->  25-tab Google Sheet  ->  Router  ->  dashboard (COMPANY_PROFILE=evolved)
+```
+
+The one step that genuinely needs a live secret — pointing the *deployed*
+dashboard's Router at your sheet — is a single `.env` line, documented in
+[STAND-UP-YOUR-OWN.md](STAND-UP-YOUR-OWN.md). Everything before it is verified.
 
 ## Exercise the paths yourself
 
