@@ -118,7 +118,7 @@ flowchart LR
 
 ### Every repo in the system
 
-Open source, all MIT — the system reads as one thing from whichever repo you land on first:
+Open source, all MIT — the system reads as one thing from whichever repo you land on first. How the four surfaces actually integrate (the shared workbook spine, the two auth paths, and an honest verified-vs-aspirational status): **[docs/INTEGRATION.md](docs/INTEGRATION.md)**.
 
 | Repo / surface | Role | Link |
 |---|---|---|
