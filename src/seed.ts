@@ -255,7 +255,11 @@ export function buildSeed(): Database {
       },
     ],
 
-    actionItems: [],
+    actionItems: [
+      { id: "AI-001", rule: "invoice-overdue", severity: "urgent", message: "Invoice ECO-INV-9004 (Redwater Storage, $22,491) is overdue — send a reminder today.", relatedId: "ECO-INV-9004", raisedAt: isoDaysAgo(0) },
+      { id: "AI-002", rule: "job-uninvoiced", severity: "urgent", message: "Job JOB-1041 (Bighorn trailers) is complete but has not been invoiced — money on the table.", relatedId: "JOB-1041", raisedAt: isoDaysAgo(1) },
+      { id: "AI-003", rule: "deposit-unscheduled", severity: "warn", message: "JOB-1042 (Kowalczyk driveway) has a deposit in but no scheduled date — book it.", relatedId: "JOB-1042", raisedAt: isoDaysAgo(2) },
+    ],
 
     flhas: [
       {
@@ -424,6 +428,12 @@ export function buildSeed(): Database {
         immediateAction: "Tagged it out and told the yard manager; we are not lifting with it",
         at: isoDaysAgo(5), acknowledgedBy: "Todd", acknowledgedAt: isoDaysAgo(5), clearedAt: isoDaysAgo(4),
       },
+    ],
+    maintenance: [
+      { id: "MNT-001", equipment: "Compressor (185 CFM tow-behind)", service: "500-hour service — oil, filters, belts", usage: "512 hrs", date: daysAgo(40), nextDue: daysAgo(-4), remindFrom: daysAgo(-14), notes: "Now overdue — booked with Foothills." },
+      { id: "MNT-002", equipment: "Blast pot #1", service: "Pop-up valve + moisture trap rebuild", usage: "—", date: daysAgo(22), nextDue: daysAhead(68), remindFrom: daysAhead(54), notes: "Running clean." },
+      { id: "MNT-003", equipment: "Nozzle #2 (tungsten venturi)", service: "Bore gauge check — wear past spec", usage: "—", date: daysAgo(3), nextDue: daysAhead(4), remindFrom: daysAhead(0), notes: "Throughput dropping; replace this week." },
+      { id: "MNT-004", equipment: "Service truck (F-550)", service: "Oil change + DEF top-up", usage: "148,320 km", date: daysAgo(12), nextDue: daysAhead(78), remindFrom: daysAhead(64), notes: "" },
     ],
   };
 }

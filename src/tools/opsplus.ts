@@ -280,7 +280,7 @@ export function registerOpsPlusTools(server: McpServer): void {
         flhas: [], invoices: [], pricingOutcomes: [], quoteCounter: {},
         inventoryMovements: [], priceLog: [], vendors: [], inbox: [], todos: [],
         payments: [], esigns: [], lifecycles: [], reviews: [], insights: [],
-        insightWeights: {}, activity: [],
+        insightWeights: {}, activity: [], hazardReports: [], maintenance: [],
         rateTable: (rates
           ? rates.map((r): RateEntry => ({
               depth: r.depth,

@@ -460,6 +460,19 @@ export interface HazardReport {
   clearedAt?: string;
 }
 
+export interface MaintenanceRecord {
+  id: string;
+  equipment: string;
+  service: string;
+  /** Usage reading at service — engine hours, odometer, or run-hours. */
+  usage?: string;
+  date: string;
+  nextDue?: string;
+  /** When to start reminding (a date or a usage threshold). */
+  remindFrom?: string;
+  notes?: string;
+}
+
 export interface TimeEntry {
   id: string;
   crewName: string;
@@ -561,6 +574,7 @@ export interface Database {
   timeEntries: TimeEntry[];
   /** Unplanned hazards escalated from the field (Report a Hazard). */
   hazardReports: HazardReport[];
+  maintenance: MaintenanceRecord[];
   /** Linked live workbook (Google Sheets when credentialed, CSV otherwise). */
   workbook?: WorkbookLink;
   brand?: BrandConfig;

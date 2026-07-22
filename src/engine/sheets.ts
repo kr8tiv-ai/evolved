@@ -16,7 +16,7 @@
 import { createSign } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import type { Database } from "../types.js";
+import type { Database, PriceLogEntry } from "../types.js";
 import { money, round2 } from "../store.js";
 
 // ---------------------------------------------------------------------------
@@ -261,6 +261,64 @@ export function workbookTabs(db: Database): WorkbookTab[] {
       ]),
       [],
       ["SCORECARD", "", revenue, cost, round2(revenue - cost), revenue ? round2(((revenue - cost) / revenue) * 100) : 0, ""],
+    ],
+  });
+
+  tabs.push({
+    title: "Vendors",
+    rows: [
+      ["Vendor (raw)", "Canonical", "Category", "First seen", "Total spend", "Receipts"],
+      ...db.vendors.map((v) => [v.aliases[0] ?? v.canonical, v.canonical, v.category, v.firstSeen, v.totalSpend, v.receipts]),
+    ],
+  });
+
+  tabs.push({
+    title: "Price Log",
+    rows: [
+      ["Date", "Supplier", "Product name", "Unit type", "Bag / package size", "Qty", "Unit price", "Total paid", "Invoice # / reference"],
+      ...db.priceLog.map((p) => [p.date, p.supplier, p.product, p.unitType, p.unitType, p.qty, p.unitPrice, p.totalPaid, p.receiptId ?? ""]),
+    ],
+  });
+
+  // Price Watch — per-product last vs previous price, derived from the price log.
+  const priceByProduct = new Map<string, PriceLogEntry[]>();
+  for (const p of db.priceLog) {
+    const arr = priceByProduct.get(p.product) ?? [];
+    arr.push(p);
+    priceByProduct.set(p.product, arr);
+  }
+  tabs.push({
+    title: "Price Watch",
+    rows: [
+      ["Product", "Category", "Purchase unit", "Last price paid", "Last paid date", "Previous price", "% change", "Avg price paid", "On hand"],
+      ...[...priceByProduct.entries()].map(([product, entries]) => {
+        const sorted = [...entries].sort((a, b) => (a.date < b.date ? 1 : -1));
+        const last = sorted[0];
+        const prev = sorted[1];
+        const avg = round2(entries.reduce((s, e) => s + e.unitPrice, 0) / entries.length);
+        const changePct = prev ? round2(((last.unitPrice - prev.unitPrice) / prev.unitPrice) * 100) : 0;
+        const onHand = db.inventory.find((i) => i.id === last.itemId)?.onHand ?? "";
+        return [product, "Materials & media", last.unitType, last.unitPrice, last.date, prev?.unitPrice ?? "", changePct, avg, onHand];
+      }),
+    ],
+  });
+
+  tabs.push({
+    title: "Hazard Reports",
+    rows: [
+      ["Report ID", "Job", "Reported By", "Description", "Where", "Severity", "Immediate Action", "Status", "At"],
+      ...db.hazardReports.map((h) => [
+        h.id, h.jobId ?? "", h.reportedBy, h.what, h.where, h.severity, h.immediateAction ?? "",
+        h.clearedAt ? "cleared" : h.acknowledgedAt ? "acknowledged" : "open", h.at,
+      ]),
+    ],
+  });
+
+  tabs.push({
+    title: "Maintenance",
+    rows: [
+      ["Date", "Equipment", "Service", "Hours/Odometer", "Next Due", "Remind From", "Notes"],
+      ...db.maintenance.map((m) => [m.date, m.equipment, m.service, m.usage ?? "", m.nextDue ?? "", m.remindFrom ?? "", m.notes ?? ""]),
     ],
   });
 
