@@ -104,14 +104,13 @@ Evolved isn't just an MCP server — it's a complete, free, open-source operatin
 - 📈 **The dashboard — the owner's eyes, the administration surface.** A login-protected, mobile-responsive web app reading the same workbook — **live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)** (behind auth), source open-sourcing to `kr8tiv-ai/evolve-dashboard` (MIT): a finance dashboard with interactive charts (spend proportion, revenue and margin trends, job-profitability comparison); job P&Ls, quotes, invoices, and receivables with every entity clickable through to its document; filterable receipts with pop-up images; an insights page (last month's revenue, where the money went, margin trends, outstanding receivables); a safety page (FLHAs, mitigations, worker sign-offs — audit-ready); a maintenance page (servicing, wear items, overdue work); and a company inventory page tied to a materials price tracker. Same dark aurora branding. Read-only onto the spine — it shows, the brain does. ([how it plugs in](docs/DASHBOARD.md))
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    FA["✋ Field app<br><i>crew's hands</i>"] --> INBOX["App Inbox"]
-    INBOX --> MCP["🧠 Evolved MCP<br><i>the brain · 84 tools</i>"]
-    MCP --> WB["📊 Workbook spine<br><i>Google Sheets · 25 tabs</i>"]
-    MCP --> CHAIN["⛓ On-chain settlement<br><i>X Layer testnet</i>"]
+    FA["✋ Field app<br>crew's hands"] --> INBOX["App Inbox"]
+    INBOX --> MCP["🧠 Evolved MCP<br>the brain · 84 tools"]
+    MCP --> WB["📊 Workbook spine<br>Google Sheets · 25 tabs"]
+    MCP --> CHAIN["⛓ On-chain settlement<br>X Layer testnet"]
     WB -.->|source of truth| MCP
-    WB --> DASH["📈 Owner dashboard<br><i>the owner's eyes</i>"]
+    WB --> DASH["📈 Owner dashboard<br>the owner's eyes"]
 ```
 
 **Stand up the whole thing for your own company** — your workbook, your router, your field app, your dashboard, your MCP, nothing of Evolve's: **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)**. The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Every piece is MIT, free, and optional.
@@ -151,16 +150,15 @@ Four surfaces, one loop, all open source and free — and it begins at the MCP. 
 </div>
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    A[Lead<br><i>typed, voice,<br>or photo</i>] --> B[Priced quote<br><i>learning rates +<br>profitability check</i>]
+    A[Lead<br>typed, voice,<br>or photo] --> B[Priced quote<br>learning rates +<br>profitability check]
     B --> G1{{"🔒 HUMAN GATE<br>approve the quote"}}
-    G1 --> C[E-sign<br><i>HMAC token · declines<br>are final</i>]
-    C --> D[Booked on the first<br>Good blast day<br><i>weather-gated</i>]
-    D --> E[FLHA drafted<br><i>hazards + mitigations<br>from scope</i>]
-    E --> F[Work done<br><i>actuals, inventory<br>burn-down, receipts</i>]
-    F --> H[Invoice<br><i>deposit applied</i>]
-    H --> I[On-chain payment<br><i>EIP-681 on X Layer<br>testnet · replay-protected</i>]
+    G1 --> C[E-sign<br>HMAC token · declines<br>are final]
+    C --> D[Booked on the first<br>Good blast day<br>weather-gated]
+    D --> E[FLHA drafted<br>hazards + mitigations<br>from scope]
+    E --> F[Work done<br>actuals, inventory<br>burn-down, receipts]
+    F --> H[Invoice<br>deposit applied]
+    H --> I[On-chain payment<br>EIP-681 on X Layer<br>testnet · replay-protected]
     I --> G2{{"🔒 HUMAN GATE<br>confirm settlement"}}
     G2 --> J[Review request +<br>rate engine taught]
     J -.->|smarter pricing| B
