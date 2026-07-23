@@ -1,9 +1,10 @@
-# The owner dashboard — the system's eyes
+# The owner dashboard — the system's eyes, the administration surface
 
 The fourth surface. The field app is the crew's **hands**, the MCP is the
 **brain**, the workbook is the **spine** — and the dashboard is the owner's
-**eyes**: one login-protected, mobile-responsive web app that reads the same ops
-workbook and turns it into an always-current picture of the whole business.
+**eyes**: the administration surface. One login-protected, mobile-responsive web
+app that reads the same ops workbook and turns it into an always-current picture
+of the whole business — the place the owner reviews what the brain did.
 
 Same brand system as the rest of Evolved — Boreal Void `#0a0a0a`, Aurora Neon
 `#4ade80`. Deployed on Hostinger behind real authentication. A real Alberta

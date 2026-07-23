@@ -382,7 +382,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <div class="s"><b class="lime" id="h-tools">84</b><span>MCP tools · 16 domains</span></div>
     <div class="s"><b>2</b><span>OKX rails · x402 + X Layer</span></div>
     <div class="s"><b>2</b><span>human gates · both money</span></div>
-    <div class="s"><b id="h-tests">47</b><span>tests · live testnet probe</span></div>
+    <div class="s"><b id="h-tests">48</b><span>tests · live testnet probe</span></div>
   </div>
   <div class="chips" id="chips">
     <span class="chip">service <b id="c-status">checking…</b></span>
