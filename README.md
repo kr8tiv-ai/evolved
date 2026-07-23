@@ -105,12 +105,12 @@ Evolved isn't just an MCP server — it's a complete, free, open-source operatin
 
 ```mermaid
 flowchart LR
-    FA["✋ Field app<br>crew's hands"] --> INBOX["App Inbox"]
-    INBOX --> MCP["🧠 Evolved MCP<br>the brain · 84 tools"]
-    MCP --> WB["📊 Workbook spine<br>Google Sheets · 25 tabs"]
-    MCP --> CHAIN["⛓ On-chain settlement<br>X Layer testnet"]
+    FA["Field app — the crew's hands"] --> INBOX["App Inbox"]
+    INBOX --> MCP["Evolved MCP — the brain, 84 tools"]
+    MCP --> WB["Workbook spine — Google Sheets, 25 tabs"]
+    MCP --> CHAIN["On-chain settlement — X Layer testnet"]
     WB -.->|source of truth| MCP
-    WB --> DASH["📈 Owner dashboard<br>the owner's eyes"]
+    WB --> DASH["Owner dashboard — the owner's eyes"]
 ```
 
 **Stand up the whole thing for your own company** — your workbook, your router, your field app, your dashboard, your MCP, nothing of Evolve's: **[docs/STAND-UP-YOUR-OWN.md](docs/STAND-UP-YOUR-OWN.md)**. The MCP + workbook is an afternoon; adding the crew and owner surfaces is a weekend. Every piece is MIT, free, and optional.
@@ -151,16 +151,16 @@ Four surfaces, one loop, all open source and free — and it begins at the MCP. 
 
 ```mermaid
 flowchart LR
-    A[Lead<br>typed, voice,<br>or photo] --> B[Priced quote<br>learning rates +<br>profitability check]
-    B --> G1{{"🔒 HUMAN GATE<br>approve the quote"}}
-    G1 --> C[E-sign<br>HMAC token · declines<br>are final]
-    C --> D[Booked on the first<br>Good blast day<br>weather-gated]
-    D --> E[FLHA drafted<br>hazards + mitigations<br>from scope]
-    E --> F[Work done<br>actuals, inventory<br>burn-down, receipts]
-    F --> H[Invoice<br>deposit applied]
-    H --> I[On-chain payment<br>EIP-681 on X Layer<br>testnet · replay-protected]
-    I --> G2{{"🔒 HUMAN GATE<br>confirm settlement"}}
-    G2 --> J[Review request +<br>rate engine taught]
+    A["Lead — typed, voice, or photo"] --> B["Priced quote — learning rates + profitability check"]
+    B --> G1{{"HUMAN GATE: approve the quote"}}
+    G1 --> C["E-sign — HMAC token, declines are final"]
+    C --> D["Booked on the first good blast day — weather-gated"]
+    D --> E["FLHA drafted — hazards + mitigations from scope"]
+    E --> F["Work done — actuals, inventory burn-down, receipts"]
+    F --> H["Invoice — deposit applied"]
+    H --> I["On-chain payment — EIP-681 on X Layer testnet, replay-protected"]
+    I --> G2{{"HUMAN GATE: confirm settlement"}}
+    G2 --> J["Review request + rate engine taught"]
     J -.->|smarter pricing| B
 ```
 
