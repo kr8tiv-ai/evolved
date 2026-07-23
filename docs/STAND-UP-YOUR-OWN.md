@@ -11,11 +11,10 @@ the owner dashboard on top is a **weekend**. You can stop after any step — eac
 surface is optional and independent.
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    MCP["🧠 MCP (this repo)"] --> WB["📊 Your workbook<br><i>Google Sheet · 20 tabs</i>"]
-    FA["✋ Field app"] --> RT["🔀 Your Router<br><i>Apps Script</i>"]
-    DASH["📈 Dashboard"] --> RT
+    MCP["MCP (this repo)"] --> WB["Your workbook — Google Sheet · 25 tabs"]
+    FA["Field app"] --> RT["Your Router — Apps Script"]
+    DASH["Dashboard"] --> RT
     RT --> WB
     MCP -. service account .-> WB
 ```
@@ -29,13 +28,13 @@ so they never hold a Google credential — the router's secret is the only gate.
 
 ## 1 · Your ops workbook (required · 10 min)
 
-The backend template. Generate a starter 20-tab workbook seeded for your trade:
+The backend template. Generate a starter 25-tab workbook seeded for your trade:
 
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
 node scripts/make-workbook-template.mjs pressure-washing "My Company"
-# → .data/workbook/*.csv  (20 tabs + INDEX.md), no Evolve content
+# → .data/workbook/*.csv  (25 tabs + INDEX.md), no Evolve content
 ```
 
 Create a new Google Sheet and **File → Import** each CSV as its own tab (or keep

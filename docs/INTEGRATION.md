@@ -4,12 +4,11 @@ Evolved is not four repos that link to each other. It is **one system with one
 source of truth** — a Google Sheets **workbook** — that four surfaces share:
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    FA["✋ Field app<br><i>Apps Script</i>"] -->|Router: appendRow| RT["🔀 Router<br><i>secret-gated</i>"]
-    MCP["🧠 MCP<br><i>84 tools</i>"] -->|service account OR Router| WB["📊 Workbook<br><i>Google Sheet · one spine</i>"]
+    FA["Field app — Apps Script"] -->|Router: appendRow| RT["Router — secret-gated"]
+    MCP["MCP — 84 tools"] -->|service account OR Router| WB["Workbook — Google Sheet · one spine"]
     RT --> WB
-    DASH["📈 Dashboard"] -->|Router: readTab| RT
+    DASH["Dashboard"] -->|Router: readTab| RT
     WB -.->|read| DASH
 ```
 
@@ -94,7 +93,7 @@ dashboard's Router at your sheet — is a single `.env` line, documented in
 
 ## Exercise the paths yourself
 
-- **MCP → workbook:** `npm run build && node scripts/make-workbook-template.mjs blasting "Sample Co"` writes the 20 tabs; with `EVOLVED_GOOGLE_SA` set, `workbook_create` builds the live Sheet.
+- **MCP → workbook:** `npm run build && node scripts/make-workbook-template.mjs blasting "Sample Co"` writes the 25 tabs; with `EVOLVED_GOOGLE_SA` set, `workbook_create` builds the live Sheet.
 - **Dashboard:** `git clone` [evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard) `&& npm install && npm start` → `demo@example.com / demo1234` (credential-free).
 - **Router:** deploy [router.gs](https://github.com/kr8tiv-ai/evolve-ops-workbook) with your own secret; `POST {secret, action:"ping"}` returns `{ok:true}`.
 - **Field app:** deploy [evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app), point it at your Router.

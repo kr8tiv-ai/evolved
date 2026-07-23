@@ -13,12 +13,11 @@ well-defined seam: the **App Inbox**.
 ## How it plugs in
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    W["📱 Crew taps in the truck<br><i>photo · receipt · FLHA · hazard · note</i>"] --> APP["Field app<br><i>Apps Script + Sheets</i>"]
-    APP --> INBOX["App Inbox<br><i>append-only rows</i>"]
-    INBOX --> MCP["🧠 Evolved MCP<br><i>inbox_list → inbox_file</i>"]
-    MCP --> BOOKS["The books<br><i>receipts, safety, dispatch…</i>"]
+    W["Crew taps in the truck — photo · receipt · FLHA · hazard · note"] --> APP["Field app — Apps Script + Sheets"]
+    APP --> INBOX["App Inbox — append-only rows"]
+    INBOX --> MCP["Evolved MCP — inbox_list → inbox_file"]
+    MCP --> BOOKS["The books — receipts, safety, dispatch…"]
 ```
 
 The contract is three MCP tools — nothing else couples the two systems:

@@ -8,27 +8,26 @@ system it was born from.
 ## Layers
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80"}}}%%
 flowchart TB
     subgraph transports [Transports]
-        A[stdio — src/index.ts]
-        B[Streamable HTTP — src/http.ts<br>POST /mcp, stateless, free A2MCP endpoint]
+        A["stdio — src/index.ts"]
+        B["Streamable HTTP — src/http.ts — POST /mcp, stateless, free A2MCP endpoint"]
     end
     subgraph surface [Tool surface — src/tools/* — 84 tools]
-        Q[quoting 7 · money 5 · pipeline 6<br>safety 3 · ops 6]
-        R[inventory 5 · contacts 5 · sheet 6<br>accounting 3 · payments 4]
-        S2[lifecycle 5 · vision 1 · voice 1<br>cfo 2 · opsplus 6]
+        Q["quoting 7 · money 5 · pipeline 6 — safety 3 · ops 6"]
+        R["inventory 5 · contacts 5 · sheet 6 — accounting 3 · payments 4"]
+        S2["lifecycle 5 · vision 1 · voice 1 — cfo 2 · opsplus 6"]
     end
     subgraph engines [Engines — src/engine/*]
-        E1[pricing.ts<br>rate table · access factors ·<br>profitability · learning loop]
-        E2[ocr.ts<br>tiered extraction ·<br>reconciliation · categorization]
-        E3[safety.ts<br>hazard library ·<br>per-hazard mitigations]
-        E4[digest.ts + actions.ts<br>morning digest ·<br>six ball-drop rules]
-        E5[weather.ts<br>blast-day verdicts]
-        E6[brand.ts<br>dark-brand HTML documents]
-        E7[payments.ts · nlu.ts ·<br>vision.ts · cfo.ts<br>X Layer + x402 · voice ·<br>photo estimates · forecasts]
+        E1["pricing.ts — rate table · access factors · profitability · learning loop"]
+        E2["ocr.ts — tiered extraction · reconciliation · categorization"]
+        E3["safety.ts — hazard library · per-hazard mitigations"]
+        E4["digest.ts + actions.ts — morning digest · six ball-drop rules"]
+        E5["weather.ts — blast-day verdicts"]
+        E6["brand.ts — dark-brand HTML documents"]
+        E7["payments.ts · nlu.ts · vision.ts · cfo.ts — X Layer + x402 · voice · photo estimates · forecasts"]
     end
-    D[(store.ts — the data spine<br>workbook-shaped JSON,<br>seeded synthetic, write-through)]
+    D[("store.ts — the data spine — workbook-shaped JSON, seeded synthetic, write-through")]
     transports --> surface --> engines --> D
 ```
 
@@ -46,7 +45,7 @@ directly for business logic.
 
 **The workbook spine.** The production company lives in a Google Sheets
 operations workbook; `src/engine/sheets.ts` makes that portable. It renders
-the entire database as 20 tabs, creates and syncs a real Google Sheets
+the entire database as 25 tabs, creates and syncs a real Google Sheets
 workbook through a service-account JWT signed with `node:crypto` (no SDK
 dependency, no stored tokens), and exports the identical tabs as CSV when no
 credentials exist — the spine works offline by default and upgrades with one

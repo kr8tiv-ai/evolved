@@ -29,11 +29,10 @@ tables, it works for any business `franchise_spinup` creates.
 ## How it plugs in — read-only, onto the spine
 
 ```mermaid
-%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#101010", "primaryBorderColor": "#4ade80", "primaryTextColor": "#f3f4f6", "lineColor": "#4ade80", "fontFamily": "Segoe UI"}}}%%
 flowchart LR
-    MCP["🧠 MCP brain"] --> WB["📊 Workbook spine<br><i>Google Sheets · 20 tabs</i>"]
-    FA["✋ Field app"] --> WB
-    WB --> DASH["📈 Owner dashboard<br><i>login-protected · read-only view</i>"]
+    MCP["MCP brain"] --> WB["Workbook spine — Google Sheets · 25 tabs"]
+    FA["Field app"] --> WB
+    WB --> DASH["Owner dashboard — login-protected · read-only view"]
 ```
 
 The contract is deliberately narrow: **the dashboard reads the spine, it does

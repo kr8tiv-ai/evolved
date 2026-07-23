@@ -6,7 +6,7 @@
 > mobile detailing, YOUR trade — `franchise_spinup`) → intake by text, voice,
 > or photo (`quote_from_photo`) → the autonomous lifecycle with two human money
 > gates → **the JHA authored on-site** (`flha_field_capture`) → **the workbook
-> spine** (`workbook_create` → Google Sheets; `workbook_export` → 20 CSV tabs,
+> spine** (`workbook_create` → Google Sheets; `workbook_export` → 25 CSV tabs,
 > zero credentials) → the raw x402 402 → proof → receipt flow → end card.
 > Renderer: `submission/render_video.py`. The classic 10-beat cut below still
 > works as a live alternative.

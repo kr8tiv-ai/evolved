@@ -48,7 +48,7 @@ hazards — no blasting boilerplate, no fork.
 node scripts/make-workbook-template.mjs pressure-washing "Cascade Mobile Services"
 ```
 
-That writes your 20-tab operations workbook as a CSV bundle (`.data/workbook/`).
+That writes your 25-tab operations workbook as a CSV bundle (`.data/workbook/`).
 Import it into Google Sheets (**File → Import**), or go live and MCP-synced:
 
 ```
