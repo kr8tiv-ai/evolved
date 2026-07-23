@@ -13,7 +13,10 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer, TOOL_COUNT } from "../server.js";
 import { handleRequest } from "../app.js";
 import { chainStatus, XLAYER_TESTNET } from "../engine/payments.js";
-import { commitTxHash, loadDb, releaseTxHash, reserveTxHash, resetDb } from "../store.js";
+import { commitTxHash, loadDb, releaseTxHash, reserveTxHash, resetDb, safeMkdirSync } from "../store.js";
+import { existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join as pjoin } from "node:path";
 
 async function connect() {
   const server = createServer();
@@ -521,6 +524,41 @@ test("pricing unit: an adapted trade quotes in its OWN unit, not sqft (de-blaste
   const back = await call("quote_price", { sqft: 500, depth: "medium" });
   assert.equal(back.unit, "sqft", "demo_reset restores the blasting unit");
 
+  await client.close();
+  await server.close();
+});
+
+test("safeMkdirSync: creates deep paths, is idempotent, and cannot busy-loop", () => {
+  // Regression for the 100%-CPU spin: Node's recursive mkdirSync infinite-loops
+  // under Windows Controlled Folder Access. Our bounded walker must complete.
+  const base = pjoin(tmpdir(), `evolved-mkdir-${Date.now()}`);
+  const deep = pjoin(base, "a", "b", "c", "d");
+  safeMkdirSync(deep);
+  assert.ok(existsSync(deep), "creates the full nested path");
+  safeMkdirSync(deep); // second call must not throw (EEXIST handled)
+  assert.ok(existsSync(deep));
+});
+
+test("morning digest surfaces the top open to-dos (real-system parity)", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const digest = await client.callTool({ name: "morning_digest", arguments: {} }).then(parse);
+  assert.ok(Array.isArray(digest.topTodos), "digest includes a topTodos array");
+  assert.ok(digest.topTodos.length >= 1, "seed has open to-dos to surface");
+  await client.close();
+  await server.close();
+});
+
+test("sheet engine mirrors the full workbook (25-tab parity)", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const tabs = await client.callTool({ name: "sheet_tabs", arguments: {} }).then(parse);
+  const names = new Set(tabs.map((t: { tab: string }) => t.tab));
+  for (const required of ["Safety (FLHA)", "Time Log", "Vendors", "Hazard Reports", "Maintenance", "Rate Table", "Reviews", "Crew"]) {
+    assert.ok(names.has(required), `sheet_tabs exposes ${required}`);
+  }
+  const flha = await client.callTool({ name: "sheet_read", arguments: { tab: "Safety (FLHA)" } }).then(parse);
+  assert.ok(flha.rows.length >= 1, "Safety (FLHA) tab reads rows");
   await client.close();
   await server.close();
 });

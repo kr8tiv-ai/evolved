@@ -296,7 +296,7 @@ export async function handleRequest(
       "- Learning quote engine: prices a photo as a confidence-banded range grounded in comparable jobs already in the books, with a profitability check on every price.",
       "- Autonomous lifecycle: lead → priced quote → e-sign → weather-gated booking → FLHA safety → work + receipts → invoice → on-chain settlement → review, holding at two human money gates.",
       "- On-chain: EIP-681 payment requests verified by read-only RPC on X Layer testnet, replay-protected; plus an x402 pay-per-call tier so other agents pay Evolved per call.",
-      "- Back office: tiered-OCR receipts, inventory burn-down, dispatch, CRM, a live Google Sheets workbook spine (20 tabs), a CFO forecaster, and a Job P&L scorecard.",
+      "- Back office: tiered-OCR receipts, inventory burn-down, dispatch, CRM, a live Google Sheets workbook spine (25 tabs), a CFO forecaster, and a Job P&L scorecard.",
       "- Adaptable: franchise_spinup installs a trade pack (pressure-washing, line-painting, mobile-detailing ship today) to re-seed the whole operating system for any service business.",
       "",
       "## Built by",

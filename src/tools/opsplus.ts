@@ -3,11 +3,11 @@
  */
 
 import { createHash } from "node:crypto";
-import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { DATA_DIR, loadDb, logActivity, nowIso, persist, round2, shortId, today, withDb } from "../store.js";
+import { DATA_DIR, loadDb, logActivity, nowIso, persist, round2, safeMkdirSync, shortId, today, withDb } from "../store.js";
 import { buildSeed } from "../seed.js";
 import { findTradePack, TRADE_PACKS } from "../trades.js";
 import type { Database, RateEntry } from "../types.js";
@@ -165,7 +165,7 @@ export function registerOpsPlusTools(server: McpServer): void {
     async () => {
       const db = loadDb();
       const dir = process.env.EVOLVED_BACKUP_DIR ?? join(DATA_DIR, "backups");
-      mkdirSync(dir, { recursive: true });
+      safeMkdirSync(dir);
       const file = join(dir, `evolved-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
       writeFileSync(file, JSON.stringify(db, null, 2), "utf8");
       // Rotate: cap the snapshot count so an anonymous loop cannot fill the disk.

@@ -25,6 +25,7 @@ export interface MorningDigest {
   };
   quotesOut: string[];
   leadsPulse: string[];
+  topTodos: string[];
   actionItems: string[];
   weather: { source: string; lines: string[] };
   systemHealth: string;
@@ -68,6 +69,15 @@ export async function buildMorningDigest(db: Database): Promise<MorningDigest> {
     .filter((a) => !a.resolvedAt)
     .sort((a, b) => (a.severity === "urgent" ? -1 : b.severity === "urgent" ? 1 : 0));
 
+  // Top open to-dos: due/high first, capped — the real digest surfaces these
+  // alongside dispatch, leads, and quotes.
+  const prio = (p: string) => (p === "high" ? 0 : p === "normal" ? 1 : 2);
+  const topTodos = db.todos
+    .filter((td) => td.status !== "Done")
+    .sort((a, b) => prio(a.priority) - prio(b.priority) || (a.due ?? "9999").localeCompare(b.due ?? "9999"))
+    .slice(0, 5)
+    .map((td) => `${td.task}${td.due ? ` (due ${td.due})` : ""}${td.priority === "high" ? " — HIGH" : ""}`);
+
   const forecast = await getForecast(5);
   const weatherLines = forecast.days.map(
     (d) => `${d.date}: ${d.verdict} — ${d.tmaxC}°C, wind ${d.windKmh} km/h, precip ${d.precipPct}%`,
@@ -95,6 +105,7 @@ export async function buildMorningDigest(db: Database): Promise<MorningDigest> {
     },
     quotesOut,
     leadsPulse,
+    topTodos,
     actionItems: openActions.map((a) => `[${a.severity.toUpperCase()}] ${a.message}`),
     weather: { source: forecast.source, lines: weatherLines },
     systemHealth: `${db.customers.length} customers, ${db.quotes.length} quotes, ${db.jobs.length} jobs, ${db.receipts.length} receipts on file. Data spine healthy.`,

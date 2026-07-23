@@ -14,10 +14,10 @@
  */
 
 import { createSign } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Database, PriceLogEntry } from "../types.js";
-import { money, round2 } from "../store.js";
+import { money, round2, safeMkdirSync } from "../store.js";
 
 // ---------------------------------------------------------------------------
 // Credentials
@@ -436,7 +436,7 @@ function csvCell(v: string | number): string {
 }
 
 export function exportCsvWorkbook(db: Database, dir: string): { dir: string; files: string[] } {
-  mkdirSync(dir, { recursive: true });
+  safeMkdirSync(dir);
   const tabs = workbookTabs(db);
   const files = tabs.map((t) => {
     const name = `${t.title.replace(/[^A-Za-z0-9&() -]/g, "").trim()}.csv`;

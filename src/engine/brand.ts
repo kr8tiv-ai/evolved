@@ -7,11 +7,11 @@
  * diamond bullets, payment schedule with a big green total.
  */
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Customer, Invoice, Quote } from "../types.js";
-import { money } from "../store.js";
+import { money, safeMkdirSync } from "../store.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = process.env.EVOLVED_OUT_DIR ?? join(here, "..", "..", "out");
@@ -130,7 +130,7 @@ export function renderInvoiceHtml(inv: Invoice, customer: Customer): string {
 }
 
 export function writeDocument(filename: string, html: string): string {
-  mkdirSync(OUT_DIR, { recursive: true });
+  safeMkdirSync(OUT_DIR);
   const path = join(OUT_DIR, filename);
   writeFileSync(path, html, "utf8");
   return path;

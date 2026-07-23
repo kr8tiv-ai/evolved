@@ -21,7 +21,7 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.evolvedmcp.cloud/health)
 [![Tools](https://img.shields.io/badge/tools-84-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
-[![Tests](https://img.shields.io/badge/tests-48_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
+[![Tests](https://img.shields.io/badge/tests-51_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
 [Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [84 tools](#the-tool-surface--84-tools-16-domains) · [Docs](docs/)
@@ -78,7 +78,7 @@ Then run the whole company locally — no keys, no accounts, no funds:
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
-npm test        # 48 tests — including a LIVE X Layer testnet probe
+npm test        # 51 tests — including a LIVE X Layer testnet probe
 npm run demo    # the business loop, narrated in your terminal
 ```
 
@@ -90,7 +90,7 @@ npm run demo    # the business loop, narrated in your terminal
 - **Both OKX rails — and the paid one is opt-in.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC. The x402 pay-per-call tier is a **built-in rail any adopter can switch on** for their own deployment — off by default, never gating the free system. The on-chain integration judges score, without a toll on the open promise.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 48 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 51 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
 - **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 25 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
@@ -270,7 +270,7 @@ src/
 │                       Sheets workbook spine (service-account JWT via node:crypto, no SDK)
 ├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
 ├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
-└── test/               48 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+└── test/               51 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
 ```
 
 ## Wire it into your agent — ~30 seconds
@@ -314,7 +314,8 @@ npm test
 # ✔ security: replay claim is atomic under concurrency; destructive tools fenced off the shared endpoint
 # ✔ adaptability: an inline trade pack spins up a new trade; an adapted trade quotes in its own unit (per vehicle, not sqft)
 # ✔ workbook drives the admin dashboard: 25 tabs, all 17 dashboard entities verified end-to-end
-# … 48 passing
+# ✔ resilience: bounded mkdir cannot busy-loop; digest surfaces to-dos; sheet engine mirrors all 25 tabs
+# … 51 passing
 ```
 
 The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

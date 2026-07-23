@@ -382,7 +382,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <div class="s"><b class="lime" id="h-tools">84</b><span>MCP tools · 16 domains</span></div>
     <div class="s"><b>2</b><span>OKX rails · x402 + X Layer</span></div>
     <div class="s"><b>2</b><span>human gates · both money</span></div>
-    <div class="s"><b id="h-tests">48</b><span>tests · live testnet probe</span></div>
+    <div class="s"><b id="h-tests">51</b><span>tests · live testnet probe</span></div>
   </div>
   <div class="chips" id="chips">
     <span class="chip">service <b id="c-status">checking…</b></span>
@@ -570,7 +570,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <div class="card">
   <div class="eyebrow">your books, your sheet</div>
   <h2>The workbook <span class="g">spine</span></h2>
-  <p class="hint">The whole OS renders as a real operations workbook — every collection a tab. With a Google service account (<span class="mono">EVOLVED_GOOGLE_SA</span>) it creates, shares, and syncs an actual Google Sheets workbook; with zero credentials it exports the identical 20 tabs as CSV. Watch it write the spine live:</p>
+  <p class="hint">The whole OS renders as a real operations workbook — every collection a tab. With a Google service account (<span class="mono">EVOLVED_GOOGLE_SA</span>) it creates, shares, and syncs an actual Google Sheets workbook; with zero credentials it exports the identical 25 tabs as CSV. Watch it write the spine live:</p>
   <div><button onclick="workbook()">Export the workbook</button></div>
   <div class="out" id="wb-out"></div>
 </div>
@@ -596,7 +596,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <div>
     <div class="eyebrow">the full 84-tool surface</div>
     <h2>Or run it locally</h2>
-    <p class="hint">Zero credentials; 48 tests including a live testnet probe:</p>
+    <p class="hint">Zero credentials; 51 tests including a live testnet probe:</p>
 <pre class="copy mono">git clone https://github.com/kr8tiv-ai/evolved.git
 cd evolved && npm install && npm run build
 npm test && npm run demo</pre>

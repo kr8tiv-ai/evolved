@@ -95,6 +95,46 @@ const TABS: Record<string, TabDef> = {
     headers: ["ID", "Invoice", "Network", "Amount (asset)", "Status", "Mode", "Tx hash"],
     rows: (db) => db.payments.map((p) => [p.id, p.invoiceId, p.network, `${p.amountAsset} ${p.asset.symbol}`, p.status, p.mode, p.txHash]),
   },
+  Crew: {
+    headers: ["ID", "Name", "Role", "Certifications", "Hourly", "Active"],
+    rows: (db) => db.crew.map((m) => [m.id, m.name, m.role, m.certifications.join(", "), m.hourlyRate, m.active ? "Yes" : "No"]),
+  },
+  "Time Log": {
+    headers: ["ID", "Crew", "Job", "In", "Out", "Hours", "Wage"],
+    rows: (db) => db.timeEntries.map((t) => [t.id, t.crewName, t.jobId, t.inAt, t.outAt ?? "on the clock", t.hours, t.wage]),
+  },
+  "Job Photos": {
+    headers: ["ID", "Job", "Kind", "Caption", "By", "At"],
+    rows: (db) => db.photos.map((p) => [p.id, p.jobId, p.kind, p.caption, p.takenBy, p.at]),
+  },
+  "Field Notes": {
+    headers: ["ID", "Job", "Note", "By", "Source", "At"],
+    rows: (db) => db.fieldNotes.map((n) => [n.id, n.jobId, n.text, n.by, n.source, n.at]),
+  },
+  "Safety (FLHA)": {
+    headers: ["ID", "Job", "Date", "Crew", "Hazards", "Signed off"],
+    rows: (db) => db.flhas.map((f) => [f.id, f.jobId, f.date, f.crew.join(", "), f.hazards.map((h) => h.hazard).join("; "), f.signoff ? "Yes" : "No"]),
+  },
+  "Hazard Reports": {
+    headers: ["ID", "Job", "Reported by", "What", "Severity", "Status", "At"],
+    rows: (db) => db.hazardReports.map((h) => [h.id, h.jobId, h.reportedBy, h.what, h.severity, h.clearedAt ? "cleared" : h.acknowledgedAt ? "acknowledged" : "open", h.at]),
+  },
+  Reviews: {
+    headers: ["ID", "Job", "Customer", "Status", "Rating", "Comment"],
+    rows: (db) => db.reviews.map((r) => [r.id, r.jobId, db.customers.find((c) => c.id === r.customerId)?.name, r.status, r.rating, r.comment]),
+  },
+  Vendors: {
+    headers: ["Canonical", "Category", "First seen", "Total spend", "Receipts"],
+    rows: (db) => db.vendors.map((v) => [v.canonical, v.category, v.firstSeen, v.totalSpend, v.receipts]),
+  },
+  Maintenance: {
+    headers: ["Date", "Equipment", "Service", "Hours/Odometer", "Next due", "Remind from", "Notes"],
+    rows: (db) => db.maintenance.map((m) => [m.date, m.equipment, m.service, m.usage, m.nextDue, m.remindFrom, m.notes]),
+  },
+  "Rate Table": {
+    headers: ["Depth", "Label", "Base $/sqft", "Learned $/sqft", "Samples"],
+    rows: (db) => db.rateTable.map((r) => [r.depth, r.label, r.baseRate, r.learnedRate, r.samples]),
+  },
 };
 
 export function registerSheetTools(server: McpServer): void {

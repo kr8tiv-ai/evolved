@@ -131,7 +131,7 @@ export function createServer(): McpServer {
           capturePaths: [
             { app: "Name + 4-digit PIN sign-in", evolved: "identity on every capture — crew_checkin / crew_checkout carry who did the work" },
             { app: "One-tap capture (receipt, job photo, lead, quote, inventory, price, anything)", evolved: "field_photo_log, field_note, receipt ingestion, lead capture — everything lands in one staged inbox first" },
-            { app: "FLHA with verified per-worker PIN sign-off", evolved: "flha_open (auto-draft), flha_field_capture (crew-authored on-site), flha_signoff" },
+            { app: "FLHA with verified per-worker PIN sign-off (the app verifies the PIN)", evolved: "flha_open (auto-draft), flha_field_capture (crew-authored on-site), flha_signoff records the per-worker sign-off by name and flags any missing signer" },
             { app: "Report a Hazard — one-screen escalation, emails management immediately", evolved: "hazard_report — records it, raises an urgent action item, drafts the owner notification, and stops the job on a stop-work call" },
             { app: "App Inbox staging tab — nothing writes straight into the live financial tabs", evolved: "inbox_* filing engine with the same discipline: capture is safe, filing is deliberate" },
           ],

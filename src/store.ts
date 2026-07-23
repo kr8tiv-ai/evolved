@@ -8,7 +8,7 @@
  */
 
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Database } from "./types.js";
 import { buildSeed } from "./seed.js";
@@ -56,9 +56,38 @@ export function logActivity(d: Database, source: string, message: string): void 
   if (d.activity.length > 300) d.activity.splice(0, d.activity.length - 300);
 }
 
+/**
+ * Bounded mkdirp. Node's native `mkdirSync(..., { recursive: true })` can
+ * INFINITE-LOOP on Windows when a security layer (e.g. Controlled Folder
+ * Access) blocks creation with ENOENT — child ENOENT → parent EEXIST → retry
+ * forever, unkillable from JS. Walking the segments ourselves is bounded by
+ * path depth and fails fast with actionable guidance instead of spinning.
+ */
+export function safeMkdirSync(dir: string): void {
+  const full = resolve(dir);
+  if (existsSync(full)) return;
+  const parts = full.split(/[\\/]+/);
+  let cur = parts[0] + sep; // drive root (C:\) or leading / on POSIX
+  for (let i = 1; i < parts.length; i++) {
+    if (!parts[i]) continue;
+    cur = join(cur, parts[i]);
+    try {
+      mkdirSync(cur);
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException).code;
+      if (code === "EEXIST") continue;
+      throw new Error(
+        `Cannot create directory ${cur} (${code}). The path may be blocked by a ` +
+        `security layer (e.g. Windows Controlled Folder Access) — point ` +
+        `EVOLVED_DATA_DIR / EVOLVED_OUT_DIR / EVOLVED_BACKUP_DIR at a writable location.`,
+      );
+    }
+  }
+}
+
 export function persist(): void {
   if (!db) return;
-  mkdirSync(DATA_DIR, { recursive: true });
+  safeMkdirSync(DATA_DIR);
   writeFileSync(DB_PATH, JSON.stringify(db, null, 2), "utf8");
 }
 
