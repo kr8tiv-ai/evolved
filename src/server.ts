@@ -41,7 +41,7 @@ export const SERVER_INFO = {
 };
 
 /** Kept in lockstep with registrations below; enforced by the test suite. */
-export const TOOL_COUNT = 84;
+export const TOOL_COUNT = 85;
 
 export function createServer(): McpServer {
   const server = new McpServer(SERVER_INFO, {
@@ -84,7 +84,7 @@ export function createServer(): McpServer {
   registerLifecycleTools(server); // 5
   registerVisionTools(server); // 1
   registerVoiceTools(server); // 1
-  registerCfoTools(server); // 2
+  registerCfoTools(server); // 3
   registerOpsPlusTools(server); // 6
   registerWorkbookTools(server); // 5
   registerFieldTools(server); // 5

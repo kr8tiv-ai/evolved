@@ -19,7 +19,7 @@ export function registerOpsTools(server: McpServer): void {
     {
       title: "Morning digest",
       description:
-        "The 6:30 AM owner briefing, on demand: the one thing not to drop today, today's jobs with crews, money pulse (month revenue, expenses, receivables), quotes out with age, leads needing a touch, auto-raised action items, five-day blast-day weather verdicts, and system health. One call, whole business.",
+        "The 6:30 AM owner briefing, on demand — a proactive 'here's your day / here's what needs you' rundown: the one thing not to drop, today's jobs with crews, the upcoming few days' schedule, money pulse (month revenue, expenses, receivables), deposits gating work (money in but unscheduled, or accepted work awaiting a deposit), quotes out with age, leads needing a touch, top open to-dos, low-inventory reorder alerts, the auto-raised action-item 'ball-drops', five-day blast-day weather verdicts, and system health. One call, whole business.",
       inputSchema: {},
       annotations: { readOnlyHint: true },
     },

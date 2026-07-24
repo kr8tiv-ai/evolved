@@ -253,6 +253,31 @@ export function buildSeed(): Database {
         ocr: { model: "haiku", escalated: false, confidence: 0.93, warnings: [] },
         createdAt: isoDaysAgo(10),
       },
+      // ---- Prior month (for month-over-month spend trend) ----
+      {
+        id: "RCPT-1901", vendor: "Prairie Abrasives Supply", date: daysAgo(40),
+        amountBeforeTax: 780, gst: 39, total: 819,
+        category: "Abrasive media", paymentMethod: "visa",
+        lineItems: [{ description: "Crushed glass 40/70 — 25 bags", amount: 787.5 }],
+        ocr: { model: "haiku", escalated: false, confidence: 0.96, warnings: [] },
+        createdAt: isoDaysAgo(40),
+      },
+      {
+        id: "RCPT-1902", vendor: "Foothills Equipment Rentals", date: daysAgo(46),
+        amountBeforeTax: 428.57, gst: 21.43, total: 450,
+        category: "Equipment rental", paymentMethod: "visa",
+        lineItems: [{ description: "185 CFM compressor — weekend rental", amount: 428.57 }],
+        ocr: { model: "haiku", escalated: false, confidence: 0.94, warnings: [] },
+        createdAt: isoDaysAgo(46),
+      },
+      {
+        id: "RCPT-1903", vendor: "Petro-Canada", date: daysAgo(52),
+        amountBeforeTax: 171.43, gst: 8.57, total: 180,
+        category: "Fuel", paymentMethod: "debit",
+        lineItems: [{ description: "Diesel 133 L", amount: 171.43 }],
+        ocr: { model: "haiku", escalated: false, confidence: 0.95, warnings: [] },
+        createdAt: isoDaysAgo(52),
+      },
     ],
 
     actionItems: [

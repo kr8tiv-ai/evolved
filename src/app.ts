@@ -77,7 +77,7 @@ const DEMO_TOOLS = new Set([
   "pipeline_view", "flha_open", "flha_signoff", "hazard_report", "safety_log",
   "lifecycle_start", "lifecycle_advance", "lifecycle_status",
   "invoice_payment_request", "invoice_payment_check",
-  "cfo_forecast", "cfo_health", "voice_command", "demo_reset",
+  "cfo_forecast", "cfo_health", "business_intelligence", "voice_command", "demo_reset",
   "workbook_export", "workbook_status", "franchise_preview",
   "reputation_report", "job_pnl_report", "dispatch_board",
 ]);

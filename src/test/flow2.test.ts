@@ -528,6 +528,35 @@ test("pricing unit: an adapted trade quotes in its OWN unit, not sqft (de-blaste
   await server.close();
 });
 
+test("proactive alerts + business intelligence: rich computed insight, not a stub", async () => {
+  resetDb();
+  const { server, client } = await connect();
+  const call = (name: string, args: Record<string, unknown> = {}) =>
+    client.callTool({ name, arguments: args }).then(parse);
+
+  // Morning digest is a full briefing.
+  const md = await call("morning_digest");
+  assert.ok(Array.isArray(md.depositsAwaiting));
+  assert.ok(Array.isArray(md.lowInventory) && md.lowInventory.length >= 1, "surfaces low-inventory alerts");
+  assert.ok(md.actionItems.length >= 3, "surfaces ball-drop action items");
+
+  // Business intelligence computes real signals from the synthetic data.
+  const bi = await call("business_intelligence");
+  assert.ok(Array.isArray(bi.headline) && bi.headline.length >= 1, "ranked recommendations");
+  assert.ok(bi.prices.rising.some((r: { product: string; changePct: number }) => /crushed glass/i.test(r.product) && r.changePct > 5),
+    "flags the rising crushed-glass price");
+  assert.ok(bi.prices.opportunities.length >= 1, "surfaces a buying opportunity");
+  assert.ok(bi.spend.monthOverMonth.length >= 2 && bi.spend.monthOverMonth.some((m: { changePct: number | null }) => m.changePct !== null),
+    "computes a month-over-month spend trend");
+  assert.ok(bi.spend.topDriver && bi.spend.topDriver.pct > 0, "identifies the biggest cost driver");
+  assert.ok(bi.inventory.drawdown.some((d: { daysToReorderPoint: number | null }) => d.daysToReorderPoint !== null),
+    "computes inventory drawdown / days to reorder");
+  assert.ok(typeof bi.margins.average === "number", "computes average margin");
+
+  await client.close();
+  await server.close();
+});
+
 test("safeMkdirSync: creates deep paths, is idempotent, and cannot busy-loop", () => {
   // Regression for the 100%-CPU spin: Node's recursive mkdirSync infinite-loops
   // under Windows Controlled Folder Access. Our bounded walker must complete.

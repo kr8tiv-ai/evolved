@@ -4,7 +4,7 @@
 
 ### Most AI talks about business. Evolved runs one.
 
-One agent takes **any** service business from a texted photo to a paid, on-chain invoice. **Free, open source (MIT), and adaptable to any trade in one call** — proven on a real Alberta company. 84 tools, live as an MCP service, with on-chain settlement on OKX X Layer testnet.
+One agent takes **any** service business from a texted photo to a paid, on-chain invoice. **Free, open source (MIT), and adaptable to any trade in one call** — proven on a real Alberta company. 85 tools, live as an MCP service, with on-chain settlement on OKX X Layer testnet.
 
 > **A complete business operating system — free, open source, for *any* company.** Not just an MCP server: four surfaces around one source of truth — the **MCP brain**, the **crew field app** (its hands), the **workbook spine**, and the **owner dashboard** (its eyes). Blasting is only the proving ground; `franchise_spinup` makes it any service business in one call. Pick your trade, generate your workbook, connect the app: **[docs/ONBOARDING.md](docs/ONBOARDING.md)**.
 
@@ -20,11 +20,11 @@ https://github.com/user-attachments/assets/ca858ecb-cf70-40d5-a1ac-54efef74f971
 [![OKX.AI ASP](https://img.shields.io/badge/OKX.AI-A2MCP_+_x402-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.okx.ai)
 [![X Layer](https://img.shields.io/badge/X_Layer-testnet_1952-22d3ee?style=flat-square&labelColor=0a0a0a)](https://web3.okx.com/xlayer)
 [![Live](https://img.shields.io/badge/endpoint-LIVE-39ff14?style=flat-square&labelColor=0a0a0a)](https://www.evolvedmcp.cloud/health)
-[![Tools](https://img.shields.io/badge/tools-84-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
-[![Tests](https://img.shields.io/badge/tests-51_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
+[![Tools](https://img.shields.io/badge/tools-85-4ade80?style=flat-square&labelColor=0a0a0a)](docs/TOOLS.md)
+[![Tests](https://img.shields.io/badge/tests-52_passing-4ade80?style=flat-square&labelColor=0a0a0a)](#every-claim-is-tested)
 [![License](https://img.shields.io/badge/license-MIT-d1d5db?style=flat-square&labelColor=0a0a0a)](LICENSE)
 
-[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [84 tools](#the-tool-surface--84-tools-16-domains) · [Docs](docs/)
+[Judge tour](#the-60-second-judge-tour) · [Why this wins](#why-this-wins) · [The lifecycle](#watch-one-agent-run-the-whole-engagement) · [On-chain](#paid-on-chain-okx-x-layer) · [Frontier](#the-frontier-set) · [85 tools](#the-tool-surface--85-tools-16-domains) · [Docs](docs/)
 
 </div>
 
@@ -78,7 +78,7 @@ Then run the whole company locally — no keys, no accounts, no funds:
 ```bash
 git clone https://github.com/kr8tiv-ai/evolved.git && cd evolved
 npm install && npm run build
-npm test        # 51 tests — including a LIVE X Layer testnet probe
+npm test        # 52 tests — including a LIVE X Layer testnet probe
 npm run demo    # the business loop, narrated in your terminal
 ```
 
@@ -90,7 +90,7 @@ npm run demo    # the business loop, narrated in your terminal
 - **Both OKX rails — and the paid one is opt-in.** Customer invoices settle in OKB on X Layer via EIP-681 requests verified by read-only RPC. The x402 pay-per-call tier is a **built-in rail any adopter can switch on** for their own deployment — off by default, never gating the free system. The on-chain integration judges score, without a toll on the open promise.
 - **Autonomy with judgment.** One agent runs lead → e-sign → weather-gated booking → FLHA safety → books → invoice → on-chain settlement → review — and holds at exactly two human gates, both about money. Agentic where it should be, accountable where it must be.
 - **It learns — and never stops.** Won jobs teach the rate engine (driveways converged to ~$9/sqft from outcome history), and every logged outcome now lifts a live **confidence** score and tightens the suggested quote range — more data, sharper quotes, on real or synthetic history alike. Each learned rate is **benchmarked against the market band** it derives from the trade's own card (`market_benchmark`, `pricing_learning_status`), so a quote is never blind; the books re-audit themselves daily; insight rankings train on the owner's feedback.
-- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 51 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
+- **It is hardened, not vibed.** A documented adversarial review pass produced 29 confirmed findings — including on-chain replay protection and e-sign decline finality — every one fixed and regression-tested in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80). A second security pass followed: the replay claim is now **atomic under concurrency** (a test drives the race), the rate limiter resolves the client IP through trusted-proxy hops instead of a spoofable header, `workbook_create` link-shares **read-only** by default, and the two dataset-replacing tools are fenced off the shared public endpoint. 52 tests pass, one live against X Layer testnet. Full model: [SECURITY.md](SECURITY.md).
 - **Your books live in a real workbook.** The whole OS renders as an operations workbook — every collection a tab. `workbook_create` builds and syncs an actual **Google Sheets** workbook (service-account JWT, no SDK, no keys stored); `workbook_export` writes the identical 25 tabs as CSV with zero credentials. The spine the production company runs on, available to every adapted business.
 - **It scales past one company.** `franchise_spinup` re-seeds the entire OS for any trade with a custom rate card in one call — `franchise_preview` window-shops it safely, `brand_configure` makes the rendered quotes feel like *your* company. Business management in a box is the product, not the tagline.
 
@@ -98,7 +98,7 @@ npm run demo    # the business loop, narrated in your terminal
 
 Evolved isn't just an MCP server — it's a complete, free, open-source operating system **any** service business can run, with four surfaces around a single source of truth:
 
-- 🧠 **The MCP — the brain** *(this repo).* 84 tools that hold the business logic: pricing, safety, books, dispatch, on-chain settlement. Every other surface is a client of it. Clone, `npm install`, `npm run build`, zero credentials.
+- 🧠 **The MCP — the brain** *(this repo).* 85 tools that hold the business logic: pricing, safety, books, dispatch, on-chain settlement. It doesn't just execute — it **watches and advises**: a proactive morning digest and a `business_intelligence` tool that flag rising supplier prices, inventory running down, spend trends, and margin anomalies before they cost you. Every other surface is a client of it. Clone, `npm install`, `npm run build`, zero credentials.
 - ✋ **The field app — the crew's hands** — [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) (MIT). A worker taps one button in the truck — photo, receipt, FLHA sign-off, hazard, note — and it lands in the App Inbox for the brain to file. $0/month on Google Apps Script. Deployed and in daily production use, which is what makes the tool surface a description of real work rather than a design exercise. Everything queues except safety: `hazard_report` escalates immediately, and an uncleared **stop-work** outranks every money flag on the dispatch board. ([how it plugs in](docs/FIELD-APP.md))
 - 📊 **The workbook — the spine** — the whole operation as a 25-tab Google Sheets workbook, created and synced by `workbook_create` or exported to CSV with zero credentials. One shared source of truth for the humans and the agent. ([generate your own](docs/ONBOARDING.md))
 - 📈 **The dashboard — the owner's eyes, the administration surface.** A login-protected, mobile-responsive web app reading the same workbook — **live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com)** (behind auth), source open-sourcing to `kr8tiv-ai/evolve-dashboard` (MIT): a finance dashboard with interactive charts (spend proportion, revenue and margin trends, job-profitability comparison); job P&Ls, quotes, invoices, and receivables with every entity clickable through to its document; filterable receipts with pop-up images; an insights page (last month's revenue, where the money went, margin trends, outstanding receivables); a safety page (FLHAs, mitigations, worker sign-offs — audit-ready); a maintenance page (servicing, wear items, overdue work); and a company inventory page tied to a materials price tracker. Same dark aurora branding. Read-only onto the spine — it shows, the brain does. ([how it plugs in](docs/DASHBOARD.md))
@@ -106,7 +106,7 @@ Evolved isn't just an MCP server — it's a complete, free, open-source operatin
 ```mermaid
 flowchart LR
     FA["Field app — the crew's hands"] --> INBOX["App Inbox"]
-    INBOX --> MCP["Evolved MCP — the brain, 84 tools"]
+    INBOX --> MCP["Evolved MCP — the brain, 85 tools"]
     MCP --> WB["Workbook spine — Google Sheets, 25 tabs"]
     MCP --> CHAIN["On-chain settlement — X Layer testnet"]
     WB -.->|source of truth| MCP
@@ -121,7 +121,7 @@ Open source, all MIT — the system reads as one thing from whichever repo you l
 
 | Repo / surface | Role | Link |
 |---|---|---|
-| **evolved** | 🧠 The MCP brain — 84 tools, the workbook spine, the on-chain rail, the trade packs (this repo) | [kr8tiv-ai/evolved](https://github.com/kr8tiv-ai/evolved) |
+| **evolved** | 🧠 The MCP brain — 85 tools, the workbook spine, the on-chain rail, the trade packs (this repo) | [kr8tiv-ai/evolved](https://github.com/kr8tiv-ai/evolved) |
 | **evolve-field-app** | ✋ The crew's hands — tap-once field capture, $0/month on Apps Script | [kr8tiv-ai/evolve-field-app](https://github.com/kr8tiv-ai/evolve-field-app) |
 | **evolve-ops-workbook** | 📊 The spine — a 25-tab workbook template + the secret-gated Apps Script router the human surfaces read through (generate your own secret) | [kr8tiv-ai/evolve-ops-workbook](https://github.com/kr8tiv-ai/evolve-ops-workbook) · in-repo: [`make-workbook-template.mjs`](scripts/make-workbook-template.mjs) · [`router.gs`](templates/router.gs) |
 | **evolve-dashboard** | 📈 The owner's eyes — login-protected finance/ops dashboard (runs credential-free in demo mode), live at [ops.evolveecoblasting.com](https://ops.evolveecoblasting.com) | [kr8tiv-ai/evolve-dashboard](https://github.com/kr8tiv-ai/evolve-dashboard) · [docs/DASHBOARD.md](docs/DASHBOARD.md) |
@@ -207,7 +207,7 @@ Everything the live field app and ops workbook do, as first-class tools: **inven
 
 ## Everything it does — the full capability set
 
-A reader should finish this knowing exactly what the system runs, not a teaser. All 84 tools, grouped by what they do for a business:
+A reader should finish this knowing exactly what the system runs, not a teaser. All 85 tools, grouped by what they do for a business:
 
 - **Quoting intelligence** — price any job with a rate engine that *learns*: a $/unit rate per tier that converges toward what actually wins work at healthy margins, a confidence score and a suggested price range that tightens with data, a market-band benchmark so a quote is never blind, and a full profitability check (media, labour, fuel, overhead, break-even rate, margin verdict). Create the quote, render the branded document, track its status, and teach the engine from the outcome.
 - **Photo-to-quote** — a customer texts a photo; the system estimates surface, area, condition, and tier, then returns a confidence-banded price range grounded in comparable jobs already in the books, a market benchmark, and the site factors that could move it — before booking a branded draft with a measure-to-confirm clause.
@@ -217,7 +217,8 @@ A reader should finish this knowing exactly what the system runs, not a teaser. 
 - **Inventory control** — media, coatings, PPE, and consumables on hand with par levels and reorder points, per-job burn-down, receive-against-receipt, reorder suggestions priced from real purchase history, and a supplier price-spike watch.
 - **Contacts / CRM** — customers with balances, suppliers with pricebooks, and crew with certifications and hourly rates.
 - **Safety & FLHA** — draft the day's field-level hazard assessment from the job scope with per-hazard mitigations and standard PPE, capture it on-site, sign it off per worker, and escalate a hazard immediately — an uncleared stop-work outranks every money flag on the board. Audit-ready records.
-- **Dispatch & the daily loop** — a morning digest that leads with the one thing not to drop, then money pulse, today's jobs, leads, and quotes out; an action-item "ball-drop" scanner (deposit in but unscheduled, invoice unpaid, quote expiring, job done but not invoiced); a weather-gated booking check; and a live business snapshot.
+- **Proactive alerts & the daily loop** — a morning digest that reads like the real 6 AM email: the one thing not to drop, today's jobs and the next few days' schedule, money pulse, deposits gating work (money in but unscheduled, accepted work awaiting a deposit), quotes out, leads, top to-dos, and **low-inventory reorder alerts** — backed by an action-item "ball-drop" scanner (deposit unscheduled, invoice unpaid, quote expiring, job done but not invoiced), a weather-gated booking check, and a live snapshot. The brain surfaces what needs you before you go looking.
+- **Business intelligence** — proactive, computed insights, not records: **inventory drawdown** (days of runway until each item hits its reorder point at current burn) and low-stock alerts; **spend by category with month-over-month trend** and the biggest cost driver; **rising supplier prices** from the materials price tracker (which materials are creeping up, and where a bulk buy locks the lower rate before the next big job); and **job-margin anomalies** below the healthy floor — each with a ranked, concrete recommendation. It runs the business, it doesn't just log it.
 - **CFO forecasting** — model add-a-truck (capex, utilisation ramp, break-even month), rate changes with price elasticity, and demand shocks over a 12-month cash table grounded in the books and weather-gated seasonality; plus a financial-health one-pager (receivables aging, customer-concentration risk, run-rate).
 - **Field operations** — before/after photo albums with gap detection, voice and text field notes that never get lost, a crew time clock that feeds real labour cost into Job P&L, and JHAs authored on-site.
 - **Voice commands** — "used four bags of crushed glass on the Kowalczyk job" burns down inventory against that job; "open the FLHA" drafts the hazard assessment; "next stop?" reads the dispatch board. Unmatched job hints refuse rather than guess.
@@ -228,7 +229,7 @@ A reader should finish this knowing exactly what the system runs, not a teaser. 
 
 Named-tool reference below; full parameter-level docs (generated from the live server so they can't drift): [docs/TOOLS.md](docs/TOOLS.md).
 
-## The tool surface — 84 tools, 16 domains
+## The tool surface — 85 tools, 16 domains
 
 | Domain | Tools |
 |---|---|
@@ -243,7 +244,7 @@ Named-tool reference below; full parameter-level docs (generated from the live s
 | **Accounting depth** | `vendor_rollup` · `receipt_report` · `invoice_remind` |
 | **On-chain (X Layer testnet)** | `invoice_payment_request` · `invoice_payment_check` · `xlayer_status` · `x402_info` |
 | **Autonomous lifecycle** | `lifecycle_start` · `lifecycle_advance` · `lifecycle_status` · `quote_esign_sign` · `review_record` |
-| **Frontier** | `quote_from_photo` · `voice_command` · `cfo_forecast` · `cfo_health` |
+| **Frontier** | `quote_from_photo` · `voice_command` · `cfo_forecast` · `cfo_health` · `business_intelligence` |
 | **Business-in-a-box** | `insights_generate` · `insight_feedback` · `activity_feed` · `backup_create` · `backup_list` · `franchise_spinup` |
 | **Workbook spine** | `workbook_create` · `workbook_sync` · `workbook_link` · `workbook_export` · `workbook_status` |
 | **Field ops** | `field_photo_log` · `field_note` · `crew_checkin` · `crew_checkout` · `flha_field_capture` |
@@ -259,7 +260,7 @@ Three layers, dependencies pointing one way: tools validate and delegate, engine
 src/
 ├── index.ts            stdio entry — plug into Claude Desktop / any MCP client
 ├── http.ts · app.ts    Streamable HTTP: /mcp (free) · /mcp-paid (x402) · /health · /stats
-├── server.ts           assembles all 84 tools + 4 MCP resources + 3 prompts
+├── server.ts           assembles all 85 tools + 4 MCP resources + 3 prompts
 ├── playground.ts       the zero-install browser playground (Judge Mode lives here)
 ├── tools/              16 domains — thin, zod-validated handlers (quoting, money, pipeline,
 │                       safety, inventory, contacts, sheet, accounting, payments, lifecycle,
@@ -270,7 +271,7 @@ src/
 │                       Sheets workbook spine (service-account JWT via node:crypto, no SDK)
 ├── trades.ts           trade packs — the one file you touch to adapt Evolved to your trade
 ├── seed.ts · store.ts  synthetic workbook-shaped data spine (JSON, git-ignored at runtime)
-└── test/               51 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
+└── test/               52 tests — engines, E2E lifecycle, x402 over HTTP, live testnet probe
 ```
 
 ## Wire it into your agent — ~30 seconds
@@ -315,7 +316,8 @@ npm test
 # ✔ adaptability: an inline trade pack spins up a new trade; an adapted trade quotes in its own unit (per vehicle, not sqft)
 # ✔ workbook drives the admin dashboard: 25 tabs, all 17 dashboard entities verified end-to-end
 # ✔ resilience: bounded mkdir cannot busy-loop; digest surfaces to-dos; sheet engine mirrors all 25 tabs
-# … 51 passing
+# ✔ proactive alerts + business intelligence: rising prices, spend MoM, inventory drawdown — real computed insight
+# … 52 passing
 ```
 
 The battle scars are real and documented: the production receipt parser once read a $1,250 media invoice as $1.25 — that comma bug is fixed here and pinned by regression tests, along with 28 other adversarial-review findings shipped in [`f6acd80`](https://github.com/kr8tiv-ai/evolved/commit/f6acd80) (replay protection, decline finality, break-even flagging, and the long tail). Architecture, data model, and production lineage: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

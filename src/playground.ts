@@ -33,7 +33,7 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Evolved">
 <meta property="og:title" content="Evolved — business-in-a-box, run by an AI, paid on-chain">
-<meta property="og:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 84 tools across 16 domains — quoting that learns, receipts to books, FLHA safety, dispatch, invoicing, and x402 + on-chain settlement on OKX X Layer. Any service business, spun up in one call. Try it live, zero install.">
+<meta property="og:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 85 tools across 16 domains — quoting that learns, receipts to books, FLHA safety, dispatch, invoicing, and x402 + on-chain settlement on OKX X Layer. Any service business, spun up in one call. Try it live, zero install.">
 <meta property="og:url" content="https://www.evolvedmcp.cloud/">
 <meta property="og:image" content="https://www.evolvedmcp.cloud/og.png">
 <meta property="og:image:secure_url" content="https://www.evolvedmcp.cloud/og.png">
@@ -46,11 +46,11 @@ export const PLAYGROUND_HTML = `<!doctype html>
 <meta name="twitter:site" content="@aurora_ventures">
 <meta name="twitter:creator" content="@aurora_ventures">
 <meta name="twitter:title" content="Evolved — business-in-a-box, run by an AI, paid on-chain">
-<meta name="twitter:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 84 tools, x402 + on-chain settlement on OKX X Layer testnet. Any service business, one call. Try it live.">
+<meta name="twitter:description" content="A real Alberta company's operations brain, live as an MCP Agentic Service Provider. 85 tools, x402 + on-chain settlement on OKX X Layer testnet. Any service business, one call. Try it live.">
 <meta name="twitter:image" content="https://www.evolvedmcp.cloud/og.png">
 <meta name="twitter:image:alt" content="EVOLVED — business-in-a-box, run by an AI, paid on-chain">
 <!-- Structured data for search + AI understanding -->
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Evolved","applicationCategory":"BusinessApplication","operatingSystem":"Any (Model Context Protocol client)","description":"A real service company's operations brain as an open-source MCP Agentic Service Provider — 84 tools across 16 domains, an x402 pay-per-call tier, and on-chain invoice settlement on OKX X Layer testnet. Any service business spins up its own copy in one call.","url":"https://www.evolvedmcp.cloud/","image":"https://www.evolvedmcp.cloud/og.png","softwareVersion":"3.0.0","license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"sameAs":["https://github.com/kr8tiv-ai/evolved","https://x.com/aurora_ventures"],"author":{"@type":"Organization","name":"KR8TIV AI","url":"https://www.kr8tiv.io"},"keywords":"MCP, Agentic Service Provider, x402, OKX X Layer, on-chain payments, AI agent, business automation"},{"@type":"WebSite","name":"Evolved","url":"https://www.evolvedmcp.cloud/","publisher":{"@type":"Person","name":"Matt Haynes","url":"https://www.linkedin.com/in/matthaynes88"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Evolved","applicationCategory":"BusinessApplication","operatingSystem":"Any (Model Context Protocol client)","description":"A real service company's operations brain as an open-source MCP Agentic Service Provider — 85 tools across 16 domains, an x402 pay-per-call tier, and on-chain invoice settlement on OKX X Layer testnet. Any service business spins up its own copy in one call.","url":"https://www.evolvedmcp.cloud/","image":"https://www.evolvedmcp.cloud/og.png","softwareVersion":"3.0.0","license":"https://opensource.org/licenses/MIT","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"sameAs":["https://github.com/kr8tiv-ai/evolved","https://x.com/aurora_ventures"],"author":{"@type":"Organization","name":"KR8TIV AI","url":"https://www.kr8tiv.io"},"keywords":"MCP, Agentic Service Provider, x402, OKX X Layer, on-chain payments, AI agent, business automation"},{"@type":"WebSite","name":"Evolved","url":"https://www.evolvedmcp.cloud/","publisher":{"@type":"Person","name":"Matt Haynes","url":"https://www.linkedin.com/in/matthaynes88"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -380,10 +380,10 @@ export const PLAYGROUND_HTML = `<!doctype html>
     <a class="btn-pill outline" href="#adapt">Make it your business</a>
   </div>
   <div class="hstats">
-    <div class="s"><b class="lime" id="h-tools">84</b><span>MCP tools · 16 domains</span></div>
+    <div class="s"><b class="lime" id="h-tools">85</b><span>MCP tools · 16 domains</span></div>
     <div class="s"><b>2</b><span>OKX rails · x402 + X Layer</span></div>
     <div class="s"><b>2</b><span>human gates · both money</span></div>
-    <div class="s"><b id="h-tests">51</b><span>tests · live testnet probe</span></div>
+    <div class="s"><b id="h-tests">52</b><span>tests · live testnet probe</span></div>
   </div>
   <div class="chips" id="chips">
     <span class="chip">service <b id="c-status">checking…</b></span>
@@ -445,6 +445,14 @@ export const PLAYGROUND_HTML = `<!doctype html>
   <input type="text" id="voice-in" value="used two bags of crushed glass on the Jasper Ave job">
   <div><button onclick="voice()">Send voice command</button></div>
   <div class="out" id="voice-out"></div>
+</div>
+
+<div class="card wide">
+  <div class="eyebrow">it advises, not just records</div>
+  <h2>📊 Proactive intelligence &amp; alerts</h2>
+  <p class="hint">The brain reads the books and tells you what needs you: <b>rising supplier prices</b> with a bulk-buy call, <b>inventory drawdown</b> and reorder alerts, <b>spend trend</b> by category month-over-month, and margin anomalies — plus the 6 AM digest's ball-drops. Real computed insight against the live synthetic dataset, not a canned summary.</p>
+  <div><button onclick="intel()">Run the morning brief + business intelligence</button></div>
+  <div class="out" id="intel-out"></div>
 </div>
 
 <div class="card">
@@ -595,9 +603,9 @@ export const PLAYGROUND_HTML = `<!doctype html>
 } } }</pre>
   </div>
   <div>
-    <div class="eyebrow">the full 84-tool surface</div>
+    <div class="eyebrow">the full 85-tool surface</div>
     <h2>Or run it locally</h2>
-    <p class="hint">Zero credentials; 51 tests including a live testnet probe:</p>
+    <p class="hint">Zero credentials; 52 tests including a live testnet probe:</p>
 <pre class="copy mono">git clone https://github.com/kr8tiv-ai/evolved.git
 cd evolved && npm install && npm run build
 npm test && npm run demo</pre>
@@ -616,7 +624,7 @@ npm test && npm run demo</pre>
   <main><div class="grid">
     <div class="card rv">
       <div class="eyebrow">🧠 the brain</div>
-      <h2>The MCP — 84 tools</h2>
+      <h2>The MCP — 85 tools</h2>
       <p class="hint">Quoting that learns, photo-to-quote, receipts→books, FLHA safety with stop-work escalation, dispatch, CFO forecasts, the morning digest with top to-dos, and the autonomous lifecycle with two human money gates. Every other surface is a client of it.</p>
       <div><a class="btn-pill outline" href="https://github.com/kr8tiv-ai/evolved">Source (MIT) →</a></div>
     </div>
@@ -708,6 +716,22 @@ async function ticker(){
 }
 
 /* ---------- cards ---------- */
+async function intel(){
+  clearOut("intel-out");
+  show("intel-out", "→ business_intelligence + morning_digest (live)");
+  try {
+    var bi = await call("business_intelligence", {});
+    show("intel-out", bi.headline, "🔔 what needs you (ranked)");
+    if (bi.prices && bi.prices.rising && bi.prices.rising.length) show("intel-out", bi.prices.rising, "📈 rising supplier prices");
+    if (bi.prices && bi.prices.opportunities && bi.prices.opportunities.length) show("intel-out", bi.prices.opportunities, "💡 buying opportunities");
+    show("intel-out", bi.inventory.drawdown, "📦 inventory drawdown → days to reorder");
+    show("intel-out", bi.spend.monthOverMonth, "💸 spend, month over month");
+    if (bi.spend.topDriver) show("intel-out", bi.spend.topDriver, "🏷 biggest cost driver");
+    var md = await call("morning_digest", {});
+    show("intel-out", md.actionItems, "⚠ ball-drop action items");
+    if (md.lowInventory && md.lowInventory.length) show("intel-out", md.lowInventory, "🧯 low-inventory reorder alerts");
+  } catch(e){ show("intel-out", String(e && e.message || e), "error"); }
+}
 async function voice(){
   clearOut("voice-out");
   var u = $("voice-in").value;
@@ -1020,7 +1044,7 @@ async function judgeMode(){
     jmProgress(100, "CLOSE · NOTHING DROPPED");
     var dg = await call("morning_digest", {});
     show(out, "🌅 " + dg.oneThingNotToDrop, "tomorrow's digest — the one thing not to drop");
-    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, any trade installable in one call, the whole OS on a workbook spine, and an agent service that itself gets paid on-chain. 84 tools. Open source. Try any card above yourself.");
+    show(out, "✔ THE WHOLE STORY: a real company's books, a photo turned into money, an autonomous engagement with humans owning the money decisions, any trade installable in one call, the whole OS on a workbook spine, and an agent service that itself gets paid on-chain. 85 tools. Open source. Try any card above yourself.");
     ticker();
   } catch(e){ show(out, "✖ " + e.message + " — cards above still work individually."); }
   jmRunning = false; $("jm-btn").disabled = false;

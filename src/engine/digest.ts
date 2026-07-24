@@ -26,6 +26,12 @@ export interface MorningDigest {
   quotesOut: string[];
   leadsPulse: string[];
   topTodos: string[];
+  /** Deposits gating work: money in but unscheduled, and accepted work awaiting a deposit. */
+  depositsAwaiting: string[];
+  /** Jobs scheduled in the next few days (beyond today). */
+  upcomingSchedule: string[];
+  /** Inventory at or below its reorder point — reorder before the next job. */
+  lowInventory: string[];
   actionItems: string[];
   weather: { source: string; lines: string[] };
   systemHealth: string;
@@ -78,6 +84,40 @@ export async function buildMorningDigest(db: Database): Promise<MorningDigest> {
     .slice(0, 5)
     .map((td) => `${td.task}${td.due ? ` (due ${td.due})` : ""}${td.priority === "high" ? " — HIGH" : ""}`);
 
+  // Deposits gating work: money in but the job isn't booked, and accepted work
+  // still waiting on the deposit that funds mobilization.
+  const depositsAwaiting: string[] = [];
+  for (const j of db.jobs) {
+    if (j.depositPaid && !j.scheduledDate && !["Complete", "Invoiced", "Paid"].includes(j.status)) {
+      const c = db.customers.find((x) => x.id === j.customerId);
+      depositsAwaiting.push(`${j.id} — ${c?.name ?? "?"}: deposit IN but not scheduled — book it`);
+    }
+  }
+  for (const q of db.quotes.filter((x) => x.status === "Accepted")) {
+    const hasJob = db.jobs.some((j) => j.quoteId === q.id && j.depositPaid);
+    if (!hasJob) {
+      const c = db.customers.find((x) => x.id === q.customerId);
+      depositsAwaiting.push(`${q.id} — ${c?.name ?? "?"}: accepted, awaiting ${money(q.depositRequired)} deposit to mobilize`);
+    }
+  }
+
+  // Next few days of scheduled work (beyond today).
+  const upcomingSchedule = db.jobs
+    .filter((j) => j.scheduledDate && j.scheduledDate > t && daysBetween(t, j.scheduledDate) <= 4 && !["Complete", "Paid"].includes(j.status))
+    .sort((a, b) => (a.scheduledDate ?? "").localeCompare(b.scheduledDate ?? ""))
+    .map((j) => {
+      const c = db.customers.find((x) => x.id === j.customerId);
+      return `${j.scheduledDate}: ${j.id} — ${c?.name ?? "?"} (${j.scope}) — crew: ${j.crew.join(", ") || "UNASSIGNED"}`;
+    });
+
+  // Inventory at or below its reorder point.
+  const lowInventory = db.inventory
+    .filter((i) => i.onHand <= i.reorderAt)
+    .map((i) => {
+      const pct = i.parLevel > 0 ? Math.round((i.onHand / i.parLevel) * 100) : 0;
+      return `${i.name}: ${i.onHand} ${i.unit} on hand (${pct}% of par, reorder at ${i.reorderAt}) — reorder from ${i.lastSupplier ?? "a supplier"}`;
+    });
+
   const forecast = await getForecast(5);
   const weatherLines = forecast.days.map(
     (d) => `${d.date}: ${d.verdict} — ${d.tmaxC}°C, wind ${d.windKmh} km/h, precip ${d.precipPct}%`,
@@ -106,6 +146,9 @@ export async function buildMorningDigest(db: Database): Promise<MorningDigest> {
     quotesOut,
     leadsPulse,
     topTodos,
+    depositsAwaiting,
+    upcomingSchedule,
+    lowInventory,
     actionItems: openActions.map((a) => `[${a.severity.toUpperCase()}] ${a.message}`),
     weather: { source: forecast.source, lines: weatherLines },
     systemHealth: `${db.customers.length} customers, ${db.quotes.length} quotes, ${db.jobs.length} jobs, ${db.receipts.length} receipts on file. Data spine healthy.`,
